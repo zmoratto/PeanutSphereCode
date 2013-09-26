@@ -1,0 +1,3247 @@
+******************************************************************************
+TMS320C6x COFF vLinker                             Version 2.10
+******************************************************************************
+>> Linked Thu Sep 26 14:23:16 2013
+
+OUTPUT FILE NAME:   <Z:\SPHERES_2\SCode\Ames_repo\TestProjects\Peanut2\ARC_P381\sphere1\Release\espv2_het_test.out>
+ENTRY POINT SYMBOL: "_c_int00"  address: 020b4540
+
+
+MEMORY CONFIGURATION
+
+                  name            origin    length      used    attr    fill
+         ----------------------  --------  ---------  --------  ----  --------
+         VECS                    00000000  000000400  00000200  RWIX
+         IPRAM                   00000400  00000fc00  00003900  RWIX
+         SBSRAM                  00400000  000080000  00008000  RWIX
+         SDRAM                   02048000  000fb8000  00674321  RWIX
+         IDRAM                   80000000  000010000  000088b4  RWIX
+
+
+SECTION ALLOCATION MAP
+
+ output                                  attributes/
+section   page    origin      length       input sections
+--------  ----  ----------  ----------   ----------------
+___page_info__ 
+*          0    00000000    00000008     DSECT
+                  00000000    00000008     --PAGE INFORMATION--
+
+___section_info__ 
+*          0    00000000    00000008     DSECT
+                  00000000    00000008     --SECTION INFORMATION--
+
+.vers      0    00000000    00000040     COPY SECTION
+                  00000000    00000040     flight_projectcfg.obj (.vers)
+
+.hwi_vec   0    00000000    00000200     
+                  00000000    00000200     flight_projectcfg.obj (.hwi_vec)
+
+.hwi       0    00000400    00000000     UNINITIALIZED
+
+.bios      0    00000400    00003900     
+                  00000400    000006e0     bios.a62 : swi.o62 (.bios)
+                  00000ae0    00000420              : malloc.o62 (.bios)
+                  00000f00    00000420              : hwi_disp_asm.o6 (.bios)
+                  00001320    00000320              : prd.o62 (.bios)
+                  00001640    00000280              : mem_allo.o62 (.bios:.near)
+                  000018c0    00000280              : mbx.o62 (.bios)
+                  00001b40    00000240              : mem_free.o62 (.bios:.near)
+                  00001d80    00000220              : pip.o62 (.bios)
+                  00001fa0    00000220              : knl_run.o62 (.bios)
+                  000021c0    00000220              : clk.o62 (.bios)
+                  000023e0    00000200              : sem_pend.o62 (.bios)
+                  000025e0    000001c0              : knl_swit.o62 (.bios)
+                  000027a0    000001a0              : autoinit.o62 (.bios)
+                  00002940    00000180              : tsk_exit.o62 (.bios)
+                  00002ac0    00000180              : knl_tick.o62 (.bios)
+                  00002c40    00000140              : tsk_setu.o62 (.bios)
+                  00002d80    00000120              : tsk_stup.o62 (.bios)
+                  00002ea0    00000120              : sem_dopo.o62 (.bios)
+                  00002fc0    000000e0              : pip_c.o62 (.bios)
+                  000030a0    000000c0              : sys_exit.o62 (.bios)
+                  00003160    000000c0              : mem_init.o62 (.bios:.near)
+                  00003220    000000c0              : lck.o62 (.bios)
+                  000032e0    000000c0              : knl_post.o62 (.bios)
+                  000033a0    000000a0              : prd_c.o62 (.bios)
+                  00003440    000000a0              : knl_ipos.o62 (.bios)
+                  000034e0    000000a0              : atm.o62 (.bios)
+                  00003580    00000080              : log.o62 (.bios)
+                  00003600    00000080              : knl_exit.o62 (.bios)
+                  00003680    00000080              : gbl_cslinit62.o (.bios)
+                  00003700    00000080              : fxn.o62 (.bios)
+                  00003780    00000080              : clk_start6x.o62 (.bios)
+                  00003800    00000060              : utl_putc.o62 (.bios)
+                  00003860    00000060              : utl_doab.o62 (.bios)
+                  000038c0    00000060              : tsk_init.o62 (.bios)
+                  00003920    00000060              : sys_erro.o62 (.bios:.near)
+                  00003980    00000060              : sts.o62 (.bios)
+                  000039e0    00000060              : sem_post_asm.o6 (.bios)
+                  00003a40    00000060              : que_get.o62 (.bios)
+                  00003aa0    00000060              : knl_chec.o62 (.bios)
+                  00003b00    00000060              : hwi_c.o62 (.bios)
+                  00003b60    00000040              : swi_post.o62 (.bios)
+                  00003ba0    00000040              : sem_post.o62 (.bios)
+                  00003be0    00000040              : sem_pend_asm.o6 (.bios)
+                  00003c20    00000020              : utl_halt.o62 (.bios)
+                  00003c40    00000020              : utl_doer.o62 (.bios)
+                  00003c60    00000020              : sem_ipos.o62 (.bios)
+                  00003c80    00000020              : idl.o62 (.bios)
+                  00003ca0    00000020              : gbl_vers.o62 (.bios)
+                  00003cc0    00000020              : fxn_c.o62 (.bios)
+                  00003ce0    00000020              : clk_getltime.o6 (.bios)
+
+.stack     0    00400000    00008000     UNINITIALIZED
+                  00400000    00000000     bios.a62 : boot.o62 (.stack)
+
+.bss       0    02048000    00001094     UNINITIALIZED
+                  02048000    00000c84     flight_projectcfg.obj (.bss)
+                  02048c84    00000134     bios.a62 : biosdata.o62 (.bss)
+                  02048db8    00000100              : hwi_disp_asm.o6 (.bss)
+                  02048eb8    000000e0              : knl.o62 (.bss)
+                  02048f98    00000040              : knl.o62 (.bss:c)
+                  02048fd8    00000038              : tsk.o62 (.bss)
+                  02049010    00000024              : tsk_stup.o62 (.bss)
+                  02049034    00000020              : sys.o62 (.bss)
+                  02049054    00000010              : knl_tick.o62 (.bss)
+                  02049064    00000008              : tsk.o62 (.bss:c)
+                  0204906c    00000008              : sys.o62 (.bss:c)
+                  02049074    00000008              : hwi.o62 (.bss)
+                  0204907c    00000008              : gbl.o62 (.bss:c)
+                  02049084    00000008              : clk_start6x.o62 (.bss)
+                  0204908c    00000004              : mem_asm.o62 (.bss)
+                  02049090    00000004              : gbl_cslinit62.o (.bss)
+
+.far       0    02049094    000022e4     UNINITIALIZED
+                  02049094    00000004     rts6700.lib : errno.obj (.far)
+                  02049098    00000060                 : acos.obj (.far)
+                  020490f8    0000063c     comm_process_rx_packet.obj (.far)
+                  02049734    00000414     est_USsubfunc.obj (.far)
+                  02049b48    000003cc     pads_estimator_EKF.obj (.far)
+                  02049f14    00000334     comm_interrupt.obj (.far)
+                  0204a248    000002cf     comm_background.obj (.far)
+                  0204a518    00000228     gsutil_checkout.obj (.far)
+                  0204a740    000001e4     spheres_physical_parameters.obj (.far)
+                  0204a924    000001e0     comm.obj (.far)
+                  0204ab04    0000017c     pads.obj (.far)
+                  0204ac80    00000178     housekeeping.obj (.far)
+                  0204adf8    00000114     gsp.obj (.far)
+                  0204af0c    000000f4     csl6701.lib : csl_irq.obj (.far)
+                  0204b000    000000d0     prop.obj (.far)
+                  0204b0d0    000000b4     control.obj (.far)
+                  0204b184    00000050     exp_v2.obj (.far)
+                  0204b1d4    0000004c     fpga.obj (.far)
+                  0204b220    0000003c     pads_convert.obj (.far)
+                  0204b25c    00000034     spheres_physical_ISS_SMARTPHONE_primary.obj (.far)
+                  0204b290    00000028     csl6701.lib : csl.obj (.far)
+                  0204b2b8    00000024                 : csl_timer.obj (.far)
+                  0204b2dc    00000020     system.obj (.far)
+                  0204b2fc    00000018     main.obj (.far)
+                  0204b314    00000018     comm_driver.obj (.far)
+                  0204b32c    00000010     rts6700.lib : sinf.obj (.far)
+                  0204b33c    0000000c     gsp_task.obj (.far)
+                  0204b348    0000000c     ctrl_position.obj (.far)
+                  0204b354    0000000c     ctrl_attitude.obj (.far)
+                  0204b360    0000000c     bios.a62 : utl_putc.o62 (.far)
+                  0204b36c    00000008     rts6700.lib : _lock.obj (.far)
+                  0204b374    00000004     ctrl_mix.obj (.far)
+
+.gblinit   0    0204b378    00000088     
+                  0204b378    00000088     flight_projectcfg.obj (.gblinit)
+
+.TSK_estimator$stk 
+*          0    0204b400    00002800     UNINITIALIZED
+                  0204b400    00002800     flight_projectcfg.obj (.TSK_estimator$stk)
+
+frt        0    0204dc00    00000000     UNINITIALIZED
+
+.text      0    0204dc00    0001ecc0     
+                  0204dc00    00004c80     pads_estimator_EKF.obj (.text)
+                  02052880    00002f80     est_USsubfunc.obj (.text)
+                  02055800    000021c0     comm_process_rx_packet.obj (.text)
+                  020579c0    00001ce0     gsp.obj (.text)
+                  020596a0    00001b80     housekeeping.obj (.text)
+                  0205b220    000018a0     math_matrix.obj (.text)
+                  0205cac0    00001840     control.obj (.text)
+                  0205e300    000016a0     gsutil_checkout.obj (.text)
+                  0205f9a0    00001300     pads.obj (.text)
+                  02060ca0    00001300     math_inv_methods.obj (.text)
+                  02061fa0    000012a0     comm.obj (.text)
+                  02063240    00001080     comm_interrupt.obj (.text)
+                  020642c0    00000ac0     spheres_physical_parameters.obj (.text)
+                  02064d80    00000ac0     comm_background.obj (.text)
+                  02065840    000008a0     exp_v2.obj (.text)
+                  020660e0    00000880     ctrl_position.obj (.text)
+                  02066960    00000880     ctrl_mix.obj (.text)
+                  020671e0    00000800     ctrl_attitude.obj (.text)
+                  020679e0    00000720     util_FlashLib.obj (.text)
+                  02068100    00000600     pads_convert.obj (.text)
+                  02068700    000004c0     comm_driver.obj (.text)
+                  02068bc0    00000460     rts6700.lib : acos.obj (.text)
+                  02069020    000003e0     system.obj (.text)
+                  02069400    000003a0     find_state_error.obj (.text)
+                  020697a0    00000320     prop.obj (.text)
+                  02069ac0    00000320     gsp_task.obj (.text)
+                  02069de0    00000300     rts6700.lib : frcdivd.obj (.text)
+                  0206a0e0    000002c0     main.obj (.text)
+                  0206a3a0    000002a0     rts6700.lib : sqrt.obj (.text)
+                  0206a640    00000280                 : sinf.obj (.text)
+                  0206a8c0    00000240                 : memcpy62.obj (.text)
+                  0206ab00    00000240                 : divd.obj (.text)
+                  0206ad40    000001c0                 : sqrtf.obj (.text)
+                  0206af00    000001c0     fpga.obj (.text)
+                  0206b0c0    00000180     rts6700.lib : roundf.obj (.text)
+                  0206b240    00000180                 : ldexp.obj (.text)
+                  0206b3c0    00000180                 : divf.obj (.text)
+                  0206b540    00000160     csl6701.lib : csl_timer.obj (.text:_TIMER_open)
+                  0206b6a0    00000160                 : csl.obj (.text:__CSL_init)
+                  0206b800    00000140     rts6700.lib : ldexpf.obj (.text)
+                  0206b940    00000140                 : frexp.obj (.text)
+                  0206ba80    00000120     smartphone_comm_utils.obj (.text)
+                  0206bba0    00000120     rts6700.lib : memset.obj (.text)
+                  0206bcc0    00000120     csl6701.lib : csl_timer.obj (.text:_TIMER_reset)
+                  0206bde0    00000120                 : csl_irq.obj (.text:_mux2Tables)
+                  0206bf00    00000100     rts6700.lib : frexpf.obj (.text)
+                  0206c000    00000100                 : frcdivf.obj (.text)
+                  0206c100    000000e0                 : strasg.obj (.text)
+                  0206c1e0    000000c0                 : fixdu.obj (.text)
+                  0206c2a0    000000c0                 : divu.obj (.text)
+                  0206c360    000000c0     init_sphere.obj (.text)
+                  0206c420    000000c0     csl6701.lib : csl_irq.obj (.text:_getMux)
+                  0206c4e0    000000a0     rts6700.lib : remu.obj (.text)
+                  0206c580    00000080     util_memory.obj (.text)
+                  0206c600    00000080     rts6700.lib : modff.obj (.text)
+                  0206c680    00000080     csl6701.lib : csl_irq.obj (.text:__IRQ_init)
+                  0206c700    00000060                 : csl_timer.obj (.text:_TIMER_configArgs)
+                  0206c760    00000040     rts6700.lib : truncf.obj (.text)
+                  0206c7a0    00000040                 : _lock.obj (.text)
+                  0206c7e0    00000040     csl6701.lib : csl_timer.obj (.text:_TIMER_start)
+                  0206c820    00000040                 : csl_irq.obj (.text:_IRQ_enable)
+                  0206c860    00000020     util_BranchTo.obj (.text)
+                  0206c880    00000020     flight_projectcfg_c.obj (.text:CSL_cfgInit)
+                  0206c8a0    00000020     csl6701.lib : csl_irq.obj (.text:_IRQ_set)
+
+.cio       0    0206c8c0    00000000     UNINITIALIZED
+
+.TSK_comm_mgr$stk 
+*          0    0206c8c0    00007d00     UNINITIALIZED
+                  0206c8c0    00007d00     flight_projectcfg.obj (.TSK_comm_mgr$stk)
+
+.const     0    020745c0    0000115d     
+                  020745c0    00000460     est_USsubfunc.obj (.const)
+                  02074a20    000001d0     spheres_physical_parameters.obj (.const)
+                  02074bf0    000001c8     comm_process_rx_packet.obj (.const)
+                  02074db8    00000184     pads.obj (.const)
+                  02074f3c    00000144     pads_estimator_EKF.obj (.const)
+                  02075080    0000010b     housekeeping.obj (.const)
+                  0207518b    00000001     bios.a62 : tsk.o62 (.const)
+                  0207518c    000000ff     system.obj (.const)
+                  0207528b    00000001     --HOLE-- [fill = 00000000]
+                  0207528c    000000ff     gsutil_checkout.obj (.const)
+                  0207538b    00000001     --HOLE-- [fill = 00000000]
+                  0207538c    000000ff     control.obj (.const)
+                  0207548b    00000001     --HOLE-- [fill = 00000000]
+                  0207548c    000000f0     ctrl_mix.obj (.const)
+                  0207557c    00000050     pads_convert.obj (.const)
+                  020755cc    0000004c     spheres_physical_ISS_SMARTPHONE_primary.obj (.const)
+                  02075618    00000044     comm.obj (.const)
+                  0207565c    00000038     gsp_task.obj (.const)
+                  02075694    00000021     comm_driver.obj (.const)
+                  020756b5    00000003     --HOLE-- [fill = 00000000]
+                  020756b8    00000010     exp_v2.obj (.const)
+                  020756c8    00000004     math_inv_methods.obj (.const)
+                  020756cc    00000004     comm_interrupt.obj (.const)
+                  020756d0    00000023     bios.a62 : utl_doab.o62 (.const)
+                  020756f3    00000022              : utl_doer.o62 (.const)
+                  02075715    00000004              : mem_free.o62 (.const)
+                  02075719    00000004              : mem_allo.o62 (.const)
+
+.data      0    0207571d    00000000     UNINITIALIZED
+
+.MBX_CommSTL_LO$que 
+*          0    02075720    00000c30     UNINITIALIZED
+
+.cinit     0    02076350    00004714     
+                  02076350    000031e4     flight_projectcfg.obj (.cinit)
+                  02079534    00000004     --HOLE-- [fill = 00000000]
+                  02079538    000002dc     bios.a62 : biosdata.o62 (.cinit)
+                  02079814    00000004     --HOLE-- [fill = 00000000]
+                  02079818    00000218     pads_estimator_EKF.obj (.cinit)
+                  02079a30    000001bc     housekeeping.obj (.cinit)
+                  02079bec    00000004     --HOLE-- [fill = 00000000]
+                  02079bf0    0000017c     control.obj (.cinit)
+                  02079d6c    00000004     --HOLE-- [fill = 00000000]
+                  02079d70    0000012c     fpga.obj (.cinit)
+                  02079e9c    00000004     --HOLE-- [fill = 00000000]
+                  02079ea0    0000012c     csl6701.lib : csl_irq.obj (.cinit)
+                  02079fcc    00000004     --HOLE-- [fill = 00000000]
+                  02079fd0    0000011c     pads.obj (.cinit)
+                  0207a0ec    00000004     --HOLE-- [fill = 00000000]
+                  0207a0f0    00000114     comm.obj (.cinit)
+                  0207a204    00000004     --HOLE-- [fill = 00000000]
+                  0207a208    000000bc     comm_process_rx_packet.obj (.cinit)
+                  0207a2c4    00000004     --HOLE-- [fill = 00000000]
+                  0207a2c8    000000a8     bios.a62 : knl.o62 (.cinit)
+                  0207a370    0000007c     system.obj (.cinit)
+                  0207a3ec    00000004     --HOLE-- [fill = 00000000]
+                  0207a3f0    00000078     prop.obj (.cinit)
+                  0207a468    00000068     rts6700.lib : acos.obj (.cinit)
+                  0207a4d0    0000005c     main.obj (.cinit)
+                  0207a52c    00000004     --HOLE-- [fill = 00000000]
+                  0207a530    0000005c     comm_driver.obj (.cinit)
+                  0207a58c    00000004     --HOLE-- [fill = 00000000]
+                  0207a590    00000050     est_USsubfunc.obj (.cinit)
+                  0207a5e0    0000004c     csl6701.lib : csl_timer.obj (.cinit)
+                  0207a62c    00000004     --HOLE-- [fill = 00000000]
+                  0207a630    0000004c     bios.a62 : tsk.o62 (.cinit)
+                  0207a67c    00000004     --HOLE-- [fill = 00000000]
+                  0207a680    00000049     gsp.obj (.cinit)
+                  0207a6c9    00000007     --HOLE-- [fill = 00000000]
+                  0207a6d0    00000048     bios.a62 : knl.o62 (.cinit:c)
+                  0207a718    00000044     gsutil_checkout.obj (.cinit)
+                  0207a75c    00000004     --HOLE-- [fill = 00000000]
+                  0207a760    0000003c     spheres_physical_ISS_SMARTPHONE_primary.obj (.cinit)
+                  0207a79c    00000004     --HOLE-- [fill = 00000000]
+                  0207a7a0    0000003c     csl6701.lib : csl.obj (.cinit)
+                  0207a7dc    00000004     --HOLE-- [fill = 00000000]
+                  0207a7e0    0000003c     comm_interrupt.obj (.cinit)
+                  0207a81c    00000004     --HOLE-- [fill = 00000000]
+                  0207a820    0000003c     comm_background.obj (.cinit)
+                  0207a85c    00000004     --HOLE-- [fill = 00000000]
+                  0207a860    0000002c     gsp_task.obj (.cinit)
+                  0207a88c    00000004     --HOLE-- [fill = 00000000]
+                  0207a890    0000002c     exp_v2.obj (.cinit)
+                  0207a8bc    00000004     --HOLE-- [fill = 00000000]
+                  0207a8c0    0000002c     ctrl_position.obj (.cinit)
+                  0207a8ec    00000004     --HOLE-- [fill = 00000000]
+                  0207a8f0    0000002c     ctrl_attitude.obj (.cinit)
+                  0207a91c    00000004     --HOLE-- [fill = 00000000]
+                  0207a920    0000002c     bios.a62 : utl_putc.o62 (.cinit)
+                  0207a94c    00000004     --HOLE-- [fill = 00000000]
+                  0207a950    0000002c              : tsk_stup.o62 (.cinit)
+                  0207a97c    00000004     --HOLE-- [fill = 00000000]
+                  0207a980    0000001c     rts6700.lib : _lock.obj (.cinit)
+                  0207a99c    00000004     --HOLE-- [fill = 00000000]
+                  0207a9a0    0000001c     bios.a62 : hwi.o62 (.cinit)
+                  0207a9bc    00000004     --HOLE-- [fill = 00000000]
+                  0207a9c0    00000018     rts6700.lib : sinf.obj (.cinit)
+                  0207a9d8    00000018     bios.a62 : knl_tick.o62 (.cinit)
+                  0207a9f0    00000010              : tsk.o62 (.cinit:c)
+                  0207aa00    00000010              : sys.o62 (.cinit:c)
+                  0207aa10    00000010              : gbl.o62 (.cinit:c)
+                  0207aa20    00000010              : clk_start6x.o62 (.cinit)
+                  0207aa30    0000000c     rts6700.lib : errno.obj (.cinit)
+                  0207aa3c    00000004     --HOLE-- [fill = 00000000]
+                  0207aa40    0000000c     ctrl_mix.obj (.cinit)
+                  0207aa4c    00000004     --HOLE-- [fill = 00000000]
+                  0207aa50    0000000c     bios.a62 : knl_swit.o62 (.cinit)
+                  0207aa5c    00000008     --HOLE-- [fill = 00000000]
+
+.MBX_CommSTS_LO$que 
+*          0    0207aa64    00000c30     UNINITIALIZED
+
+.MBX_Task_Triggers$que 
+*          0    0207b694    00000280     UNINITIALIZED
+
+.MBX_Estimator$que 
+*          0    0207b914    000055f0     UNINITIALIZED
+
+.pip1      0    02080f04    00033000     UNINITIALIZED
+                  02080f04    00033000     flight_projectcfg.obj (.pip1)
+
+.TSK_bkg_flash_write$stk 
+*          0    020b3f08    00000400     UNINITIALIZED
+                  020b3f08    00000400     flight_projectcfg.obj (.TSK_bkg_flash_write$stk)
+
+.sysinit   0    020b4320    00000300     
+                  020b4320    00000220     flight_projectcfg.obj (.sysinit)
+                  020b4540    000000e0     bios.a62 : boot.o62 (.sysinit)
+
+.TSK_gsp_task$stk 
+*          0    020b4620    00007d00     UNINITIALIZED
+                  020b4620    00007d00     flight_projectcfg.obj (.TSK_gsp_task$stk)
+
+.SDRAM$heap 
+*          0    020bc320    00600000     UNINITIALIZED
+
+.switch    0    026bc320    00000020     
+                  026bc320    00000020     housekeeping.obj (.switch)
+
+.clk       0    80000000    0000000c     UNINITIALIZED
+                  80000000    0000000c     flight_projectcfg.obj (.clk)
+
+.prd       0    8000000c    00000060     UNINITIALIZED
+                  8000000c    00000060     flight_projectcfg.obj (.prd)
+
+.swi       0    8000006c    000000dc     UNINITIALIZED
+                  8000006c    000000dc     flight_projectcfg.obj (.swi)
+
+.idl       0    80000148    00000008     UNINITIALIZED
+                  80000148    00000004     flight_projectcfg.obj (.idl)
+                  8000014c    00000004     flight_projectcfg.obj (.idlcal)
+
+.sysdata   0    80000150    00000000     UNINITIALIZED
+
+.args      0    80000150    00000004     
+                  80000150    00000000     bios.a62 : boot.o62 (.args)
+                  80000150    00000004     --HOLE-- [fill = 00000000]
+
+.trcdata   0    80000154    0000000c     
+                  80000154    0000000c     flight_projectcfg.obj (.trcdata)
+
+.trace     0    80000160    00000200     
+                  80000160    00000200     --HOLE-- [fill = 00000000]
+
+.mem       0    80000360    00000004     UNINITIALIZED
+                  80000360    00000004     flight_projectcfg.obj (.mem)
+
+.sys       0    80000364    00000010     UNINITIALIZED
+                  80000364    00000010     flight_projectcfg.obj (.sys)
+
+.sysregs   0    80000374    00000000     UNINITIALIZED
+
+.sts       0    80000374    00000080     
+                  80000374    00000080     flight_projectcfg.obj (.sts)
+
+.MBX_CommEXPv2$que 
+*          0    800003f4    000051e0     UNINITIALIZED
+
+.MBX_CommSTS_HI$que 
+*          0    800055d4    00000c30     UNINITIALIZED
+
+.MBX_CommSTL_HI$que 
+*          0    80006204    00000c30     UNINITIALIZED
+
+.mbx       0    80006e34    000002a0     UNINITIALIZED
+                  80006e34    000002a0     flight_projectcfg.obj (.mbx)
+
+.sem       0    800070d4    00000140     UNINITIALIZED
+                  800070d4    00000140     flight_projectcfg.obj (.sem)
+
+.pip0      0    80007214    00000128     UNINITIALIZED
+                  80007214    00000128     flight_projectcfg.obj (.pip0)
+
+.pip       0    8000733c    000000c8     UNINITIALIZED
+                  8000733c    000000c8     flight_projectcfg.obj (.pip)
+
+.log       0    80007404    00000030     
+                  80007404    00000030     flight_projectcfg.obj (.log)
+
+.dsm       0    80007434    00000000     UNINITIALIZED
+
+.gio       0    80007434    00000000     UNINITIALIZED
+
+.hst       0    80007434    00000000     UNINITIALIZED
+
+.TSK_cp_monitor$stk 
+*          0    80007438    00000080     UNINITIALIZED
+                  80007438    00000080     flight_projectcfg.obj (.TSK_cp_monitor$stk)
+
+.LOG_system$buf 
+*          0    80007500    00000100     
+                  80007500    00000100     flight_projectcfg.obj (.LOG_system$buf) [fill = ffffffff]
+
+.printf    0    80007600    00000000     COPY SECTION
+
+.trace$buf 
+*          0    80007800    00000400     
+                  80007800    00000400     flight_projectcfg.obj (.trace$buf) [fill = ffffffff]
+
+.TSK_datacomm_STS$stk 
+*          0    80007c00    00000400     UNINITIALIZED
+                  80007c00    00000400     flight_projectcfg.obj (.TSK_datacomm_STS$stk)
+
+.tsk       0    80008000    00000300     UNINITIALIZED
+                  80008000    00000300     flight_projectcfg.obj (.tsk)
+
+.TSK_idle$stk 
+*          0    80008300    00000400     UNINITIALIZED
+                  80008300    00000400     flight_projectcfg.obj (.TSK_idle$stk)
+
+.TSK_datacomm_STL$stk 
+*          0    80008700    00000400     UNINITIALIZED
+                  80008700    00000400     flight_projectcfg.obj (.TSK_datacomm_STL$stk)
+
+
+GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name 
+
+address    name
+--------   ----
+02048000   $bss
+02048000   .bss
+0207571d   .data
+0204dc00   .text
+020b4320   BIOS_init
+020b44ac   BIOS_start
+00000001   CLK$
+80000000   CLK_A_TABBEG
+8000000c   CLK_A_TABEND
+0000000c   CLK_A_TABLEN
+0000a2c3   CLK_COUNTSPMS
+00000000   CLK_COUNTSPMSHIGH
+02048cac   CLK_D_idletime
+02048ca8   CLK_D_isrhook
+02048ca4   CLK_D_tabbeg
+02048ca0   CLK_D_timefxn
+000021c0   CLK_F_getfhtime
+000021e0   CLK_F_gethtime
+00002254   CLK_F_getltime
+000021e0   CLK_F_getshtime
+00002260   CLK_F_isr
+0000239c   CLK_F_itime
+00000f00   CLK_HOOKFXN
+00004000   CLK_INTBIT
+0000a2c3   CLK_PRD
+01940000   CLK_REGS
+02048c9c   CLK_R_time
+00000020   CLK_TCR
+00000000   CLK_TDDR
+000021e0   CLK_TIMEFXN
+00000000   CLK_TIMERNUM
+00000001   CLK_USETIMER
+80000008   CLK_null
+80000004   Comm_TDMA_Mgr
+8000000c   Control_Dispatch
+80000028   Control_Dispatch$aaa
+80000378   Control_Dispatch$sts
+80000374   Control_Dispatch$sts$stsobj
+8000011c   Controller
+800003e8   Controller$sts
+800003e4   Controller$sts$stsobj
+00000000   DEV$
+00000000   DGN$
+00000000   DHL$
+00000000   DHL_gChannelsAvailable
+00000000   DIO$
+00000000   DIO_NUMSWIBASE
+00000000   DIO_NUMTSKBASE
+00000000   DIO_STATIC
+00000000   DPI$
+00003700   FXN_F_nop
+00003708   FXN_F_run
+00003758   FXN_F_zero
+8000002c   FastHousekeeping
+80000048   FastHousekeeping$aaa
+80000388   FastHousekeeping$sts
+80000384   FastHousekeeping$sts$stsobj
+00000001   GBL$
+00000000   GBL_BIGENDIAN
+00000000   GBL_C641XL2PRIORITY
+00000000   GBL_CACHE
+00000001   GBL_CALLCSLCFGINIT
+00000000   GBL_ENABLEINST
+00000042   GBL_FOOTPRINT
+00003ca0   GBL_F_version
+00002226   GBL_L2ALLOC
+00000000   GBL_L2CONFIGALLOC
+00000000   GBL_L2CONFIGURE
+00000000   GBL_L2MARMASK
+00000000   GBL_L2MARMASK1
+00000000   GBL_L2MARMASK2
+00000000   GBL_L2MARMASK3
+00000000   GBL_L2MARMASK4
+00000000   GBL_L2MARMASK5
+00000000   GBL_L2MODE
+00000000   GBL_L2PRIORITY
+00000000   GBL_NULL
+00000000   GBL_ROM
+00000001   GBL_SUPPORTCSL
+00004000   GBL_TRCMASKVALUE
+00000000   GBL_USERINIT
+00003cc0   GBL_USERINITFXN
+00000001   GBL_boot
+8000015c   GBL_initdone
+00400000   GBL_stackbeg
+00407fff   GBL_stackend
+00000000   GIO$
+00003cc0   GIO_CREATEFXN
+00003cc0   GIO_DELETEFXN
+00003cc0   GIO_PENDFXN
+00003cc0   GIO_POSTFXN
+00000000   HOOK$
+00000000   HOOK_KNLID
+00000000   HST$
+80007434   HST_A_TABBEG
+80007434   HST_A_TABEND
+00000000   HST_A_TABLEN
+00000000   HST_DSM
+ffffffff   HST_DSMBUFSEG
+00000400   HST_DSMMEMSIZE
+02048d9c   HST_D_chanmask
+00000100   HST_MAXFRAMEALLOWED
+00000000   HST_MAXFRAMESET
+00000001   HST_NONE
+00000000   HST_RTDX
+00000001   HWI$
+00000000   HWI_A_VECS
+02049074   HWI_D_ccmask
+00000f00   HWI_F_dispatch
+00000000   HWI_GENERATE_RESET_VEC
+0000000a   HWI_INT10
+0000000b   HWI_INT11
+0000000c   HWI_INT12
+0000000d   HWI_INT13
+0000000e   HWI_INT14
+0000000f   HWI_INT15
+00000004   HWI_INT4
+00000005   HWI_INT5
+00000006   HWI_INT6
+00000007   HWI_INT7
+00000008   HWI_INT8
+00000009   HWI_INT9
+082039a3   HWI_INTRMULTHIGH
+250718a4   HWI_INTRMULTLOW
+00000001   HWI_NMI
+00000001   HWI_POLARITYMASK
+00000002   HWI_RESERVED0
+00000003   HWI_RESERVED1
+00000000   HWI_RESET
+00000001   HWI_ZEROTAB
+00000000   IDL$
+8000014c   IDL_A_CALBEG
+80000150   IDL_A_CALEND
+00000000   IDL_A_CALLEN
+80000148   IDL_A_TABBEG
+8000014c   IDL_A_TABEND
+00000000   IDL_A_TABLEN
+00000000   IDL_CALIBRFXN
+02048c8c   IDL_D_calbeg
+02048c88   IDL_D_calibrate
+02048c84   IDL_D_tabbeg
+80000148   IDL_END
+8000014c   IDL_END$
+00003c80   IDL_F_loop
+00000000   IDL_USECLKIDLTIME
+ffffffff   IDRAM
+ffffffff   IPRAM
+00000001   ISRC$
+00002760   KNL_glue
+80000098   KNL_swi
+800003b8   KNL_swi$sts
+800003b4   KNL_swi$sts$stsobj
+00000001   LCK$
+00000001   LOG$
+80007404   LOG_A_TABBEG
+80007434   LOG_A_TABEND
+00000002   LOG_A_TABLEN
+02048c90   LOG_D_system
+00000001   LOG_ENABLED
+00003580   LOG_F_event
+80007404   LOG_system
+80007500   LOG_system$buf
+00000040   LOG_system$size
+00000001   MBX$
+80007080   MBX_CommEXPv2
+80007090   MBX_CommEXPv2$data
+800070ac   MBX_CommEXPv2$free
+800003f4   MBX_CommEXPv2$queElems
+80006ea0   MBX_CommSTL_HI
+80006eb0   MBX_CommSTL_HI$data
+80006ecc   MBX_CommSTL_HI$free
+80006204   MBX_CommSTL_HI$queElems
+80006e40   MBX_CommSTL_LO
+80006e50   MBX_CommSTL_LO$data
+80006e6c   MBX_CommSTL_LO$free
+02075720   MBX_CommSTL_LO$queElems
+80006f00   MBX_CommSTS_HI
+80006f10   MBX_CommSTS_HI$data
+80006f2c   MBX_CommSTS_HI$free
+800055d4   MBX_CommSTS_HI$queElems
+80006f60   MBX_CommSTS_LO
+80006f70   MBX_CommSTS_LO$data
+80006f8c   MBX_CommSTS_LO$free
+0207aa64   MBX_CommSTS_LO$queElems
+80007020   MBX_Estimator
+80007030   MBX_Estimator$data
+8000704c   MBX_Estimator$free
+0207b914   MBX_Estimator$queElems
+80006fc0   MBX_Task_Triggers
+80006fd0   MBX_Task_Triggers$data
+80006fec   MBX_Task_Triggers$free
+0207b694   MBX_Task_Triggers$queElems
+00000001   MEM$
+02048010   MEM_MALLOCSEG
+00000000   MEM_NULL
+02048010   MEM_SEGZERO
+00000001   MEM_gNumHeap
+00000000   OBJ$
+800000f0   PADS
+800003d8   PADS$sts
+800003d4   PADS$sts$stsobj
+00000001   PIP$
+8000733c   PIP_A_TABBEG
+80007404   PIP_A_TABEND
+00000002   PIP_A_TABLEN
+02048c94   PIP_D_tabbeg
+02048c98   PIP_D_tablen
+00001e14   PIP_F_give
+00001e14   PIP_F_probe
+00001ee8   PIP_F_start
+00001d80   PIP_F_take
+800073a0   PIP_comm_RX
+800073d0   PIP_comm_RX$aaa
+80007400   PIP_comm_RX$bbb
+02080f04   PIP_comm_RX$buf0
+02081234   PIP_comm_RX$buf1
+02082ee4   PIP_comm_RX$buf10
+02094dc4   PIP_comm_RX$buf100
+020950f4   PIP_comm_RX$buf101
+02095424   PIP_comm_RX$buf102
+02095754   PIP_comm_RX$buf103
+02095a84   PIP_comm_RX$buf104
+02095db4   PIP_comm_RX$buf105
+020960e4   PIP_comm_RX$buf106
+02096414   PIP_comm_RX$buf107
+02096744   PIP_comm_RX$buf108
+02096a74   PIP_comm_RX$buf109
+02083214   PIP_comm_RX$buf11
+02096da4   PIP_comm_RX$buf110
+020970d4   PIP_comm_RX$buf111
+02097404   PIP_comm_RX$buf112
+02097734   PIP_comm_RX$buf113
+02097a64   PIP_comm_RX$buf114
+02097d94   PIP_comm_RX$buf115
+020980c4   PIP_comm_RX$buf116
+020983f4   PIP_comm_RX$buf117
+02098724   PIP_comm_RX$buf118
+02098a54   PIP_comm_RX$buf119
+02083544   PIP_comm_RX$buf12
+02098d84   PIP_comm_RX$buf120
+020990b4   PIP_comm_RX$buf121
+020993e4   PIP_comm_RX$buf122
+02099714   PIP_comm_RX$buf123
+02099a44   PIP_comm_RX$buf124
+02099d74   PIP_comm_RX$buf125
+0209a0a4   PIP_comm_RX$buf126
+0209a3d4   PIP_comm_RX$buf127
+0209a704   PIP_comm_RX$buf128
+0209aa34   PIP_comm_RX$buf129
+02083874   PIP_comm_RX$buf13
+0209ad64   PIP_comm_RX$buf130
+0209b094   PIP_comm_RX$buf131
+0209b3c4   PIP_comm_RX$buf132
+0209b6f4   PIP_comm_RX$buf133
+0209ba24   PIP_comm_RX$buf134
+0209bd54   PIP_comm_RX$buf135
+0209c084   PIP_comm_RX$buf136
+0209c3b4   PIP_comm_RX$buf137
+0209c6e4   PIP_comm_RX$buf138
+0209ca14   PIP_comm_RX$buf139
+02083ba4   PIP_comm_RX$buf14
+0209cd44   PIP_comm_RX$buf140
+0209d074   PIP_comm_RX$buf141
+0209d3a4   PIP_comm_RX$buf142
+0209d6d4   PIP_comm_RX$buf143
+0209da04   PIP_comm_RX$buf144
+0209dd34   PIP_comm_RX$buf145
+0209e064   PIP_comm_RX$buf146
+0209e394   PIP_comm_RX$buf147
+0209e6c4   PIP_comm_RX$buf148
+0209e9f4   PIP_comm_RX$buf149
+02083ed4   PIP_comm_RX$buf15
+0209ed24   PIP_comm_RX$buf150
+0209f054   PIP_comm_RX$buf151
+0209f384   PIP_comm_RX$buf152
+0209f6b4   PIP_comm_RX$buf153
+0209f9e4   PIP_comm_RX$buf154
+0209fd14   PIP_comm_RX$buf155
+020a0044   PIP_comm_RX$buf156
+020a0374   PIP_comm_RX$buf157
+020a06a4   PIP_comm_RX$buf158
+020a09d4   PIP_comm_RX$buf159
+02084204   PIP_comm_RX$buf16
+020a0d04   PIP_comm_RX$buf160
+020a1034   PIP_comm_RX$buf161
+020a1364   PIP_comm_RX$buf162
+020a1694   PIP_comm_RX$buf163
+020a19c4   PIP_comm_RX$buf164
+020a1cf4   PIP_comm_RX$buf165
+020a2024   PIP_comm_RX$buf166
+020a2354   PIP_comm_RX$buf167
+020a2684   PIP_comm_RX$buf168
+020a29b4   PIP_comm_RX$buf169
+02084534   PIP_comm_RX$buf17
+020a2ce4   PIP_comm_RX$buf170
+020a3014   PIP_comm_RX$buf171
+020a3344   PIP_comm_RX$buf172
+020a3674   PIP_comm_RX$buf173
+020a39a4   PIP_comm_RX$buf174
+020a3cd4   PIP_comm_RX$buf175
+020a4004   PIP_comm_RX$buf176
+020a4334   PIP_comm_RX$buf177
+020a4664   PIP_comm_RX$buf178
+020a4994   PIP_comm_RX$buf179
+02084864   PIP_comm_RX$buf18
+020a4cc4   PIP_comm_RX$buf180
+020a4ff4   PIP_comm_RX$buf181
+020a5324   PIP_comm_RX$buf182
+020a5654   PIP_comm_RX$buf183
+020a5984   PIP_comm_RX$buf184
+020a5cb4   PIP_comm_RX$buf185
+020a5fe4   PIP_comm_RX$buf186
+020a6314   PIP_comm_RX$buf187
+020a6644   PIP_comm_RX$buf188
+020a6974   PIP_comm_RX$buf189
+02084b94   PIP_comm_RX$buf19
+020a6ca4   PIP_comm_RX$buf190
+020a6fd4   PIP_comm_RX$buf191
+020a7304   PIP_comm_RX$buf192
+020a7634   PIP_comm_RX$buf193
+020a7964   PIP_comm_RX$buf194
+020a7c94   PIP_comm_RX$buf195
+020a7fc4   PIP_comm_RX$buf196
+020a82f4   PIP_comm_RX$buf197
+020a8624   PIP_comm_RX$buf198
+020a8954   PIP_comm_RX$buf199
+02081564   PIP_comm_RX$buf2
+02084ec4   PIP_comm_RX$buf20
+020a8c84   PIP_comm_RX$buf200
+020a8fb4   PIP_comm_RX$buf201
+020a92e4   PIP_comm_RX$buf202
+020a9614   PIP_comm_RX$buf203
+020a9944   PIP_comm_RX$buf204
+020a9c74   PIP_comm_RX$buf205
+020a9fa4   PIP_comm_RX$buf206
+020aa2d4   PIP_comm_RX$buf207
+020aa604   PIP_comm_RX$buf208
+020aa934   PIP_comm_RX$buf209
+020851f4   PIP_comm_RX$buf21
+020aac64   PIP_comm_RX$buf210
+020aaf94   PIP_comm_RX$buf211
+020ab2c4   PIP_comm_RX$buf212
+020ab5f4   PIP_comm_RX$buf213
+020ab924   PIP_comm_RX$buf214
+020abc54   PIP_comm_RX$buf215
+020abf84   PIP_comm_RX$buf216
+020ac2b4   PIP_comm_RX$buf217
+020ac5e4   PIP_comm_RX$buf218
+020ac914   PIP_comm_RX$buf219
+02085524   PIP_comm_RX$buf22
+020acc44   PIP_comm_RX$buf220
+020acf74   PIP_comm_RX$buf221
+020ad2a4   PIP_comm_RX$buf222
+020ad5d4   PIP_comm_RX$buf223
+020ad904   PIP_comm_RX$buf224
+020adc34   PIP_comm_RX$buf225
+020adf64   PIP_comm_RX$buf226
+020ae294   PIP_comm_RX$buf227
+020ae5c4   PIP_comm_RX$buf228
+020ae8f4   PIP_comm_RX$buf229
+02085854   PIP_comm_RX$buf23
+020aec24   PIP_comm_RX$buf230
+020aef54   PIP_comm_RX$buf231
+020af284   PIP_comm_RX$buf232
+020af5b4   PIP_comm_RX$buf233
+020af8e4   PIP_comm_RX$buf234
+020afc14   PIP_comm_RX$buf235
+020aff44   PIP_comm_RX$buf236
+020b0274   PIP_comm_RX$buf237
+020b05a4   PIP_comm_RX$buf238
+020b08d4   PIP_comm_RX$buf239
+02085b84   PIP_comm_RX$buf24
+020b0c04   PIP_comm_RX$buf240
+020b0f34   PIP_comm_RX$buf241
+020b1264   PIP_comm_RX$buf242
+020b1594   PIP_comm_RX$buf243
+020b18c4   PIP_comm_RX$buf244
+020b1bf4   PIP_comm_RX$buf245
+020b1f24   PIP_comm_RX$buf246
+020b2254   PIP_comm_RX$buf247
+020b2584   PIP_comm_RX$buf248
+020b28b4   PIP_comm_RX$buf249
+02085eb4   PIP_comm_RX$buf25
+020b2be4   PIP_comm_RX$buf250
+020b2f14   PIP_comm_RX$buf251
+020b3244   PIP_comm_RX$buf252
+020b3574   PIP_comm_RX$buf253
+020b38a4   PIP_comm_RX$buf254
+020b3bd4   PIP_comm_RX$buf255
+020861e4   PIP_comm_RX$buf26
+02086514   PIP_comm_RX$buf27
+02086844   PIP_comm_RX$buf28
+02086b74   PIP_comm_RX$buf29
+02081894   PIP_comm_RX$buf3
+02086ea4   PIP_comm_RX$buf30
+020871d4   PIP_comm_RX$buf31
+02087504   PIP_comm_RX$buf32
+02087834   PIP_comm_RX$buf33
+02087b64   PIP_comm_RX$buf34
+02087e94   PIP_comm_RX$buf35
+020881c4   PIP_comm_RX$buf36
+020884f4   PIP_comm_RX$buf37
+02088824   PIP_comm_RX$buf38
+02088b54   PIP_comm_RX$buf39
+02081bc4   PIP_comm_RX$buf4
+02088e84   PIP_comm_RX$buf40
+020891b4   PIP_comm_RX$buf41
+020894e4   PIP_comm_RX$buf42
+02089814   PIP_comm_RX$buf43
+02089b44   PIP_comm_RX$buf44
+02089e74   PIP_comm_RX$buf45
+0208a1a4   PIP_comm_RX$buf46
+0208a4d4   PIP_comm_RX$buf47
+0208a804   PIP_comm_RX$buf48
+0208ab34   PIP_comm_RX$buf49
+02081ef4   PIP_comm_RX$buf5
+0208ae64   PIP_comm_RX$buf50
+0208b194   PIP_comm_RX$buf51
+0208b4c4   PIP_comm_RX$buf52
+0208b7f4   PIP_comm_RX$buf53
+0208bb24   PIP_comm_RX$buf54
+0208be54   PIP_comm_RX$buf55
+0208c184   PIP_comm_RX$buf56
+0208c4b4   PIP_comm_RX$buf57
+0208c7e4   PIP_comm_RX$buf58
+0208cb14   PIP_comm_RX$buf59
+02082224   PIP_comm_RX$buf6
+0208ce44   PIP_comm_RX$buf60
+0208d174   PIP_comm_RX$buf61
+0208d4a4   PIP_comm_RX$buf62
+0208d7d4   PIP_comm_RX$buf63
+0208db04   PIP_comm_RX$buf64
+0208de34   PIP_comm_RX$buf65
+0208e164   PIP_comm_RX$buf66
+0208e494   PIP_comm_RX$buf67
+0208e7c4   PIP_comm_RX$buf68
+0208eaf4   PIP_comm_RX$buf69
+02082554   PIP_comm_RX$buf7
+0208ee24   PIP_comm_RX$buf70
+0208f154   PIP_comm_RX$buf71
+0208f484   PIP_comm_RX$buf72
+0208f7b4   PIP_comm_RX$buf73
+0208fae4   PIP_comm_RX$buf74
+0208fe14   PIP_comm_RX$buf75
+02090144   PIP_comm_RX$buf76
+02090474   PIP_comm_RX$buf77
+020907a4   PIP_comm_RX$buf78
+02090ad4   PIP_comm_RX$buf79
+02082884   PIP_comm_RX$buf8
+02090e04   PIP_comm_RX$buf80
+02091134   PIP_comm_RX$buf81
+02091464   PIP_comm_RX$buf82
+02091794   PIP_comm_RX$buf83
+02091ac4   PIP_comm_RX$buf84
+02091df4   PIP_comm_RX$buf85
+02092124   PIP_comm_RX$buf86
+02092454   PIP_comm_RX$buf87
+02092784   PIP_comm_RX$buf88
+02092ab4   PIP_comm_RX$buf89
+02082bb4   PIP_comm_RX$buf9
+02092de4   PIP_comm_RX$buf90
+02093114   PIP_comm_RX$buf91
+02093444   PIP_comm_RX$buf92
+02093774   PIP_comm_RX$buf93
+02093aa4   PIP_comm_RX$buf94
+02093dd4   PIP_comm_RX$buf95
+02094104   PIP_comm_RX$buf96
+02094434   PIP_comm_RX$buf97
+02094764   PIP_comm_RX$buf98
+02094a94   PIP_comm_RX$buf99
+0204802c   PIP_comm_RX$dtab
+800073a4   PIP_comm_RX$rd
+800073d4   PIP_comm_RX$wr
+8000733c   PIP_comm_TX
+8000736c   PIP_comm_TX$aaa
+8000739c   PIP_comm_TX$bbb
+80007214   PIP_comm_TX$buf0
+800072a8   PIP_comm_TX$buf1
+02048014   PIP_comm_TX$dtab
+80007340   PIP_comm_TX$rd
+80007370   PIP_comm_TX$wr
+00000002   PIP_gNextId
+00000000   PIP_gNumEmbed
+00000001   PRD$
+8000000c   PRD_A_TABBEG
+8000006c   PRD_A_TABEND
+00000003   PRD_A_TABLEN
+02048d58   PRD_D_cur
+02048d5c   PRD_D_elapsed
+02048d60   PRD_D_prevtim
+02048d64   PRD_D_scalar
+02048d68   PRD_D_swihandle
+02048d6c   PRD_D_tabbeg
+02048d70   PRD_D_tablen
+02048d74   PRD_D_thook
+02048d54   PRD_D_tick
+00001320   PRD_F_swi
+0000157c   PRD_F_tick
+00000001   PRD_SCALAR
+8000006c   PRD_SWIHANDLE
+00002c10   PRD_THOOKFXN
+8000006c   PRD_swi
+800003a8   PRD_swi$sts
+800003a4   PRD_swi$sts$stsobj
+80000000   Propulsion
+00000001   QUE$
+02048d78   RTA_D_fromHost
+02048d80   RTA_D_logval
+02048d90   RTA_D_stsval
+02048d7c   RTA_D_toHost
+00000000   RTDX$
+00000408   RTDX_BUFMEMSIZE
+ffffffff   RTDX_DATAMEMSEG
+00000000   RTDX_USERTDX
+00000000   RTDX_USERTEXECUTION
+ffffffff   SBSRAM
+02048010   SDRAM
+020bc320   SDRAM$B
+00600000   SDRAM$L
+00000001   SEM$
+80007108   SEM_Comm_Activity
+80007130   SEM_Comm_TX_enable_STL
+800070e0   SEM_Comm_TX_enable_STS
+800071a8   SEM_datacomm_STL
+800071f8   SEM_datacomm_STS
+80007180   SEM_global_pads_request
+80007158   SEM_gsp_task
+800071d0   SEM_update_flash
+00000000   SIO$
+00000000   STS$
+80000374   STS_A_TABBEG
+80000374   STS_A_TABEND
+00000000   STS_A_TABLEN
+00003990   STS_F_add
+00003980   STS_F_delta
+000039bc   STS_F_reset
+00000001   SWI$
+8000006c   SWI_A_TABBEG
+80000148   SWI_A_TABEND
+00000005   SWI_A_TABLEN
+02048cbc   SWI_D_curfxn
+02048cb0   SWI_D_curmask
+02048cc0   SWI_D_curmbox
+02048cb4   SWI_D_curset
+02048cd8   SWI_D_ehook
+02048cc8   SWI_D_execaddr
+02048cd4   SWI_D_ihook
+02048cc4   SWI_D_lock
+02048cb8   SWI_D_pending
+02048cd0   SWI_D_rdybeg
+02048cdc   SWI_D_rdytab
+02048ccc   SWI_D_runaddr
+00000000   SWI_EHOOKFXN
+0000069c   SWI_EXECFXN
+00000400   SWI_F_enable
+00000624   SWI_F_exec
+0000069c   SWI_F_iexec
+0000048c   SWI_F_post
+00000870   SWI_F_run
+00000000   SWI_IHOOKFXN
+00000870   SWI_RUNFXN
+00000001   SYS$
+80000364   SYS$config
+00003860   SYS_ABORTFXN
+00003c40   SYS_ERRORFXN
+00003c20   SYS_EXITFXN
+00003800   SYS_PUTCFXN
+80000158   TRC_R_mask
+80000154   TRC_cinit
+00000001   TSK$
+00000000   TSK_NUM_HOOKS
+00000001   TSK_PRIORITY
+00000000   TSK_READYFXN
+00000000   TSK_STACKSEG
+00000400   TSK_STACKSIZE
+00000000   TSK_SWITCHFXN
+00003cc0   TSK_VCREATEFXN
+00003cc0   TSK_VDELETEFXN
+00003cc0   TSK_VEXITFXN
+8000818c   TSK_bkg_flash_write
+020b3f08   TSK_bkg_flash_write$stack
+020b42a0   TSK_bkg_flash_write$stkptr
+8000806c   TSK_comm_mgr
+0206c8c0   TSK_comm_mgr$stack
+02074558   TSK_comm_mgr$stkptr
+800081ec   TSK_cp_monitor
+80007438   TSK_cp_monitor$stack
+80007450   TSK_cp_monitor$stkptr
+8000812c   TSK_datacomm_STL
+80008700   TSK_datacomm_STL$stack
+80008a98   TSK_datacomm_STL$stkptr
+8000824c   TSK_datacomm_STS
+80007c00   TSK_datacomm_STS$stack
+80007f98   TSK_datacomm_STS$stkptr
+800082ac   TSK_estimator
+0204b400   TSK_estimator$stack
+0204db98   TSK_estimator$stkptr
+800080cc   TSK_gsp_task
+020b4620   TSK_gsp_task$stack
+020bc2b8   TSK_gsp_task$stkptr
+8000800c   TSK_idle
+80008300   TSK_idle$stack
+80008698   TSK_idle$stkptr
+8000004c   Telemetry
+80000068   Telemetry$aaa
+80000398   Telemetry$sts
+80000394   Telemetry$sts$stsobj
+00000000   UDEV$
+ffffffff   VECS
+0204b200   _A2D_Accel
+0204b1fc   _A2D_Gyros
+0204b1f0   _A2D_ptr
+02075694   _ACK_CHAR
+02075624   _ANGULAR_RATE_SCALE
+000034e0   _ATM_andi
+000034e0   _ATM_andu
+00003500   _ATM_cleari
+00003500   _ATM_clearu
+00003518   _ATM_deci
+00003518   _ATM_decu
+00003534   _ATM_inci
+00003534   _ATM_incu
+00003550   _ATM_ori
+00003550   _ATM_oru
+0000356c   _ATM_seti
+0000356c   _ATM_setu
+02074a2c   _AVG_MASS_LOSS
+020b4320   _BIOS_init
+020b44ac   _BIOS_start
+0206c860   _BranchTo
+02074a30   _CAD_BATTERY_MASS
+02074a94   _CAD_CM_DRY
+02074a88   _CAD_CM_WET
+02074a20   _CAD_DRY_MASS
+02074a28   _CAD_FUEL_MASS
+02074a38   _CAD_INERTIA
+02074a5c   _CAD_INERTIA_INV
+02074a24   _CAD_TANK_MASS
+02074ad0   _CAD_THRUST_DIRECTION
+02074b60   _CAD_THRUST_LOCATIONS
+02074aa0   _CAD_THRUST_STRENGTH
+02074a80   _CARRIAGE_INERTIA
+02074a34   _CARRIAGE_MASS
+0000a2c3   _CLK_COUNTSPMS
+0000239c   _CLK_F_itime
+0000a2c3   _CLK_PRD
+01940000   _CLK_REGS
+00000000   _CLK_TDDR
+02062f78   _CLK_TDMA_manager
+00000000   _CLK_TIMERNUM
+00000001   _CLK_USETIMER
+00003ce0   _CLK_getltime
+0000239c   _CLK_itime
+00003780   _CLK_start
+00003780   _CLK_start6x
+02075688   _COMM_GSP_TRIG
+0206c880   _CSL_cfgInit
+0207565c   _CTRL_DONE_TRIG
+020626c4   _CheckForPacket
+80000004   _Comm_TDMA_Mgr
+8000000c   _Control_Dispatch
+8000011c   _Controller
+02075668   _DATA_RX_DONE_TRIG
+02075664   _DATA_TX_DONE_TRIG
+020755e8   _DEFAULT_THRUSTER_FORCE
+020755d0   _DOCK_MECHANISM_PRESENT
+0204b1e0   _Din_ptr
+0204b1dc   _Dout_ptr
+0204b1e8   _FPGA_ctrl_ptr
+0204b1f4   _FPGA_ram1_ptr
+0204b1f8   _FPGA_ram2_ptr
+0204b1ec   _FPGA_stat_ptr
+0204b210   _FPGA_ver_ptr
+00003cc0   _FXN_F_nop
+00003708   _FXN_F_run
+00003758   _FXN_F_zero
+8000002c   _FastHousekeeping
+02067fb0   _Flash_ReadWords
+02067a50   _Flash_WriteAnySector
+020679e0   _Flash_WriteSector
+0204b208   _Frame_Req_ptr
+00000000   _GBL_CACHE
+00003680   _GBL_cslInit
+02049090   _GBL_cslTimerHandle
+0204907c   _GBL_irqEventTable
+02049080   _GBL_irqIntTable
+0206af00   _GB_vars_init
+02075684   _GSP_USER_TRIG
+0207568c   _HKP_HEALTH_CHANGE_TRIG
+80007434   _HST_A_TABBEG
+80007434   _HST_A_TABEND
+00000000   _HST_A_TABLEN
+02049078   _HWI_D_spsave
+00000f00   _HWI_F_dispatch
+0000000a   _HWI_INT10
+0000000b   _HWI_INT11
+0000000c   _HWI_INT12
+0000000d   _HWI_INT13
+0000000e   _HWI_INT14
+0000000f   _HWI_INT15
+00000004   _HWI_INT4
+00000005   _HWI_INT5
+00000006   _HWI_INT6
+00000007   _HWI_INT7
+00000008   _HWI_INT8
+00000009   _HWI_INT9
+0205f9a0   _HWI_IR_rcv
+00000001   _HWI_NMI
+00000002   _HWI_RESERVED0
+00000003   _HWI_RESERVED1
+00000000   _HWI_RESET
+00407ff8   _HWI_STKBOTTOM
+00400000   _HWI_STKTOP
+02063500   _HWI_comm_RX
+00003b00   _HWI_disable
+02048db8   _HWI_dispatchTab
+00003b18   _HWI_enable
+0205fa18   _HWI_pads_rcv
+020697a0   _HWI_propulsion
+00003b2c   _HWI_restore
+00003c80   _IDL_loop
+ffffffff   _IDRAM
+0204b30c   _IIOF0_INT_ENABLE
+0204b310   _IIOF1_INT_ENABLE
+02075634   _INV_ANGULAR_RATE_SCALE
+02075628   _INV_POSITION_SCALE
+02075630   _INV_QUATERNION_SCALE
+0207562c   _INV_VELOCITY_SCALE
+ffffffff   _IPRAM
+0206c820   _IRQ_enable
+0206c8a0   _IRQ_set
+0204b20c   _IR_Rcv_mask_ptr
+020755f4   _KDattitudePD
+02075608   _KDattitudePID
+020755fc   _KDpositionPD
+02075614   _KDpositionPID
+02075604   _KIattitudePID
+02075610   _KIpositionPID
+02048fa0   _KNL_alarm
+00003aa0   _KNL_check
+02048fc0   _KNL_curqueue
+02048fb4   _KNL_curtask
+02048fbc   _KNL_curtime
+02048f58   _KNL_dummy
+00003600   _KNL_enter
+00003610   _KNL_exit
+00003ac4   _KNL_idle
+02048f94   _KNL_idlefxn
+02048fa8   _KNL_inactive
+00003440   _KNL_ipost
+00003ae0   _KNL_max
+02048fc4   _KNL_maxqueue
+000032e0   _KNL_post
+02048fb8   _KNL_prevtask
+02048fac   _KNL_priority
+02048eb8   _KNL_queues
+00001fa0   _KNL_run
+000025e0   _KNL_saveIsrFrame
+02048fb0   _KNL_set
+02048fa4   _KNL_setpri
+80000098   _KNL_swi
+02048f90   _KNL_swiptr
+000026ac   _KNL_switch
+02048fcc   _KNL_tcreatefxn
+02048fd0   _KNL_tdeletefxn
+00002c10   _KNL_tick
+02048fd4   _KNL_treadyfxn
+02048fc8   _KNL_tswitchfxn
+02048f98   _KNL_wFlag
+02048f9c   _KNL_wList
+020755f0   _KPattitudePD
+02075600   _KPattitudePID
+020755f8   _KPpositionPD
+0207560c   _KPpositionPID
+0000326c   _LCK_pend
+00003220   _LCK_post
+80007404   _LOG_A_TABBEG
+80007434   _LOG_A_TABEND
+00000002   _LOG_A_TABLEN
+02048c90   _LOG_D_system
+00003580   _LOG_event
+80007404   _LOG_system
+80007080   _MBX_CommEXPv2
+80006ea0   _MBX_CommSTL_HI
+80006e40   _MBX_CommSTL_LO
+80006f00   _MBX_CommSTS_HI
+80006f60   _MBX_CommSTS_LO
+80007020   _MBX_Estimator
+80006fc0   _MBX_Task_Triggers
+000018c0   _MBX_pend
+00001a0c   _MBX_post
+0204908c   _MEM
+02048da0   _MEM_D_NUMSEGMENTS
+02048da8   _MEM_D_freelist
+02048dac   _MEM_D_lockaddr
+02048da4   _MEM_D_memtab
+02048db0   _MEM_D_unlockaddr
+00001640   _MEM_alloc
+00001b40   _MEM_free
+00003160   _MEM_init
+02048000   _MEM_memtab
+02075660   _MESSAGE_TX_ACK_TRIG
+02074a84   _MINI_CARRIAGE_INERTIA
+0204b204   _Matrix_ptr
+0207563c   _NEED_PKT_ACK
+02048c2c   _OBJ_table
+800000f0   _PADS
+02075678   _PADS_ESTIMATOR_DONE_TRIG
+02075670   _PADS_GLOBAL_BEACON_TRIG
+02074db8   _PADS_GLOBAL_DISABLE
+0207566c   _PADS_GLOBAL_START_TRIG
+02075674   _PADS_INERTIAL_TRIG
+020755cc   _PHYS_PROP
+8000733c   _PIP_A_TABBEG
+80007404   _PIP_A_TABEND
+00000002   _PIP_A_TABLEN
+00002fc0   _PIP_alloc
+800073a0   _PIP_comm_RX
+8000733c   _PIP_comm_TX
+00003068   _PIP_free
+00003034   _PIP_get
+00002ff4   _PIP_put
+02075618   _POSITION_SCALE
+02048d54   _PRD_D_tick
+020650c4   _PRD_background_comm
+000033a0   _PRD_getticks
+000033e0   _PRD_start
+00003418   _PRD_stop
+8000006c   _PRD_swi
+000033b0   _PRD_tick
+02069c00   _PostTaskTrigger
+80000000   _Propulsion
+02075620   _QUATERNION_SCALE
+00003a40   _QUE_get
+00003a68   _QUE_put
+02074dbc   _RX_POS
+ffffffff   _SBSRAM
+02048010   _SDRAM
+020bc320   _SDRAM_base
+00600000   _SDRAM_length
+80007108   _SEM_Comm_Activity
+80007130   _SEM_Comm_TX_enable_STL
+800070e0   _SEM_Comm_TX_enable_STS
+800071a8   _SEM_datacomm_STL
+800071f8   _SEM_datacomm_STS
+80007180   _SEM_global_pads_request
+80007158   _SEM_gsp_task
+00003c60   _SEM_ipost
+00003be0   _SEM_pend
+000023e0   _SEM_pendEnterKnl
+000039e0   _SEM_post
+00003ba0   _SEM_postEnterKnl
+800071d0   _SEM_update_flash
+80000374   _STS_A_TABBEG
+80000374   _STS_A_TABEND
+00000000   _STS_A_TABLEN
+00003990   _STS_add
+00003980   _STS_delta
+000039bc   _STS_reset
+0205ccb0   _SWI_Controller
+02048cbc   _SWI_D_curfxn
+02048cb0   _SWI_D_curmask
+02048cc4   _SWI_D_lock
+02048cd0   _SWI_D_rdybeg
+0206416c   _SWI_comm_TX
+0205cba8   _SWI_control_dispatch
+02059c88   _SWI_housekeeping_log
+00003b60   _SWI_post
+0205fcc4   _SWI_process_pads
+02048db4   _SYS
+80000160   _SYS_PUTCBEG
+8000035f   _SYS_PUTCEND
+00003920   _SYS_error
+000030a0   _SYS_exit
+02049034   _SYS_exitStack
+0204906c   _SYS_exitStackPtr
+02049070   _SYS_exitStackTop
+0207567c   _TASK_TIME_TRIG
+02075690   _TASK_WAIT_FOREVER
+02075680   _TEST_START_TRIG
+0206c700   _TIMER_configArgs
+0206b540   _TIMER_open
+0206bcc0   _TIMER_reset
+0206c7e0   _TIMER_start
+80000158   _TRC_R_mask
+02048c7c   _TSK
+02048fd8   _TSK_ATTRS
+8000818c   _TSK_bkg_flash_write
+020625a0   _TSK_comm_manager
+8000806c   _TSK_comm_mgr
+800081ec   _TSK_cp_monitor
+8000812c   _TSK_datacomm_STL
+8000824c   _TSK_datacomm_STS
+800082ac   _TSK_estimator
+00002940   _TSK_exit
+800080cc   _TSK_gsp_task
+02069ac0   _TSK_gsp_task_skeleton
+02055800   _TSK_gspdata_manager
+0205a588   _TSK_hkpCPMon
+0205a1fc   _TSK_hkpUpdateFlash
+8000800c   _TSK_idle
+000038c0   _TSK_init
+02049064   _TSK_nTasks
+0204e048   _TSK_pads_estimator
+02049068   _TSK_pid
+00002c40   _TSK_setup
+00002db4   _TSK_startup
+02048ff4   _TSK_timerSem
+8000004c   _Telemetry
+0204b1e4   _Thr_ptr
+02075638   _USE_916MHZ
+00003860   _UTL_doAbort
+00003c40   _UTL_doError
+00003800   _UTL_doPutc
+00003c20   _UTL_halt
+ffffffff   _VECS
+020755dc   _VEHICLE_LIN_ACCEL
+020755d4   _VEHICLE_MASS
+020755e4   _VEHICLE_MOMENT_ARM
+020755d8   _VEHICLE_ROT_ACCEL
+020755e0   _VEHICLE_THRUST_FORCE
+020755ec   _VEHICLE_THRUST_FORCE_MULTIPLIER
+0207561c   _VELOCITY_SCALE
+0205dcc8   _WatchForEnable
+000023b0   __CLK_lat1beg
+000023dc   __CLK_lat1end
+0206b6a0   __CSL_init
+02048c80   __HOOK_NUMHOOKS
+0204800c   __HOOK_knlId
+00000f00   __HWI_lat1beg
+000010ac   __HWI_lat1end
+000010ac   __HWI_lat2beg
+00001228   __HWI_lat2end1
+000011c8   __HWI_lat2end2
+0000126c   __HWI_lat3beg
+00001318   __HWI_lat3end1
+000011f4   __HWI_lat3end2
+0204aff8   __IRQ_dispatchTable
+0204af34   __IRQ_eventTable
+0206c680   __IRQ_init
+0204afb8   __IRQ_intTable
+00003580   __LOG_lat1beg
+000035c4   __LOG_lat1end1
+000035f0   __LOG_lat1end2
+00003a40   __QUE_lat1beg
+00003a60   __QUE_lat1end
+00003a68   __QUE_lat2beg
+00003a80   __QUE_lat2end
+00002ea0   __SEM_dopost
+00008000   __STACK_SIZE
+00000594   __SWI_lat1beg
+00000620   __SWI_lat1end1
+000006dc   __SWI_lat1end2
+00000780   __SWI_lat2beg
+0000086c   __SWI_lat2end2
+00000400   __SWI_lat3beg
+00000488   __SWI_lat3end
+0204b2b8   __TIMER_deviceTable
+0204b2d8   __TIMER_hBios
+0204b2d0   __TIMER_hDev0
+0204b2d4   __TIMER_hDev1
+02049010   __TSK_mutex
+02048000   ___bss__
+02076350   ___cinit__
+0207571d   ___data__
+0207571d   ___edata__
+02049094   ___end__
+0206c8c0   ___etext__
+ffffffff   ___pinit__
+0204dc00   ___text__
+000027a0   __auto_init
+0206ab00   __divd
+0206b3c0   __divf
+0206c2a0   __divu
+0206c1e0   __fixdu
+02069de0   __frcdivd
+0206c000   __frcdivf
+0204b36c   __lock
+0206c7a0   __nop
+0206c7a8   __register_lock
+0206c7bc   __register_unlock
+0206c4e0   __remu
+0206b0c0   __roundf
+00400000   __stack
+0206c100   __strasg
+0206c760   __truncf
+0204b370   __unlock
+02068bc0   _acos
+02053f2c   _ang_det
+02057f38   _atPositionRotation
+0205802c   _atZeroVelocity
+0206c580   _atomic_memcpy
+02055ff8   _beaconLocationsFromTrackInfoSet
+020b4540   _c_int00
+00000cd0   _calloc
+02058bd4   _checksumChecks
+02060ca0   _choldc
+02060ee8   _cholinvA
+02061390   _cholsl
+0204aefb   _cnt
+0206884c   _com_drv_CommOutReady
+02068980   _com_drv_FlushAllInputs
+02068700   _com_drv_InitRFM
+02068b74   _com_drv_ResetDR2000
+02068730   _com_drv_SendData
+020688d8   _com_drv_SetPacketSize
+02062158   _commAssignChannel
+020621d0   _commAssignChannelGet
+02057988   _commAutoAssignSet
+02065268   _commBackgroundPayloadPack
+02064e58   _commBackgroundPointerDefault
+02064e0c   _commBackgroundPointerSet
+02064d80   _commBackgroundReset
+02065768   _commBackgroundSOHGet
+02064e80   _commBackgroundSendMode
+020651cc   _commBackgroundSendNow
+02064e94   _commBackgroundStateGet
+02064f48   _commBackgroundStateRead
+02064fbc   _commBackgroundStateWrite
+020650b0   _commBackgroundTelemetryPeriodGet
+02065030   _commBackgroundTelemetryPeriodSet
+02062b6c   _commGetHWFromLogical
+02062b98   _commGetLogicalFromHW
+02061fc4   _commHWAddrGet
+02061fa0   _commHWAddrSet
+020654d8   _commProcessBackgroundPayload
+02065694   _commProcessBackgroundSOH
+02055ed0   _commProcessBeaconPayload
+02055b3c   _commProcessCommandPayload
+0205715c   _commProcessResetCommands
+020631f4   _commResetRFM
+02057740   _commRunTimeCmdCheck
+02057728   _commRunTimeCmdGet
+02057754   _commRunTimeCmdReset
+02062c30   _commSendLongPacket
+02062bdc   _commSendRFMPacket
+02062b00   _commSetLogicalToHWID
+0206252c   _commTdmaDisable
+020624e8   _commTdmaEnable
+02061fd8   _commTdmaFrameSync
+0206237c   _commTdmaInit
+02062118   _commTdmaIsEnabled
+02062200   _commTdmaStandardInit
+0204a9c4   _comm_HW_addr
+02062570   _comm_init
+02062a54   _comm_rx_packet
+0206413c   _comm_rx_writer
+0206282c   _comm_tx_pump
+02064154   _comm_tx_reader
+0204aec0   _commandStateTarget
+020633f4   _commintInitHardware
+02063254   _commintRXPipeRead
+02063240   _commintRXPipeReadyToRead
+02063304   _commintTXPipeWrite
+0205ddf0   _controlPositionHold
+020671e0   _ctrlAttitudeNLPDsidi
+02067488   _ctrlAttitudeNLPDwie
+020675c0   _ctrlAttitudeNLPIDwie
+02067998   _ctrlAttitudePIDinit
+0205caf8   _ctrlBypassEnable
+0205dcb4   _ctrlCountGet
+0205d2e4   _ctrlGoToIdle
+0205d480   _ctrlGoToPosHold
+0205d63c   _ctrlGoToTankVent
+0205d238   _ctrlGoToTransition
+0205d7e0   _ctrlGotoUserControl
+0205dc60   _ctrlManeuverNumGet
+0205dc30   _ctrlManeuverNumSet
+0205dbb4   _ctrlManeuverReset
+0205dc88   _ctrlManeuverTerminate
+0205dc74   _ctrlManeuverTimeGet
+02066960   _ctrlMixSimple
+02066a2c   _ctrlMixWLoc
+0205cb40   _ctrlModeGet
+0205cb94   _ctrlPeriodGet
+0205cb5c   _ctrlPeriodSet
+0205cae4   _ctrlPosHoldGet
+0205cac0   _ctrlPosHoldSet
+020667e0   _ctrlPositionDV2Force
+02066114   _ctrlPositionPD
+02066214   _ctrlPositionPDgains
+02066334   _ctrlPositionPID
+02066560   _ctrlPositionPIDgains
+020660e0   _ctrlPositionPIDinit
+0205dd7c   _ctrlSetIRNoise
+0205dca0   _ctrlStartingNewManeuver
+0204ae58   _ctrlStateTarget
+0205db04   _ctrlTestInfoGet
+0205dae0   _ctrlTestNumGet
+0205d9c4   _ctrlTestNumSet
+0205d9a0   _ctrlTestTerminate
+0205daf4   _ctrlTestTimeGet
+0205dda0   _ctrlThrustersOff
+0205cb54   _ctrlTickRestart
+0205cb2c   _ctrlUserCtrlEnabled
+02055150   _distCorrectionRx
+020547e8   _elementDistCorrect
+02054de0   _elementDistCorrect2
+02049094   _errno
+020556c8   _estCovConvergenceGet
+020556dc   _estCovConvergenceReset
+02055650   _estCovConvergenceSet
+0204b198   _expv2_cfgStruct
+0204b194   _expv2_cfg_callback
+0206594c   _expv2_cfg_cbk_register
+0206596c   _expv2_cfg_get
+0204b1c4   _expv2_gpio
+02065a98   _expv2_gpio_ODC_set
+0204b190   _expv2_gpio_callback
+02065b98   _expv2_gpio_cbk_register
+02065adc   _expv2_gpio_cfg_get
+02065b1c   _expv2_gpio_cfg_read
+02065a54   _expv2_gpio_cfg_set
+02065a10   _expv2_gpio_get
+020659b4   _expv2_gpio_set
+02065840   _expv2_init
+02065e38   _expv2_process_rx_packet
+020658ac   _expv2_reset
+02065ce4   _expv2_uart_baud_get
+02065d28   _expv2_uart_baud_read
+02065c50   _expv2_uart_baud_set
+0204b184   _expv2_uart_callback
+02065e0c   _expv2_uart_cbk_register
+02065d4c   _expv2_uart_cfg_set
+02065bb8   _expv2_uart_send
+0206ba80   _expv2_uart_send_w_het_header
+02069400   _findStateError
+02054fe4   _find_distmat
+0204aba0   _flag_ir_reflash
+00000d64   _free
+0206b940   _frexp
+0206bf00   _frexpf
+0204b218   _gDout
+0204b21c   _gThr
+0204b214   _gWdog
+02057ee0   _getQuaternionMagnitude
+020550fc   _getUSBeacon_Dist
+0204aefa   _global_add_translate
+0204aef8   _global_last_cmd
+0204aef6   _global_sphere_error
+0204aef5   _global_target_reached
+0204aefc   _gpio_out
+02058238   _gspControl
+0205e65c   _gspControl_Checkout
+020595f4   _gspDifferentiatePhoneMessage
+020579c0   _gspIdentitySet
+020579d4   _gspInitProgram
+02057de8   _gspInitTask
+02057ba4   _gspInitTest
+0205e3bc   _gspInitTest_Checkout
+02057e60   _gspPadsGlobal
+02057df0   _gspPadsInertial
+0205e300   _gspPadsInertial_Checkout
+02058ca4   _gspProcessPhoneCommandFloat
+0205946c   _gspProcessPhoneStateEstimate
+02059690   _gspProcessRXData
+02058a50   _gspRotateByQuaternion
+02057e78   _gspTaskRun
+0205f0a8   _gspTaskRun_Checkout
+02059c2c   _hkpBeaconCtrl
+0205a670   _hkpEnterBootUponReset
+0205a9f0   _hkpFlashChecksumUpdate
+0205aaac   _hkpIMUCoefficientsGet
+0205a6f8   _hkpInitFromFlash
+0205a144   _hkpIsEnabled
+0205a8c8   _hkpLoadFlash
+0205a174   _hkpResetRFM
+020596c0   _hkpSOHPeriodSet
+0205a640   _hkpSaveBeaconData
+0205a658   _hkpSaveINSData
+02059700   _hkpSendSOHPacket
+02059c14   _hkpSetAck
+0205a1bc   _hkpTankUseAdd
+0205a1a8   _hkpTankUseGet
+0205a1e4   _hkpTankUseReset
+020596a0   _hkpTestResultCodeSet
+0205a15c   _hkpTriggerReset
+0205a6c4   _hkpWriteHWID
+0205b19c   _hkp_health_get
+0205b1b0   _hkp_health_reset
+0205b0f4   _hkp_health_set
+0205b1d4   _hkp_phys_prop_get
+0205b1e8   _hkp_phys_prop_set
+0204b25c   _initState
+0206c360   _init_sphere
+020557b0   _lastTxVecBodyGet
+0206b240   _ldexp
+0206b800   _ldexpf
+02061600   _lubksb
+020618d4   _ludcmp
+0206a0e0   _main
+00000ae0   _malloc
+0204ae50   _maneuver_num_index
+0204adfc   _maneuver_nums
+020545e4   _matDistCorrect
+0205c3b0   _mathBody2Global
+0205bffc   _mathInvert3x3
+0205b8e4   _mathMatAdd
+0205b388   _mathMatMatMult
+0205b558   _mathMatMatTransposeMult
+0205b72c   _mathMatTransposeMatMult
+0205b238   _mathMatVecMult
+0205bacc   _mathSkewSymmetric
+0205b220   _mathSquare
+0205bbd4   _mathVecAdd
+0205c9c8   _mathVecCross
+0205bd04   _mathVecInner
+0205bf20   _mathVecMagnitude
+0205bdac   _mathVecNormalize
+0205b9c0   _mathVecOuter
+0205bc6c   _mathVecSubtract
+0204a938   _mbx_EXP
+0204a930   _mbx_STL_hi
+0204a934   _mbx_STL_lo
+0204a928   _mbx_STS_hi
+0204a92c   _mbx_STS_lo
+02049b48   _mbx_estimator
+0204b33c   _mbx_task_triggers
+00000b64   _memalign
+0206a8c0   _memcpy
+0206bba0   _memset
+0206c600   _modff
+800000c4   _packet_TX_swi
+0204ab08   _pads
+020537d0   _padsAngDet3Rcv
+02060954   _padsBeaconLocationGet
+02060890   _padsBeaconLocationSet
+02060a0c   _padsBeaconLocationsAreRecent
+02060a20   _padsBeaconLocationsMarkRecent
+0205fb18   _padsBeaconNumberSet
+02068228   _padsCountsCoefficientsGet
+020682dc   _padsCountsCoefficientsSet
+02068194   _padsCountsConvertAccels
+020684d4   _padsCountsConvertBeacon
+02068100   _padsCountsConvertGyros
+02052e64   _padsDistReduce1
+02053104   _padsDistReduce2
+0204df50   _padsEstimatorDisable
+0204dc00   _padsEstimatorInit
+0204dc50   _padsEstimatorInitAndWait
+0204dca8   _padsEstimatorInitWaitAndSet
+0204e034   _padsEstimatorIsEnabled
+0204e318   _padsEstimatorTrigger
+0205fb48   _padsExpBeaconTriggerSet
+020685b8   _padsFilterGyroData
+02060c54   _padsGetNextPulse
+0206087c   _padsGlobalPeriodGet
+0206082c   _padsGlobalPeriodSet
+0206079c   _padsGlobalPeriodSetAndWait
+0206085c   _padsGlobalTriggerNow
+020683dc   _padsGyroBiasGet
+02068418   _padsGyroBiasSet
+02060acc   _padsIRCountGet
+02060548   _padsInertialAllocateBuffers
+0206068c   _padsInertialBufferCapacity
+0205fd8c   _padsInertialPeriodSet
+02060b14   _padsInertialProcessPeriodGet
+02060b00   _padsInertialSamplePeriodGet
+0205fb80   _padsInitializeFPGA
+0205fb68   _padsInitializeIR_Reflash
+02052880   _padsIntDistReduce
+0205fcb0   _padsNumBeaconsGet
+02060c04   _padsRxPosGet
+02068458   _padsScaleGyros
+02060b28   _padsSetBeaconNormalFromLocation
+02060788   _padsSpeedOfSoundGet
+02060740   _padsStateClear
+020606a0   _padsStateGet
+020606e8   _padsStateSet
+02060ab8   _padsTemperatureGet
+02060a38   _padsTemperatureSet
+0205284c   _pads_GyroBiasIDEnableGet
+0205096c   _pads_QrotUSBeaconUpdatePvarEKF
+02052860   _pads_ThrustIntEnableGet
+020514fc   _pads_getIMUDATATime
+02050294   _pads_hgenUSBeaconUpdatePvarEKF
+02051510   _pads_initStateGyroUpdatePssEKF
+020510e0   _pads_initStateUSBeaconGyroUpdatePvarEKF
+020603d8   _pads_process_global
+0205fedc   _pads_process_inertial
+02051298   _pads_setCovariancePvar
+020513a8   _pads_setIMUPssEKF_Data
+0205146c   _pads_stateGyroUpdatePssEKF
+020515f0   _pads_statePropDelTPvarEKF
+02051530   _pads_statePropPvarEKF
+0204f090   _pads_stateUSBeaconDetPvarEKF
+0204e510   _pads_stateUSBeaconGyroUpdatePvarEKF
+0204ae8c   _phoneStateEstimate
+0205789c   _pop
+0204b174   _posHoldCounter
+02055808   _process_rcvd_data
+0204b000   _prop
+02069a60   _propGetCurrentThrusters
+02069aa0   _propPadsInProgressReset
+02069a7c   _propSetThrusterBypassIR
+02069a20   _propSetThrusterTimes
+02057788   _push
+0205c6e4   _quat2matrixIn
+0205c440   _quat2matrixOut
+0205c790   _quatMult
+00000da8   _realloc
+020494ff   _recent
+0205ee64   _sendIMUDebugPacket
+0205e15c   _sendThrDebugPacket
+0205814c   _send_SOH_packet_to_phone
+020550ac   _setUSBeacon_Data
+0206a640   _sinf
+0206a3a0   _sqrt
+0206ad40   _sqrtf
+0204aef4   _stopAtEnd
+02064bd4   _sysBeaconRxGet
+02064ca4   _sysBeaconTxGet
+020645f8   _sysCADPhysicalDefaultsSet
+02064a24   _sysCMDryGet
+02064a60   _sysCMDrySet
+020649a8   _sysCMWetGet
+020649e4   _sysCMWetSet
+02064710   _sysDryMassGet
+020691d4   _sysErrorStateGet
+02064764   _sysFuelMassGet
+0206918c   _sysIdentityGet
+02069130   _sysIdentitySet
+020647b8   _sysInertiaGet
+02064834   _sysInertiaInverseGet
+02064870   _sysInertiaInverseSet
+0206492c   _sysInertiaInverseVecGet
+02064968   _sysInertiaInverseVecSet
+020647f4   _sysInertiaSet
+020648b0   _sysInertiaVecGet
+020648ec   _sysInertiaVecSet
+020693d4   _sysInterruptsAreEnabled
+02069310   _sysInterruptsDisable
+02069348   _sysInterruptsEnable
+020692fc   _sysLocationGet
+02069268   _sysLocationSet
+02064724   _sysMassGet
+02069254   _sysNumSpheresGet
+02069234   _sysNumSpheresSet
+020642c0   _sysPhysicalDefaultsSet
+020691c0   _sysProgramIDGet
+020691a0   _sysProgramIDSet
+02069038   _sysSphereTimeGet
+02069020   _sysSphereTimeReset
+02069064   _sysTestTimeGet
+0206904c   _sysTestTimeReset
+02069078   _sysTestTimeStart
+02064b1c   _sysThrustDirGet
+02064b58   _sysThrustDirSet
+02064b98   _sysThrustLocGet
+02064aa0   _sysThrustStrGet
+02064adc   _sysThrustStrSet
+020691e8   _sysTimeTick
+02069cf4   _taskPostUserTrigger
+02069da0   _taskTriggerMaskSet
+02069d34   _taskWaitForTime
+02049f18   _temp_pkt
+8000741c   _trace
+02052cc0   _txAngDet
+02053544   _zero_opposing_faces
+02076350   cinit
+0207571d   edata
+02049094   end
+0206c8c0   etext
+00000000   hwi0
+00000020   hwi1
+00000140   hwi10
+00000160   hwi11
+00000180   hwi12
+000001a0   hwi13
+000001c0   hwi14
+000001e0   hwi15
+00000040   hwi2
+00000060   hwi3
+00000080   hwi4
+000000a0   hwi5
+000000c0   hwi6
+000000e0   hwi7
+00000100   hwi8
+00000120   hwi9
+800000c4   packet_TX_swi
+800003c8   packet_TX_swi$sts
+800003c4   packet_TX_swi$sts$stsobj
+8000741c   trace
+80007800   trace$buf
+00000100   trace$size
+
+
+GLOBAL SYMBOLS: SORTED BY Symbol Address 
+
+address    name
+--------   ----
+00000000   CLK_COUNTSPMSHIGH
+00000000   CLK_TDDR
+00000000   CLK_TIMERNUM
+00000000   DEV$
+00000000   DGN$
+00000000   DHL$
+00000000   DHL_gChannelsAvailable
+00000000   DIO$
+00000000   DIO_NUMSWIBASE
+00000000   DIO_NUMTSKBASE
+00000000   DIO_STATIC
+00000000   DPI$
+00000000   GBL_BIGENDIAN
+00000000   GBL_C641XL2PRIORITY
+00000000   GBL_CACHE
+00000000   GBL_ENABLEINST
+00000000   GBL_L2CONFIGALLOC
+00000000   GBL_L2CONFIGURE
+00000000   GBL_L2MARMASK
+00000000   GBL_L2MARMASK1
+00000000   GBL_L2MARMASK2
+00000000   GBL_L2MARMASK3
+00000000   GBL_L2MARMASK4
+00000000   GBL_L2MARMASK5
+00000000   GBL_L2MODE
+00000000   GBL_L2PRIORITY
+00000000   GBL_NULL
+00000000   GBL_ROM
+00000000   GBL_USERINIT
+00000000   GIO$
+00000000   HOOK$
+00000000   HOOK_KNLID
+00000000   HST$
+00000000   HST_A_TABLEN
+00000000   HST_DSM
+00000000   HST_MAXFRAMESET
+00000000   HST_RTDX
+00000000   HWI_A_VECS
+00000000   HWI_GENERATE_RESET_VEC
+00000000   HWI_RESET
+00000000   IDL$
+00000000   IDL_A_CALLEN
+00000000   IDL_A_TABLEN
+00000000   IDL_CALIBRFXN
+00000000   IDL_USECLKIDLTIME
+00000000   MEM_NULL
+00000000   OBJ$
+00000000   PIP_gNumEmbed
+00000000   RTDX$
+00000000   RTDX_USERTDX
+00000000   RTDX_USERTEXECUTION
+00000000   SIO$
+00000000   STS$
+00000000   STS_A_TABLEN
+00000000   SWI_EHOOKFXN
+00000000   SWI_IHOOKFXN
+00000000   TSK_NUM_HOOKS
+00000000   TSK_READYFXN
+00000000   TSK_STACKSEG
+00000000   TSK_SWITCHFXN
+00000000   UDEV$
+00000000   _CLK_TDDR
+00000000   _CLK_TIMERNUM
+00000000   _GBL_CACHE
+00000000   _HST_A_TABLEN
+00000000   _HWI_RESET
+00000000   _STS_A_TABLEN
+00000000   hwi0
+00000001   CLK$
+00000001   CLK_USETIMER
+00000001   GBL$
+00000001   GBL_CALLCSLCFGINIT
+00000001   GBL_SUPPORTCSL
+00000001   GBL_boot
+00000001   HST_NONE
+00000001   HWI$
+00000001   HWI_NMI
+00000001   HWI_POLARITYMASK
+00000001   HWI_ZEROTAB
+00000001   ISRC$
+00000001   LCK$
+00000001   LOG$
+00000001   LOG_ENABLED
+00000001   MBX$
+00000001   MEM$
+00000001   MEM_gNumHeap
+00000001   PIP$
+00000001   PRD$
+00000001   PRD_SCALAR
+00000001   QUE$
+00000001   SEM$
+00000001   SWI$
+00000001   SYS$
+00000001   TSK$
+00000001   TSK_PRIORITY
+00000001   _CLK_USETIMER
+00000001   _HWI_NMI
+00000002   HWI_RESERVED0
+00000002   LOG_A_TABLEN
+00000002   PIP_A_TABLEN
+00000002   PIP_gNextId
+00000002   _HWI_RESERVED0
+00000002   _LOG_A_TABLEN
+00000002   _PIP_A_TABLEN
+00000003   HWI_RESERVED1
+00000003   PRD_A_TABLEN
+00000003   _HWI_RESERVED1
+00000004   HWI_INT4
+00000004   _HWI_INT4
+00000005   HWI_INT5
+00000005   SWI_A_TABLEN
+00000005   _HWI_INT5
+00000006   HWI_INT6
+00000006   _HWI_INT6
+00000007   HWI_INT7
+00000007   _HWI_INT7
+00000008   HWI_INT8
+00000008   _HWI_INT8
+00000009   HWI_INT9
+00000009   _HWI_INT9
+0000000a   HWI_INT10
+0000000a   _HWI_INT10
+0000000b   HWI_INT11
+0000000b   _HWI_INT11
+0000000c   CLK_A_TABLEN
+0000000c   HWI_INT12
+0000000c   _HWI_INT12
+0000000d   HWI_INT13
+0000000d   _HWI_INT13
+0000000e   HWI_INT14
+0000000e   _HWI_INT14
+0000000f   HWI_INT15
+0000000f   _HWI_INT15
+00000020   CLK_TCR
+00000020   hwi1
+00000040   LOG_system$size
+00000040   hwi2
+00000042   GBL_FOOTPRINT
+00000060   hwi3
+00000080   hwi4
+000000a0   hwi5
+000000c0   hwi6
+000000e0   hwi7
+00000100   HST_MAXFRAMEALLOWED
+00000100   hwi8
+00000100   trace$size
+00000120   hwi9
+00000140   hwi10
+00000160   hwi11
+00000180   hwi12
+000001a0   hwi13
+000001c0   hwi14
+000001e0   hwi15
+00000400   HST_DSMMEMSIZE
+00000400   SWI_F_enable
+00000400   TSK_STACKSIZE
+00000400   __SWI_lat3beg
+00000408   RTDX_BUFMEMSIZE
+00000488   __SWI_lat3end
+0000048c   SWI_F_post
+00000594   __SWI_lat1beg
+00000620   __SWI_lat1end1
+00000624   SWI_F_exec
+0000069c   SWI_EXECFXN
+0000069c   SWI_F_iexec
+000006dc   __SWI_lat1end2
+00000780   __SWI_lat2beg
+0000086c   __SWI_lat2end2
+00000870   SWI_F_run
+00000870   SWI_RUNFXN
+00000ae0   _malloc
+00000b64   _memalign
+00000cd0   _calloc
+00000d64   _free
+00000da8   _realloc
+00000f00   CLK_HOOKFXN
+00000f00   HWI_F_dispatch
+00000f00   _HWI_F_dispatch
+00000f00   __HWI_lat1beg
+000010ac   __HWI_lat1end
+000010ac   __HWI_lat2beg
+000011c8   __HWI_lat2end2
+000011f4   __HWI_lat3end2
+00001228   __HWI_lat2end1
+0000126c   __HWI_lat3beg
+00001318   __HWI_lat3end1
+00001320   PRD_F_swi
+0000157c   PRD_F_tick
+00001640   _MEM_alloc
+000018c0   _MBX_pend
+00001a0c   _MBX_post
+00001b40   _MEM_free
+00001d80   PIP_F_take
+00001e14   PIP_F_give
+00001e14   PIP_F_probe
+00001ee8   PIP_F_start
+00001fa0   _KNL_run
+000021c0   CLK_F_getfhtime
+000021e0   CLK_F_gethtime
+000021e0   CLK_F_getshtime
+000021e0   CLK_TIMEFXN
+00002226   GBL_L2ALLOC
+00002254   CLK_F_getltime
+00002260   CLK_F_isr
+0000239c   CLK_F_itime
+0000239c   _CLK_F_itime
+0000239c   _CLK_itime
+000023b0   __CLK_lat1beg
+000023dc   __CLK_lat1end
+000023e0   _SEM_pendEnterKnl
+000025e0   _KNL_saveIsrFrame
+000026ac   _KNL_switch
+00002760   KNL_glue
+000027a0   __auto_init
+00002940   _TSK_exit
+00002c10   PRD_THOOKFXN
+00002c10   _KNL_tick
+00002c40   _TSK_setup
+00002db4   _TSK_startup
+00002ea0   __SEM_dopost
+00002fc0   _PIP_alloc
+00002ff4   _PIP_put
+00003034   _PIP_get
+00003068   _PIP_free
+000030a0   _SYS_exit
+00003160   _MEM_init
+00003220   _LCK_post
+0000326c   _LCK_pend
+000032e0   _KNL_post
+000033a0   _PRD_getticks
+000033b0   _PRD_tick
+000033e0   _PRD_start
+00003418   _PRD_stop
+00003440   _KNL_ipost
+000034e0   _ATM_andi
+000034e0   _ATM_andu
+00003500   _ATM_cleari
+00003500   _ATM_clearu
+00003518   _ATM_deci
+00003518   _ATM_decu
+00003534   _ATM_inci
+00003534   _ATM_incu
+00003550   _ATM_ori
+00003550   _ATM_oru
+0000356c   _ATM_seti
+0000356c   _ATM_setu
+00003580   LOG_F_event
+00003580   _LOG_event
+00003580   __LOG_lat1beg
+000035c4   __LOG_lat1end1
+000035f0   __LOG_lat1end2
+00003600   _KNL_enter
+00003610   _KNL_exit
+00003680   _GBL_cslInit
+00003700   FXN_F_nop
+00003708   FXN_F_run
+00003708   _FXN_F_run
+00003758   FXN_F_zero
+00003758   _FXN_F_zero
+00003780   _CLK_start
+00003780   _CLK_start6x
+00003800   SYS_PUTCFXN
+00003800   _UTL_doPutc
+00003860   SYS_ABORTFXN
+00003860   _UTL_doAbort
+000038c0   _TSK_init
+00003920   _SYS_error
+00003980   STS_F_delta
+00003980   _STS_delta
+00003990   STS_F_add
+00003990   _STS_add
+000039bc   STS_F_reset
+000039bc   _STS_reset
+000039e0   _SEM_post
+00003a40   _QUE_get
+00003a40   __QUE_lat1beg
+00003a60   __QUE_lat1end
+00003a68   _QUE_put
+00003a68   __QUE_lat2beg
+00003a80   __QUE_lat2end
+00003aa0   _KNL_check
+00003ac4   _KNL_idle
+00003ae0   _KNL_max
+00003b00   _HWI_disable
+00003b18   _HWI_enable
+00003b2c   _HWI_restore
+00003b60   _SWI_post
+00003ba0   _SEM_postEnterKnl
+00003be0   _SEM_pend
+00003c20   SYS_EXITFXN
+00003c20   _UTL_halt
+00003c40   SYS_ERRORFXN
+00003c40   _UTL_doError
+00003c60   _SEM_ipost
+00003c80   IDL_F_loop
+00003c80   _IDL_loop
+00003ca0   GBL_F_version
+00003cc0   GBL_USERINITFXN
+00003cc0   GIO_CREATEFXN
+00003cc0   GIO_DELETEFXN
+00003cc0   GIO_PENDFXN
+00003cc0   GIO_POSTFXN
+00003cc0   TSK_VCREATEFXN
+00003cc0   TSK_VDELETEFXN
+00003cc0   TSK_VEXITFXN
+00003cc0   _FXN_F_nop
+00003ce0   _CLK_getltime
+00004000   CLK_INTBIT
+00004000   GBL_TRCMASKVALUE
+00008000   __STACK_SIZE
+0000a2c3   CLK_COUNTSPMS
+0000a2c3   CLK_PRD
+0000a2c3   _CLK_COUNTSPMS
+0000a2c3   _CLK_PRD
+00400000   GBL_stackbeg
+00400000   _HWI_STKTOP
+00400000   __stack
+00407ff8   _HWI_STKBOTTOM
+00407fff   GBL_stackend
+00600000   SDRAM$L
+00600000   _SDRAM_length
+01940000   CLK_REGS
+01940000   _CLK_REGS
+02048000   $bss
+02048000   .bss
+02048000   _MEM_memtab
+02048000   ___bss__
+0204800c   __HOOK_knlId
+02048010   MEM_MALLOCSEG
+02048010   MEM_SEGZERO
+02048010   SDRAM
+02048010   _SDRAM
+02048014   PIP_comm_TX$dtab
+0204802c   PIP_comm_RX$dtab
+02048c2c   _OBJ_table
+02048c7c   _TSK
+02048c80   __HOOK_NUMHOOKS
+02048c84   IDL_D_tabbeg
+02048c88   IDL_D_calibrate
+02048c8c   IDL_D_calbeg
+02048c90   LOG_D_system
+02048c90   _LOG_D_system
+02048c94   PIP_D_tabbeg
+02048c98   PIP_D_tablen
+02048c9c   CLK_R_time
+02048ca0   CLK_D_timefxn
+02048ca4   CLK_D_tabbeg
+02048ca8   CLK_D_isrhook
+02048cac   CLK_D_idletime
+02048cb0   SWI_D_curmask
+02048cb0   _SWI_D_curmask
+02048cb4   SWI_D_curset
+02048cb8   SWI_D_pending
+02048cbc   SWI_D_curfxn
+02048cbc   _SWI_D_curfxn
+02048cc0   SWI_D_curmbox
+02048cc4   SWI_D_lock
+02048cc4   _SWI_D_lock
+02048cc8   SWI_D_execaddr
+02048ccc   SWI_D_runaddr
+02048cd0   SWI_D_rdybeg
+02048cd0   _SWI_D_rdybeg
+02048cd4   SWI_D_ihook
+02048cd8   SWI_D_ehook
+02048cdc   SWI_D_rdytab
+02048d54   PRD_D_tick
+02048d54   _PRD_D_tick
+02048d58   PRD_D_cur
+02048d5c   PRD_D_elapsed
+02048d60   PRD_D_prevtim
+02048d64   PRD_D_scalar
+02048d68   PRD_D_swihandle
+02048d6c   PRD_D_tabbeg
+02048d70   PRD_D_tablen
+02048d74   PRD_D_thook
+02048d78   RTA_D_fromHost
+02048d7c   RTA_D_toHost
+02048d80   RTA_D_logval
+02048d90   RTA_D_stsval
+02048d9c   HST_D_chanmask
+02048da0   _MEM_D_NUMSEGMENTS
+02048da4   _MEM_D_memtab
+02048da8   _MEM_D_freelist
+02048dac   _MEM_D_lockaddr
+02048db0   _MEM_D_unlockaddr
+02048db4   _SYS
+02048db8   _HWI_dispatchTab
+02048eb8   _KNL_queues
+02048f58   _KNL_dummy
+02048f90   _KNL_swiptr
+02048f94   _KNL_idlefxn
+02048f98   _KNL_wFlag
+02048f9c   _KNL_wList
+02048fa0   _KNL_alarm
+02048fa4   _KNL_setpri
+02048fa8   _KNL_inactive
+02048fac   _KNL_priority
+02048fb0   _KNL_set
+02048fb4   _KNL_curtask
+02048fb8   _KNL_prevtask
+02048fbc   _KNL_curtime
+02048fc0   _KNL_curqueue
+02048fc4   _KNL_maxqueue
+02048fc8   _KNL_tswitchfxn
+02048fcc   _KNL_tcreatefxn
+02048fd0   _KNL_tdeletefxn
+02048fd4   _KNL_treadyfxn
+02048fd8   _TSK_ATTRS
+02048ff4   _TSK_timerSem
+02049010   __TSK_mutex
+02049034   _SYS_exitStack
+02049064   _TSK_nTasks
+02049068   _TSK_pid
+0204906c   _SYS_exitStackPtr
+02049070   _SYS_exitStackTop
+02049074   HWI_D_ccmask
+02049078   _HWI_D_spsave
+0204907c   _GBL_irqEventTable
+02049080   _GBL_irqIntTable
+0204908c   _MEM
+02049090   _GBL_cslTimerHandle
+02049094   ___end__
+02049094   _errno
+02049094   end
+020494ff   _recent
+02049b48   _mbx_estimator
+02049f18   _temp_pkt
+0204a928   _mbx_STS_hi
+0204a92c   _mbx_STS_lo
+0204a930   _mbx_STL_hi
+0204a934   _mbx_STL_lo
+0204a938   _mbx_EXP
+0204a9c4   _comm_HW_addr
+0204ab08   _pads
+0204aba0   _flag_ir_reflash
+0204adfc   _maneuver_nums
+0204ae50   _maneuver_num_index
+0204ae58   _ctrlStateTarget
+0204ae8c   _phoneStateEstimate
+0204aec0   _commandStateTarget
+0204aef4   _stopAtEnd
+0204aef5   _global_target_reached
+0204aef6   _global_sphere_error
+0204aef8   _global_last_cmd
+0204aefa   _global_add_translate
+0204aefb   _cnt
+0204aefc   _gpio_out
+0204af34   __IRQ_eventTable
+0204afb8   __IRQ_intTable
+0204aff8   __IRQ_dispatchTable
+0204b000   _prop
+0204b174   _posHoldCounter
+0204b184   _expv2_uart_callback
+0204b190   _expv2_gpio_callback
+0204b194   _expv2_cfg_callback
+0204b198   _expv2_cfgStruct
+0204b1c4   _expv2_gpio
+0204b1dc   _Dout_ptr
+0204b1e0   _Din_ptr
+0204b1e4   _Thr_ptr
+0204b1e8   _FPGA_ctrl_ptr
+0204b1ec   _FPGA_stat_ptr
+0204b1f0   _A2D_ptr
+0204b1f4   _FPGA_ram1_ptr
+0204b1f8   _FPGA_ram2_ptr
+0204b1fc   _A2D_Gyros
+0204b200   _A2D_Accel
+0204b204   _Matrix_ptr
+0204b208   _Frame_Req_ptr
+0204b20c   _IR_Rcv_mask_ptr
+0204b210   _FPGA_ver_ptr
+0204b214   _gWdog
+0204b218   _gDout
+0204b21c   _gThr
+0204b25c   _initState
+0204b2b8   __TIMER_deviceTable
+0204b2d0   __TIMER_hDev0
+0204b2d4   __TIMER_hDev1
+0204b2d8   __TIMER_hBios
+0204b30c   _IIOF0_INT_ENABLE
+0204b310   _IIOF1_INT_ENABLE
+0204b33c   _mbx_task_triggers
+0204b36c   __lock
+0204b370   __unlock
+0204b400   TSK_estimator$stack
+0204db98   TSK_estimator$stkptr
+0204dc00   .text
+0204dc00   ___text__
+0204dc00   _padsEstimatorInit
+0204dc50   _padsEstimatorInitAndWait
+0204dca8   _padsEstimatorInitWaitAndSet
+0204df50   _padsEstimatorDisable
+0204e034   _padsEstimatorIsEnabled
+0204e048   _TSK_pads_estimator
+0204e318   _padsEstimatorTrigger
+0204e510   _pads_stateUSBeaconGyroUpdatePvarEKF
+0204f090   _pads_stateUSBeaconDetPvarEKF
+02050294   _pads_hgenUSBeaconUpdatePvarEKF
+0205096c   _pads_QrotUSBeaconUpdatePvarEKF
+020510e0   _pads_initStateUSBeaconGyroUpdatePvarEKF
+02051298   _pads_setCovariancePvar
+020513a8   _pads_setIMUPssEKF_Data
+0205146c   _pads_stateGyroUpdatePssEKF
+020514fc   _pads_getIMUDATATime
+02051510   _pads_initStateGyroUpdatePssEKF
+02051530   _pads_statePropPvarEKF
+020515f0   _pads_statePropDelTPvarEKF
+0205284c   _pads_GyroBiasIDEnableGet
+02052860   _pads_ThrustIntEnableGet
+02052880   _padsIntDistReduce
+02052cc0   _txAngDet
+02052e64   _padsDistReduce1
+02053104   _padsDistReduce2
+02053544   _zero_opposing_faces
+020537d0   _padsAngDet3Rcv
+02053f2c   _ang_det
+020545e4   _matDistCorrect
+020547e8   _elementDistCorrect
+02054de0   _elementDistCorrect2
+02054fe4   _find_distmat
+020550ac   _setUSBeacon_Data
+020550fc   _getUSBeacon_Dist
+02055150   _distCorrectionRx
+02055650   _estCovConvergenceSet
+020556c8   _estCovConvergenceGet
+020556dc   _estCovConvergenceReset
+020557b0   _lastTxVecBodyGet
+02055800   _TSK_gspdata_manager
+02055808   _process_rcvd_data
+02055b3c   _commProcessCommandPayload
+02055ed0   _commProcessBeaconPayload
+02055ff8   _beaconLocationsFromTrackInfoSet
+0205715c   _commProcessResetCommands
+02057728   _commRunTimeCmdGet
+02057740   _commRunTimeCmdCheck
+02057754   _commRunTimeCmdReset
+02057788   _push
+0205789c   _pop
+02057988   _commAutoAssignSet
+020579c0   _gspIdentitySet
+020579d4   _gspInitProgram
+02057ba4   _gspInitTest
+02057de8   _gspInitTask
+02057df0   _gspPadsInertial
+02057e60   _gspPadsGlobal
+02057e78   _gspTaskRun
+02057ee0   _getQuaternionMagnitude
+02057f38   _atPositionRotation
+0205802c   _atZeroVelocity
+0205814c   _send_SOH_packet_to_phone
+02058238   _gspControl
+02058a50   _gspRotateByQuaternion
+02058bd4   _checksumChecks
+02058ca4   _gspProcessPhoneCommandFloat
+0205946c   _gspProcessPhoneStateEstimate
+020595f4   _gspDifferentiatePhoneMessage
+02059690   _gspProcessRXData
+020596a0   _hkpTestResultCodeSet
+020596c0   _hkpSOHPeriodSet
+02059700   _hkpSendSOHPacket
+02059c14   _hkpSetAck
+02059c2c   _hkpBeaconCtrl
+02059c88   _SWI_housekeeping_log
+0205a144   _hkpIsEnabled
+0205a15c   _hkpTriggerReset
+0205a174   _hkpResetRFM
+0205a1a8   _hkpTankUseGet
+0205a1bc   _hkpTankUseAdd
+0205a1e4   _hkpTankUseReset
+0205a1fc   _TSK_hkpUpdateFlash
+0205a588   _TSK_hkpCPMon
+0205a640   _hkpSaveBeaconData
+0205a658   _hkpSaveINSData
+0205a670   _hkpEnterBootUponReset
+0205a6c4   _hkpWriteHWID
+0205a6f8   _hkpInitFromFlash
+0205a8c8   _hkpLoadFlash
+0205a9f0   _hkpFlashChecksumUpdate
+0205aaac   _hkpIMUCoefficientsGet
+0205b0f4   _hkp_health_set
+0205b19c   _hkp_health_get
+0205b1b0   _hkp_health_reset
+0205b1d4   _hkp_phys_prop_get
+0205b1e8   _hkp_phys_prop_set
+0205b220   _mathSquare
+0205b238   _mathMatVecMult
+0205b388   _mathMatMatMult
+0205b558   _mathMatMatTransposeMult
+0205b72c   _mathMatTransposeMatMult
+0205b8e4   _mathMatAdd
+0205b9c0   _mathVecOuter
+0205bacc   _mathSkewSymmetric
+0205bbd4   _mathVecAdd
+0205bc6c   _mathVecSubtract
+0205bd04   _mathVecInner
+0205bdac   _mathVecNormalize
+0205bf20   _mathVecMagnitude
+0205bffc   _mathInvert3x3
+0205c3b0   _mathBody2Global
+0205c440   _quat2matrixOut
+0205c6e4   _quat2matrixIn
+0205c790   _quatMult
+0205c9c8   _mathVecCross
+0205cac0   _ctrlPosHoldSet
+0205cae4   _ctrlPosHoldGet
+0205caf8   _ctrlBypassEnable
+0205cb2c   _ctrlUserCtrlEnabled
+0205cb40   _ctrlModeGet
+0205cb54   _ctrlTickRestart
+0205cb5c   _ctrlPeriodSet
+0205cb94   _ctrlPeriodGet
+0205cba8   _SWI_control_dispatch
+0205ccb0   _SWI_Controller
+0205d238   _ctrlGoToTransition
+0205d2e4   _ctrlGoToIdle
+0205d480   _ctrlGoToPosHold
+0205d63c   _ctrlGoToTankVent
+0205d7e0   _ctrlGotoUserControl
+0205d9a0   _ctrlTestTerminate
+0205d9c4   _ctrlTestNumSet
+0205dae0   _ctrlTestNumGet
+0205daf4   _ctrlTestTimeGet
+0205db04   _ctrlTestInfoGet
+0205dbb4   _ctrlManeuverReset
+0205dc30   _ctrlManeuverNumSet
+0205dc60   _ctrlManeuverNumGet
+0205dc74   _ctrlManeuverTimeGet
+0205dc88   _ctrlManeuverTerminate
+0205dca0   _ctrlStartingNewManeuver
+0205dcb4   _ctrlCountGet
+0205dcc8   _WatchForEnable
+0205dd7c   _ctrlSetIRNoise
+0205dda0   _ctrlThrustersOff
+0205ddf0   _controlPositionHold
+0205e15c   _sendThrDebugPacket
+0205e300   _gspPadsInertial_Checkout
+0205e3bc   _gspInitTest_Checkout
+0205e65c   _gspControl_Checkout
+0205ee64   _sendIMUDebugPacket
+0205f0a8   _gspTaskRun_Checkout
+0205f9a0   _HWI_IR_rcv
+0205fa18   _HWI_pads_rcv
+0205fb18   _padsBeaconNumberSet
+0205fb48   _padsExpBeaconTriggerSet
+0205fb68   _padsInitializeIR_Reflash
+0205fb80   _padsInitializeFPGA
+0205fcb0   _padsNumBeaconsGet
+0205fcc4   _SWI_process_pads
+0205fd8c   _padsInertialPeriodSet
+0205fedc   _pads_process_inertial
+020603d8   _pads_process_global
+02060548   _padsInertialAllocateBuffers
+0206068c   _padsInertialBufferCapacity
+020606a0   _padsStateGet
+020606e8   _padsStateSet
+02060740   _padsStateClear
+02060788   _padsSpeedOfSoundGet
+0206079c   _padsGlobalPeriodSetAndWait
+0206082c   _padsGlobalPeriodSet
+0206085c   _padsGlobalTriggerNow
+0206087c   _padsGlobalPeriodGet
+02060890   _padsBeaconLocationSet
+02060954   _padsBeaconLocationGet
+02060a0c   _padsBeaconLocationsAreRecent
+02060a20   _padsBeaconLocationsMarkRecent
+02060a38   _padsTemperatureSet
+02060ab8   _padsTemperatureGet
+02060acc   _padsIRCountGet
+02060b00   _padsInertialSamplePeriodGet
+02060b14   _padsInertialProcessPeriodGet
+02060b28   _padsSetBeaconNormalFromLocation
+02060c04   _padsRxPosGet
+02060c54   _padsGetNextPulse
+02060ca0   _choldc
+02060ee8   _cholinvA
+02061390   _cholsl
+02061600   _lubksb
+020618d4   _ludcmp
+02061fa0   _commHWAddrSet
+02061fc4   _commHWAddrGet
+02061fd8   _commTdmaFrameSync
+02062118   _commTdmaIsEnabled
+02062158   _commAssignChannel
+020621d0   _commAssignChannelGet
+02062200   _commTdmaStandardInit
+0206237c   _commTdmaInit
+020624e8   _commTdmaEnable
+0206252c   _commTdmaDisable
+02062570   _comm_init
+020625a0   _TSK_comm_manager
+020626c4   _CheckForPacket
+0206282c   _comm_tx_pump
+02062a54   _comm_rx_packet
+02062b00   _commSetLogicalToHWID
+02062b6c   _commGetHWFromLogical
+02062b98   _commGetLogicalFromHW
+02062bdc   _commSendRFMPacket
+02062c30   _commSendLongPacket
+02062f78   _CLK_TDMA_manager
+020631f4   _commResetRFM
+02063240   _commintRXPipeReadyToRead
+02063254   _commintRXPipeRead
+02063304   _commintTXPipeWrite
+020633f4   _commintInitHardware
+02063500   _HWI_comm_RX
+0206413c   _comm_rx_writer
+02064154   _comm_tx_reader
+0206416c   _SWI_comm_TX
+020642c0   _sysPhysicalDefaultsSet
+020645f8   _sysCADPhysicalDefaultsSet
+02064710   _sysDryMassGet
+02064724   _sysMassGet
+02064764   _sysFuelMassGet
+020647b8   _sysInertiaGet
+020647f4   _sysInertiaSet
+02064834   _sysInertiaInverseGet
+02064870   _sysInertiaInverseSet
+020648b0   _sysInertiaVecGet
+020648ec   _sysInertiaVecSet
+0206492c   _sysInertiaInverseVecGet
+02064968   _sysInertiaInverseVecSet
+020649a8   _sysCMWetGet
+020649e4   _sysCMWetSet
+02064a24   _sysCMDryGet
+02064a60   _sysCMDrySet
+02064aa0   _sysThrustStrGet
+02064adc   _sysThrustStrSet
+02064b1c   _sysThrustDirGet
+02064b58   _sysThrustDirSet
+02064b98   _sysThrustLocGet
+02064bd4   _sysBeaconRxGet
+02064ca4   _sysBeaconTxGet
+02064d80   _commBackgroundReset
+02064e0c   _commBackgroundPointerSet
+02064e58   _commBackgroundPointerDefault
+02064e80   _commBackgroundSendMode
+02064e94   _commBackgroundStateGet
+02064f48   _commBackgroundStateRead
+02064fbc   _commBackgroundStateWrite
+02065030   _commBackgroundTelemetryPeriodSet
+020650b0   _commBackgroundTelemetryPeriodGet
+020650c4   _PRD_background_comm
+020651cc   _commBackgroundSendNow
+02065268   _commBackgroundPayloadPack
+020654d8   _commProcessBackgroundPayload
+02065694   _commProcessBackgroundSOH
+02065768   _commBackgroundSOHGet
+02065840   _expv2_init
+020658ac   _expv2_reset
+0206594c   _expv2_cfg_cbk_register
+0206596c   _expv2_cfg_get
+020659b4   _expv2_gpio_set
+02065a10   _expv2_gpio_get
+02065a54   _expv2_gpio_cfg_set
+02065a98   _expv2_gpio_ODC_set
+02065adc   _expv2_gpio_cfg_get
+02065b1c   _expv2_gpio_cfg_read
+02065b98   _expv2_gpio_cbk_register
+02065bb8   _expv2_uart_send
+02065c50   _expv2_uart_baud_set
+02065ce4   _expv2_uart_baud_get
+02065d28   _expv2_uart_baud_read
+02065d4c   _expv2_uart_cfg_set
+02065e0c   _expv2_uart_cbk_register
+02065e38   _expv2_process_rx_packet
+020660e0   _ctrlPositionPIDinit
+02066114   _ctrlPositionPD
+02066214   _ctrlPositionPDgains
+02066334   _ctrlPositionPID
+02066560   _ctrlPositionPIDgains
+020667e0   _ctrlPositionDV2Force
+02066960   _ctrlMixSimple
+02066a2c   _ctrlMixWLoc
+020671e0   _ctrlAttitudeNLPDsidi
+02067488   _ctrlAttitudeNLPDwie
+020675c0   _ctrlAttitudeNLPIDwie
+02067998   _ctrlAttitudePIDinit
+020679e0   _Flash_WriteSector
+02067a50   _Flash_WriteAnySector
+02067fb0   _Flash_ReadWords
+02068100   _padsCountsConvertGyros
+02068194   _padsCountsConvertAccels
+02068228   _padsCountsCoefficientsGet
+020682dc   _padsCountsCoefficientsSet
+020683dc   _padsGyroBiasGet
+02068418   _padsGyroBiasSet
+02068458   _padsScaleGyros
+020684d4   _padsCountsConvertBeacon
+020685b8   _padsFilterGyroData
+02068700   _com_drv_InitRFM
+02068730   _com_drv_SendData
+0206884c   _com_drv_CommOutReady
+020688d8   _com_drv_SetPacketSize
+02068980   _com_drv_FlushAllInputs
+02068b74   _com_drv_ResetDR2000
+02068bc0   _acos
+02069020   _sysSphereTimeReset
+02069038   _sysSphereTimeGet
+0206904c   _sysTestTimeReset
+02069064   _sysTestTimeGet
+02069078   _sysTestTimeStart
+02069130   _sysIdentitySet
+0206918c   _sysIdentityGet
+020691a0   _sysProgramIDSet
+020691c0   _sysProgramIDGet
+020691d4   _sysErrorStateGet
+020691e8   _sysTimeTick
+02069234   _sysNumSpheresSet
+02069254   _sysNumSpheresGet
+02069268   _sysLocationSet
+020692fc   _sysLocationGet
+02069310   _sysInterruptsDisable
+02069348   _sysInterruptsEnable
+020693d4   _sysInterruptsAreEnabled
+02069400   _findStateError
+020697a0   _HWI_propulsion
+02069a20   _propSetThrusterTimes
+02069a60   _propGetCurrentThrusters
+02069a7c   _propSetThrusterBypassIR
+02069aa0   _propPadsInProgressReset
+02069ac0   _TSK_gsp_task_skeleton
+02069c00   _PostTaskTrigger
+02069cf4   _taskPostUserTrigger
+02069d34   _taskWaitForTime
+02069da0   _taskTriggerMaskSet
+02069de0   __frcdivd
+0206a0e0   _main
+0206a3a0   _sqrt
+0206a640   _sinf
+0206a8c0   _memcpy
+0206ab00   __divd
+0206ad40   _sqrtf
+0206af00   _GB_vars_init
+0206b0c0   __roundf
+0206b240   _ldexp
+0206b3c0   __divf
+0206b540   _TIMER_open
+0206b6a0   __CSL_init
+0206b800   _ldexpf
+0206b940   _frexp
+0206ba80   _expv2_uart_send_w_het_header
+0206bba0   _memset
+0206bcc0   _TIMER_reset
+0206bf00   _frexpf
+0206c000   __frcdivf
+0206c100   __strasg
+0206c1e0   __fixdu
+0206c2a0   __divu
+0206c360   _init_sphere
+0206c4e0   __remu
+0206c580   _atomic_memcpy
+0206c600   _modff
+0206c680   __IRQ_init
+0206c700   _TIMER_configArgs
+0206c760   __truncf
+0206c7a0   __nop
+0206c7a8   __register_lock
+0206c7bc   __register_unlock
+0206c7e0   _TIMER_start
+0206c820   _IRQ_enable
+0206c860   _BranchTo
+0206c880   _CSL_cfgInit
+0206c8a0   _IRQ_set
+0206c8c0   TSK_comm_mgr$stack
+0206c8c0   ___etext__
+0206c8c0   etext
+02074558   TSK_comm_mgr$stkptr
+02074a20   _CAD_DRY_MASS
+02074a24   _CAD_TANK_MASS
+02074a28   _CAD_FUEL_MASS
+02074a2c   _AVG_MASS_LOSS
+02074a30   _CAD_BATTERY_MASS
+02074a34   _CARRIAGE_MASS
+02074a38   _CAD_INERTIA
+02074a5c   _CAD_INERTIA_INV
+02074a80   _CARRIAGE_INERTIA
+02074a84   _MINI_CARRIAGE_INERTIA
+02074a88   _CAD_CM_WET
+02074a94   _CAD_CM_DRY
+02074aa0   _CAD_THRUST_STRENGTH
+02074ad0   _CAD_THRUST_DIRECTION
+02074b60   _CAD_THRUST_LOCATIONS
+02074db8   _PADS_GLOBAL_DISABLE
+02074dbc   _RX_POS
+020755cc   _PHYS_PROP
+020755d0   _DOCK_MECHANISM_PRESENT
+020755d4   _VEHICLE_MASS
+020755d8   _VEHICLE_ROT_ACCEL
+020755dc   _VEHICLE_LIN_ACCEL
+020755e0   _VEHICLE_THRUST_FORCE
+020755e4   _VEHICLE_MOMENT_ARM
+020755e8   _DEFAULT_THRUSTER_FORCE
+020755ec   _VEHICLE_THRUST_FORCE_MULTIPLIER
+020755f0   _KPattitudePD
+020755f4   _KDattitudePD
+020755f8   _KPpositionPD
+020755fc   _KDpositionPD
+02075600   _KPattitudePID
+02075604   _KIattitudePID
+02075608   _KDattitudePID
+0207560c   _KPpositionPID
+02075610   _KIpositionPID
+02075614   _KDpositionPID
+02075618   _POSITION_SCALE
+0207561c   _VELOCITY_SCALE
+02075620   _QUATERNION_SCALE
+02075624   _ANGULAR_RATE_SCALE
+02075628   _INV_POSITION_SCALE
+0207562c   _INV_VELOCITY_SCALE
+02075630   _INV_QUATERNION_SCALE
+02075634   _INV_ANGULAR_RATE_SCALE
+02075638   _USE_916MHZ
+0207563c   _NEED_PKT_ACK
+0207565c   _CTRL_DONE_TRIG
+02075660   _MESSAGE_TX_ACK_TRIG
+02075664   _DATA_TX_DONE_TRIG
+02075668   _DATA_RX_DONE_TRIG
+0207566c   _PADS_GLOBAL_START_TRIG
+02075670   _PADS_GLOBAL_BEACON_TRIG
+02075674   _PADS_INERTIAL_TRIG
+02075678   _PADS_ESTIMATOR_DONE_TRIG
+0207567c   _TASK_TIME_TRIG
+02075680   _TEST_START_TRIG
+02075684   _GSP_USER_TRIG
+02075688   _COMM_GSP_TRIG
+0207568c   _HKP_HEALTH_CHANGE_TRIG
+02075690   _TASK_WAIT_FOREVER
+02075694   _ACK_CHAR
+0207571d   .data
+0207571d   ___data__
+0207571d   ___edata__
+0207571d   edata
+02075720   MBX_CommSTL_LO$queElems
+02076350   ___cinit__
+02076350   cinit
+0207aa64   MBX_CommSTS_LO$queElems
+0207b694   MBX_Task_Triggers$queElems
+0207b914   MBX_Estimator$queElems
+02080f04   PIP_comm_RX$buf0
+02081234   PIP_comm_RX$buf1
+02081564   PIP_comm_RX$buf2
+02081894   PIP_comm_RX$buf3
+02081bc4   PIP_comm_RX$buf4
+02081ef4   PIP_comm_RX$buf5
+02082224   PIP_comm_RX$buf6
+02082554   PIP_comm_RX$buf7
+02082884   PIP_comm_RX$buf8
+02082bb4   PIP_comm_RX$buf9
+02082ee4   PIP_comm_RX$buf10
+02083214   PIP_comm_RX$buf11
+02083544   PIP_comm_RX$buf12
+02083874   PIP_comm_RX$buf13
+02083ba4   PIP_comm_RX$buf14
+02083ed4   PIP_comm_RX$buf15
+02084204   PIP_comm_RX$buf16
+02084534   PIP_comm_RX$buf17
+02084864   PIP_comm_RX$buf18
+02084b94   PIP_comm_RX$buf19
+02084ec4   PIP_comm_RX$buf20
+020851f4   PIP_comm_RX$buf21
+02085524   PIP_comm_RX$buf22
+02085854   PIP_comm_RX$buf23
+02085b84   PIP_comm_RX$buf24
+02085eb4   PIP_comm_RX$buf25
+020861e4   PIP_comm_RX$buf26
+02086514   PIP_comm_RX$buf27
+02086844   PIP_comm_RX$buf28
+02086b74   PIP_comm_RX$buf29
+02086ea4   PIP_comm_RX$buf30
+020871d4   PIP_comm_RX$buf31
+02087504   PIP_comm_RX$buf32
+02087834   PIP_comm_RX$buf33
+02087b64   PIP_comm_RX$buf34
+02087e94   PIP_comm_RX$buf35
+020881c4   PIP_comm_RX$buf36
+020884f4   PIP_comm_RX$buf37
+02088824   PIP_comm_RX$buf38
+02088b54   PIP_comm_RX$buf39
+02088e84   PIP_comm_RX$buf40
+020891b4   PIP_comm_RX$buf41
+020894e4   PIP_comm_RX$buf42
+02089814   PIP_comm_RX$buf43
+02089b44   PIP_comm_RX$buf44
+02089e74   PIP_comm_RX$buf45
+0208a1a4   PIP_comm_RX$buf46
+0208a4d4   PIP_comm_RX$buf47
+0208a804   PIP_comm_RX$buf48
+0208ab34   PIP_comm_RX$buf49
+0208ae64   PIP_comm_RX$buf50
+0208b194   PIP_comm_RX$buf51
+0208b4c4   PIP_comm_RX$buf52
+0208b7f4   PIP_comm_RX$buf53
+0208bb24   PIP_comm_RX$buf54
+0208be54   PIP_comm_RX$buf55
+0208c184   PIP_comm_RX$buf56
+0208c4b4   PIP_comm_RX$buf57
+0208c7e4   PIP_comm_RX$buf58
+0208cb14   PIP_comm_RX$buf59
+0208ce44   PIP_comm_RX$buf60
+0208d174   PIP_comm_RX$buf61
+0208d4a4   PIP_comm_RX$buf62
+0208d7d4   PIP_comm_RX$buf63
+0208db04   PIP_comm_RX$buf64
+0208de34   PIP_comm_RX$buf65
+0208e164   PIP_comm_RX$buf66
+0208e494   PIP_comm_RX$buf67
+0208e7c4   PIP_comm_RX$buf68
+0208eaf4   PIP_comm_RX$buf69
+0208ee24   PIP_comm_RX$buf70
+0208f154   PIP_comm_RX$buf71
+0208f484   PIP_comm_RX$buf72
+0208f7b4   PIP_comm_RX$buf73
+0208fae4   PIP_comm_RX$buf74
+0208fe14   PIP_comm_RX$buf75
+02090144   PIP_comm_RX$buf76
+02090474   PIP_comm_RX$buf77
+020907a4   PIP_comm_RX$buf78
+02090ad4   PIP_comm_RX$buf79
+02090e04   PIP_comm_RX$buf80
+02091134   PIP_comm_RX$buf81
+02091464   PIP_comm_RX$buf82
+02091794   PIP_comm_RX$buf83
+02091ac4   PIP_comm_RX$buf84
+02091df4   PIP_comm_RX$buf85
+02092124   PIP_comm_RX$buf86
+02092454   PIP_comm_RX$buf87
+02092784   PIP_comm_RX$buf88
+02092ab4   PIP_comm_RX$buf89
+02092de4   PIP_comm_RX$buf90
+02093114   PIP_comm_RX$buf91
+02093444   PIP_comm_RX$buf92
+02093774   PIP_comm_RX$buf93
+02093aa4   PIP_comm_RX$buf94
+02093dd4   PIP_comm_RX$buf95
+02094104   PIP_comm_RX$buf96
+02094434   PIP_comm_RX$buf97
+02094764   PIP_comm_RX$buf98
+02094a94   PIP_comm_RX$buf99
+02094dc4   PIP_comm_RX$buf100
+020950f4   PIP_comm_RX$buf101
+02095424   PIP_comm_RX$buf102
+02095754   PIP_comm_RX$buf103
+02095a84   PIP_comm_RX$buf104
+02095db4   PIP_comm_RX$buf105
+020960e4   PIP_comm_RX$buf106
+02096414   PIP_comm_RX$buf107
+02096744   PIP_comm_RX$buf108
+02096a74   PIP_comm_RX$buf109
+02096da4   PIP_comm_RX$buf110
+020970d4   PIP_comm_RX$buf111
+02097404   PIP_comm_RX$buf112
+02097734   PIP_comm_RX$buf113
+02097a64   PIP_comm_RX$buf114
+02097d94   PIP_comm_RX$buf115
+020980c4   PIP_comm_RX$buf116
+020983f4   PIP_comm_RX$buf117
+02098724   PIP_comm_RX$buf118
+02098a54   PIP_comm_RX$buf119
+02098d84   PIP_comm_RX$buf120
+020990b4   PIP_comm_RX$buf121
+020993e4   PIP_comm_RX$buf122
+02099714   PIP_comm_RX$buf123
+02099a44   PIP_comm_RX$buf124
+02099d74   PIP_comm_RX$buf125
+0209a0a4   PIP_comm_RX$buf126
+0209a3d4   PIP_comm_RX$buf127
+0209a704   PIP_comm_RX$buf128
+0209aa34   PIP_comm_RX$buf129
+0209ad64   PIP_comm_RX$buf130
+0209b094   PIP_comm_RX$buf131
+0209b3c4   PIP_comm_RX$buf132
+0209b6f4   PIP_comm_RX$buf133
+0209ba24   PIP_comm_RX$buf134
+0209bd54   PIP_comm_RX$buf135
+0209c084   PIP_comm_RX$buf136
+0209c3b4   PIP_comm_RX$buf137
+0209c6e4   PIP_comm_RX$buf138
+0209ca14   PIP_comm_RX$buf139
+0209cd44   PIP_comm_RX$buf140
+0209d074   PIP_comm_RX$buf141
+0209d3a4   PIP_comm_RX$buf142
+0209d6d4   PIP_comm_RX$buf143
+0209da04   PIP_comm_RX$buf144
+0209dd34   PIP_comm_RX$buf145
+0209e064   PIP_comm_RX$buf146
+0209e394   PIP_comm_RX$buf147
+0209e6c4   PIP_comm_RX$buf148
+0209e9f4   PIP_comm_RX$buf149
+0209ed24   PIP_comm_RX$buf150
+0209f054   PIP_comm_RX$buf151
+0209f384   PIP_comm_RX$buf152
+0209f6b4   PIP_comm_RX$buf153
+0209f9e4   PIP_comm_RX$buf154
+0209fd14   PIP_comm_RX$buf155
+020a0044   PIP_comm_RX$buf156
+020a0374   PIP_comm_RX$buf157
+020a06a4   PIP_comm_RX$buf158
+020a09d4   PIP_comm_RX$buf159
+020a0d04   PIP_comm_RX$buf160
+020a1034   PIP_comm_RX$buf161
+020a1364   PIP_comm_RX$buf162
+020a1694   PIP_comm_RX$buf163
+020a19c4   PIP_comm_RX$buf164
+020a1cf4   PIP_comm_RX$buf165
+020a2024   PIP_comm_RX$buf166
+020a2354   PIP_comm_RX$buf167
+020a2684   PIP_comm_RX$buf168
+020a29b4   PIP_comm_RX$buf169
+020a2ce4   PIP_comm_RX$buf170
+020a3014   PIP_comm_RX$buf171
+020a3344   PIP_comm_RX$buf172
+020a3674   PIP_comm_RX$buf173
+020a39a4   PIP_comm_RX$buf174
+020a3cd4   PIP_comm_RX$buf175
+020a4004   PIP_comm_RX$buf176
+020a4334   PIP_comm_RX$buf177
+020a4664   PIP_comm_RX$buf178
+020a4994   PIP_comm_RX$buf179
+020a4cc4   PIP_comm_RX$buf180
+020a4ff4   PIP_comm_RX$buf181
+020a5324   PIP_comm_RX$buf182
+020a5654   PIP_comm_RX$buf183
+020a5984   PIP_comm_RX$buf184
+020a5cb4   PIP_comm_RX$buf185
+020a5fe4   PIP_comm_RX$buf186
+020a6314   PIP_comm_RX$buf187
+020a6644   PIP_comm_RX$buf188
+020a6974   PIP_comm_RX$buf189
+020a6ca4   PIP_comm_RX$buf190
+020a6fd4   PIP_comm_RX$buf191
+020a7304   PIP_comm_RX$buf192
+020a7634   PIP_comm_RX$buf193
+020a7964   PIP_comm_RX$buf194
+020a7c94   PIP_comm_RX$buf195
+020a7fc4   PIP_comm_RX$buf196
+020a82f4   PIP_comm_RX$buf197
+020a8624   PIP_comm_RX$buf198
+020a8954   PIP_comm_RX$buf199
+020a8c84   PIP_comm_RX$buf200
+020a8fb4   PIP_comm_RX$buf201
+020a92e4   PIP_comm_RX$buf202
+020a9614   PIP_comm_RX$buf203
+020a9944   PIP_comm_RX$buf204
+020a9c74   PIP_comm_RX$buf205
+020a9fa4   PIP_comm_RX$buf206
+020aa2d4   PIP_comm_RX$buf207
+020aa604   PIP_comm_RX$buf208
+020aa934   PIP_comm_RX$buf209
+020aac64   PIP_comm_RX$buf210
+020aaf94   PIP_comm_RX$buf211
+020ab2c4   PIP_comm_RX$buf212
+020ab5f4   PIP_comm_RX$buf213
+020ab924   PIP_comm_RX$buf214
+020abc54   PIP_comm_RX$buf215
+020abf84   PIP_comm_RX$buf216
+020ac2b4   PIP_comm_RX$buf217
+020ac5e4   PIP_comm_RX$buf218
+020ac914   PIP_comm_RX$buf219
+020acc44   PIP_comm_RX$buf220
+020acf74   PIP_comm_RX$buf221
+020ad2a4   PIP_comm_RX$buf222
+020ad5d4   PIP_comm_RX$buf223
+020ad904   PIP_comm_RX$buf224
+020adc34   PIP_comm_RX$buf225
+020adf64   PIP_comm_RX$buf226
+020ae294   PIP_comm_RX$buf227
+020ae5c4   PIP_comm_RX$buf228
+020ae8f4   PIP_comm_RX$buf229
+020aec24   PIP_comm_RX$buf230
+020aef54   PIP_comm_RX$buf231
+020af284   PIP_comm_RX$buf232
+020af5b4   PIP_comm_RX$buf233
+020af8e4   PIP_comm_RX$buf234
+020afc14   PIP_comm_RX$buf235
+020aff44   PIP_comm_RX$buf236
+020b0274   PIP_comm_RX$buf237
+020b05a4   PIP_comm_RX$buf238
+020b08d4   PIP_comm_RX$buf239
+020b0c04   PIP_comm_RX$buf240
+020b0f34   PIP_comm_RX$buf241
+020b1264   PIP_comm_RX$buf242
+020b1594   PIP_comm_RX$buf243
+020b18c4   PIP_comm_RX$buf244
+020b1bf4   PIP_comm_RX$buf245
+020b1f24   PIP_comm_RX$buf246
+020b2254   PIP_comm_RX$buf247
+020b2584   PIP_comm_RX$buf248
+020b28b4   PIP_comm_RX$buf249
+020b2be4   PIP_comm_RX$buf250
+020b2f14   PIP_comm_RX$buf251
+020b3244   PIP_comm_RX$buf252
+020b3574   PIP_comm_RX$buf253
+020b38a4   PIP_comm_RX$buf254
+020b3bd4   PIP_comm_RX$buf255
+020b3f08   TSK_bkg_flash_write$stack
+020b42a0   TSK_bkg_flash_write$stkptr
+020b4320   BIOS_init
+020b4320   _BIOS_init
+020b44ac   BIOS_start
+020b44ac   _BIOS_start
+020b4540   _c_int00
+020b4620   TSK_gsp_task$stack
+020bc2b8   TSK_gsp_task$stkptr
+020bc320   SDRAM$B
+020bc320   _SDRAM_base
+082039a3   HWI_INTRMULTHIGH
+250718a4   HWI_INTRMULTLOW
+80000000   CLK_A_TABBEG
+80000000   Propulsion
+80000000   _Propulsion
+80000004   Comm_TDMA_Mgr
+80000004   _Comm_TDMA_Mgr
+80000008   CLK_null
+8000000c   CLK_A_TABEND
+8000000c   Control_Dispatch
+8000000c   PRD_A_TABBEG
+8000000c   _Control_Dispatch
+80000028   Control_Dispatch$aaa
+8000002c   FastHousekeeping
+8000002c   _FastHousekeeping
+80000048   FastHousekeeping$aaa
+8000004c   Telemetry
+8000004c   _Telemetry
+80000068   Telemetry$aaa
+8000006c   PRD_A_TABEND
+8000006c   PRD_SWIHANDLE
+8000006c   PRD_swi
+8000006c   SWI_A_TABBEG
+8000006c   _PRD_swi
+80000098   KNL_swi
+80000098   _KNL_swi
+800000c4   _packet_TX_swi
+800000c4   packet_TX_swi
+800000f0   PADS
+800000f0   _PADS
+8000011c   Controller
+8000011c   _Controller
+80000148   IDL_A_TABBEG
+80000148   IDL_END
+80000148   SWI_A_TABEND
+8000014c   IDL_A_CALBEG
+8000014c   IDL_A_TABEND
+8000014c   IDL_END$
+80000150   IDL_A_CALEND
+80000154   TRC_cinit
+80000158   TRC_R_mask
+80000158   _TRC_R_mask
+8000015c   GBL_initdone
+80000160   _SYS_PUTCBEG
+8000035f   _SYS_PUTCEND
+80000364   SYS$config
+80000374   Control_Dispatch$sts$stsobj
+80000374   STS_A_TABBEG
+80000374   STS_A_TABEND
+80000374   _STS_A_TABBEG
+80000374   _STS_A_TABEND
+80000378   Control_Dispatch$sts
+80000384   FastHousekeeping$sts$stsobj
+80000388   FastHousekeeping$sts
+80000394   Telemetry$sts$stsobj
+80000398   Telemetry$sts
+800003a4   PRD_swi$sts$stsobj
+800003a8   PRD_swi$sts
+800003b4   KNL_swi$sts$stsobj
+800003b8   KNL_swi$sts
+800003c4   packet_TX_swi$sts$stsobj
+800003c8   packet_TX_swi$sts
+800003d4   PADS$sts$stsobj
+800003d8   PADS$sts
+800003e4   Controller$sts$stsobj
+800003e8   Controller$sts
+800003f4   MBX_CommEXPv2$queElems
+800055d4   MBX_CommSTS_HI$queElems
+80006204   MBX_CommSTL_HI$queElems
+80006e40   MBX_CommSTL_LO
+80006e40   _MBX_CommSTL_LO
+80006e50   MBX_CommSTL_LO$data
+80006e6c   MBX_CommSTL_LO$free
+80006ea0   MBX_CommSTL_HI
+80006ea0   _MBX_CommSTL_HI
+80006eb0   MBX_CommSTL_HI$data
+80006ecc   MBX_CommSTL_HI$free
+80006f00   MBX_CommSTS_HI
+80006f00   _MBX_CommSTS_HI
+80006f10   MBX_CommSTS_HI$data
+80006f2c   MBX_CommSTS_HI$free
+80006f60   MBX_CommSTS_LO
+80006f60   _MBX_CommSTS_LO
+80006f70   MBX_CommSTS_LO$data
+80006f8c   MBX_CommSTS_LO$free
+80006fc0   MBX_Task_Triggers
+80006fc0   _MBX_Task_Triggers
+80006fd0   MBX_Task_Triggers$data
+80006fec   MBX_Task_Triggers$free
+80007020   MBX_Estimator
+80007020   _MBX_Estimator
+80007030   MBX_Estimator$data
+8000704c   MBX_Estimator$free
+80007080   MBX_CommEXPv2
+80007080   _MBX_CommEXPv2
+80007090   MBX_CommEXPv2$data
+800070ac   MBX_CommEXPv2$free
+800070e0   SEM_Comm_TX_enable_STS
+800070e0   _SEM_Comm_TX_enable_STS
+80007108   SEM_Comm_Activity
+80007108   _SEM_Comm_Activity
+80007130   SEM_Comm_TX_enable_STL
+80007130   _SEM_Comm_TX_enable_STL
+80007158   SEM_gsp_task
+80007158   _SEM_gsp_task
+80007180   SEM_global_pads_request
+80007180   _SEM_global_pads_request
+800071a8   SEM_datacomm_STL
+800071a8   _SEM_datacomm_STL
+800071d0   SEM_update_flash
+800071d0   _SEM_update_flash
+800071f8   SEM_datacomm_STS
+800071f8   _SEM_datacomm_STS
+80007214   PIP_comm_TX$buf0
+800072a8   PIP_comm_TX$buf1
+8000733c   PIP_A_TABBEG
+8000733c   PIP_comm_TX
+8000733c   _PIP_A_TABBEG
+8000733c   _PIP_comm_TX
+80007340   PIP_comm_TX$rd
+8000736c   PIP_comm_TX$aaa
+80007370   PIP_comm_TX$wr
+8000739c   PIP_comm_TX$bbb
+800073a0   PIP_comm_RX
+800073a0   _PIP_comm_RX
+800073a4   PIP_comm_RX$rd
+800073d0   PIP_comm_RX$aaa
+800073d4   PIP_comm_RX$wr
+80007400   PIP_comm_RX$bbb
+80007404   LOG_A_TABBEG
+80007404   LOG_system
+80007404   PIP_A_TABEND
+80007404   _LOG_A_TABBEG
+80007404   _LOG_system
+80007404   _PIP_A_TABEND
+8000741c   _trace
+8000741c   trace
+80007434   HST_A_TABBEG
+80007434   HST_A_TABEND
+80007434   LOG_A_TABEND
+80007434   _HST_A_TABBEG
+80007434   _HST_A_TABEND
+80007434   _LOG_A_TABEND
+80007438   TSK_cp_monitor$stack
+80007450   TSK_cp_monitor$stkptr
+80007500   LOG_system$buf
+80007800   trace$buf
+80007c00   TSK_datacomm_STS$stack
+80007f98   TSK_datacomm_STS$stkptr
+8000800c   TSK_idle
+8000800c   _TSK_idle
+8000806c   TSK_comm_mgr
+8000806c   _TSK_comm_mgr
+800080cc   TSK_gsp_task
+800080cc   _TSK_gsp_task
+8000812c   TSK_datacomm_STL
+8000812c   _TSK_datacomm_STL
+8000818c   TSK_bkg_flash_write
+8000818c   _TSK_bkg_flash_write
+800081ec   TSK_cp_monitor
+800081ec   _TSK_cp_monitor
+8000824c   TSK_datacomm_STS
+8000824c   _TSK_datacomm_STS
+800082ac   TSK_estimator
+800082ac   _TSK_estimator
+80008300   TSK_idle$stack
+80008698   TSK_idle$stkptr
+80008700   TSK_datacomm_STL$stack
+80008a98   TSK_datacomm_STL$stkptr
+ffffffff   HST_DSMBUFSEG
+ffffffff   IDRAM
+ffffffff   IPRAM
+ffffffff   RTDX_DATAMEMSEG
+ffffffff   SBSRAM
+ffffffff   VECS
+ffffffff   _IDRAM
+ffffffff   _IPRAM
+ffffffff   _SBSRAM
+ffffffff   _VECS
+ffffffff   ___pinit__
+
+[1385 symbols]
