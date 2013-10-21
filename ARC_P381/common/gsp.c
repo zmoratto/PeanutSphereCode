@@ -123,6 +123,7 @@ unsigned char global_target_reached = FALSE;
 unsigned char global_sphere_error = FALSE;
 unsigned short global_last_cmd = 0;
 unsigned char global_add_translate = TRUE;
+int packetsFromPhone =0;
 
 // callback function prototype
 void gspDifferentiatePhoneMessage(unsigned char channel, unsigned char* buffer, unsigned int len);
@@ -162,7 +163,7 @@ void gspInitProgram()
 	
    expv2_init(); // still needed? not in VERTIGO_ExpV2_Testing
    expv2_uart_cbk_register(1,&gspDifferentiatePhoneMessage);
-   expv2_uart_baud_set(1,115200);
+   expv2_uart_baud_set(1,9600);
 }
 
 unsigned char cnt;
@@ -306,11 +307,11 @@ void send_SOH_packet_to_phone() {
 	my_soh.unused[2]		= global_last_cmd & 0xFF;
 	
 	// send it
-	expv2_uart_send_w_het_header(EXPv2_CH1_HWID, sizeof(comm_payload_soh), (unsigned char *)&my_soh, COMM_CMD_SOH);
+//	expv2_uart_send_w_het_header(EXPv2_CH1_HWID, sizeof(comm_payload_soh), (unsigned char *)&my_soh, COMM_CMD_SOH);
 
 
 	commBackgroundPayloadPack(&my_position);
-	expv2_uart_send_w_het_header(EXPv2_CH1_HWID, sizeof(comm_payload_telemetry), (unsigned char *)&my_position, COMM_CMD_BACKGROUND);
+//	expv2_uart_send_w_het_header(EXPv2_CH1_HWID, sizeof(comm_payload_telemetry), (unsigned char *)&my_position, COMM_CMD_BACKGROUND);
 }
 
 void gspControl(unsigned int test_number, unsigned int test_time, unsigned int maneuver_number, unsigned int maneuver_time)
@@ -336,7 +337,16 @@ void gspControl(unsigned int test_number, unsigned int test_time, unsigned int m
    
     padsStateGet(ctrlState);
     
-    if(testclass == CHECKOUT) {
+    send_SOH_packet_to_phone();
+
+	dbg_target[0] = maneuver_time;
+
+	dbg_error[0] = maneuver_time/1000;
+
+	commSendRFMPacket(COMM_CHANNEL_STL, GROUND, COMM_CMD_DBG_FLOAT, (unsigned char *) dbg_target, 0);
+//	commSendRFMPacket(COMM_CHANNEL_STL, GROUND, COMM_CMD_DBG_SHORT, (unsigned char *) dbg_error, 0);
+    
+/*    if(testclass == CHECKOUT) {
     	gspControl_Checkout(test_number, test_time, maneuver_number, maneuver_time);
     	return;
     }
@@ -451,12 +461,12 @@ void gspControl(unsigned int test_number, unsigned int test_time, unsigned int m
 	dbg_error[8] = ctrlStateError[QUAT_4]*1000;
 	dbg_error[9] = fabs(getQuaternionMagnitude(ctrlStateError[QUAT_4]))*1000.0;
 	dbg_error[10] = QUAT_AXIS_MARGIN*1000.0;
-	dbg_error[11] = global_target_reached;
+	dbg_error[11] = global_target_reached;*/
 
-	send_SOH_packet_to_phone();
+/*	send_SOH_packet_to_phone();
 
 	commSendRFMPacket(COMM_CHANNEL_STL, GROUND, COMM_CMD_DBG_FLOAT, (unsigned char *) dbg_target, 0);
-	commSendRFMPacket(COMM_CHANNEL_STL, GROUND, COMM_CMD_DBG_SHORT, (unsigned char *) dbg_error, 0);
+	commSendRFMPacket(COMM_CHANNEL_STL, GROUND, COMM_CMD_DBG_SHORT, (unsigned char *) dbg_error, 0);*/
 }
 
 // rotates quaternion 1 by quaternion 2 and returns as total (xyzw)
@@ -505,7 +515,7 @@ void gspProcessPhoneCommandFloat(unsigned char channel, unsigned char* buffer, u
 //    dbg_short_packet dbg_error;
     //expv2_uart_send_w_het_header(EXPv2_CH1_HWID, len, buffer, COMM_CMD_SOH);
 		
-	commSendRFMPacket(COMM_CHANNEL_STL, GROUND, COMM_CMD_DBG_FLOAT, (unsigned char *) dbg_target, 0);
+//	commSendRFMPacket(COMM_CHANNEL_STL, GROUND, COMM_CMD_DBG_FLOAT, (unsigned char *) dbg_target, 0);
 
 	// check the checksum
 	if(!checksumChecks(buffer, len)) {
@@ -644,7 +654,11 @@ void gspProcessPhoneCommandFloat(unsigned char channel, unsigned char* buffer, u
 
 void gspProcessPhoneStateEstimate(unsigned char channel, unsigned char* buffer, unsigned int len) {
 		comm_payload_telemetry_float* pkt = (comm_payload_telemetry_float*)buffer;
+		dbg_short_packet dbg_error;
+		int i;
+		memset(dbg_error,0,sizeof(dbg_short_packet));
 		
+		  
 		phoneStateEstimate[POS_X] = pkt->pos[0];
 		phoneStateEstimate[POS_Y] = pkt->pos[1];
 		phoneStateEstimate[POS_Z] = pkt->pos[2];
@@ -658,6 +672,13 @@ void gspProcessPhoneStateEstimate(unsigned char channel, unsigned char* buffer, 
 		phoneStateEstimate[RATE_X]= pkt->rate[0];
 		phoneStateEstimate[RATE_Y]= pkt->rate[1];
 		phoneStateEstimate[RATE_Z]= pkt->rate[2];
+		
+		packetsFromPhone++;
+		for(i=1; i< 12; i++) {
+			dbg_error[i] = packetsFromPhone;
+		}
+
+	commSendRFMPacket(COMM_CHANNEL_STL, GROUND, COMM_CMD_DBG_SHORT, (unsigned char *) dbg_error, 0);
 }
 
 void gspDifferentiatePhoneMessage(unsigned char channel, unsigned char* buffer, unsigned int len) {
