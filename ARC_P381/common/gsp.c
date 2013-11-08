@@ -125,6 +125,7 @@ unsigned char global_add_translate = TRUE;
 static int packetsFromPhone =0;
 static int statePacketsFromPhone =0;
 static int commandPacketsFromPhone =0;
+state_vector phoneStateEstimate;
 
 // callback function prototype
 void gspDifferentiatePhoneMessage(unsigned char channel, unsigned char* buffer, unsigned int len);
@@ -178,13 +179,13 @@ void gspInitTest(unsigned int test_number)
     
     memset(gpio_out,0,sizeof(gpio_out));
     
-/*#if (SPHERE_ID == SPHERE1)
+#if (SPHERE_ID == SPHERE1)
     padsEstimatorInitWaitAndSet(initState, 50, 200, 105,
                                 PADS_INIT_THRUST_INT_ENABLE,PADS_BEACONS_SET_1TO9); // ISS 
 #else
     padsEstimatorInitWaitAndSet(initState, 50, SYS_FOREVER, SYS_FOREVER,
                                 PADS_INIT_THRUST_INT_ENABLE,PADS_BEACONS_SET_1TO9); // ISS
-#endif*/
+#endif
 
     
     memset(ctrlStateTarget,0,sizeof(state_vector));
@@ -267,7 +268,7 @@ void gspTaskRun(unsigned int gsp_task_trigger, unsigned int extra_data)
 		break;
 	}
 }
-/*
+
 float getQuaternionMagnitude(float qw) {
 	return 2*acos(qw);
 }
@@ -307,7 +308,7 @@ int atZeroVelocity(state_vector error)
 		return FALSE;
 	}
 }
-*/
+
 void send_SOH_packet_to_phone() {
     comm_payload_soh my_soh;
  	
@@ -324,7 +325,7 @@ void send_SOH_packet_to_phone() {
 	expv2_uart_send_w_het_header(EXPv2_CH1_HWID, sizeof(comm_payload_soh), (unsigned char *)&my_soh, COMM_CMD_SOH);
 }
 
-/*void send_payload_state_estimate_packet_to_phone() {
+void send_payload_state_estimate_packet_to_phone() {
     comm_payload_state_estimate packet_float;
  	
  	packet_float.time_and_id_field = 1;
@@ -345,54 +346,37 @@ void send_SOH_packet_to_phone() {
 	
 	// send it
 	expv2_uart_send_w_het_header(EXPv2_CH1_HWID, sizeof(comm_payload_state_estimate), (unsigned char *)&packet_float, COMM_PAYLOAD_STATE_EST);
-}*/
+}
 
 void gspControl(unsigned int test_number, unsigned int test_time, unsigned int maneuver_number, unsigned int maneuver_time)
 {	
-//    state_vector ctrlState; // current state vector of the sphere
-//    state_vector ctrlStateError; // difference btwn ctrlState and ctrlStateTarget
-//    float ctrlControl[6];
-//    prop_time firing_times;
-//    const int min_pulse = 10;
-//    extern const float KPattitudePD, KDattitudePD, KPpositionPD, KDpositionPD;
-/*	dbg_float_packet dbg_target;
-//    extern state_vector initState;
+    state_vector ctrlState; // current state vector of the sphere
+    state_vector ctrlStateError; // difference btwn ctrlState and ctrlStateTarget
+    float ctrlControl[6];
+    prop_time firing_times;
+    const int min_pulse = 10;
+    extern const float KPattitudePD, KDattitudePD, KPpositionPD, KDpositionPD;
+	dbg_float_packet dbg_target;
+    extern state_vector initState;
 //    comm_payload_telemetry payload; ///XXX
-	int i; // XXX
 	dbg_short_packet dbg_error;
 		
 	memset(dbg_error,0,sizeof(dbg_short_packet));	
     //Clear all uninitialized vectors
-//    memset(ctrlControl,0,sizeof(float)*6);
-//    memset(ctrlStateError,0,sizeof(state_vector));
+    memset(ctrlControl,0,sizeof(float)*6);
+    memset(ctrlStateError,0,sizeof(state_vector));
 
     memset(dbg_target,0,sizeof(dbg_float_packet));
     
 //    memset(my_soh,0,sizeof(comm_payload_soh));
-	global_test_time = test_time;
+//	global_test_time = test_time;
    
-//    padsStateGet(ctrlState);
+    padsStateGet(ctrlState);
     
-//    send_SOH_packet_to_phone();
+    send_SOH_packet_to_phone();
 
 	dbg_target[0] = maneuver_time;
-*//*	for(i=0; i<7; i++) {
-		dbg_target[i+1] = ctrlState[i];
-	}*/
-	
-/*	for(i=0;i<8; i++) {
-		dbg_target[i+1] = phoneStateEstimate[i];
-	}
-		
-	for(i=1; i< 3; i++) {
-		dbg_error[i] = packetsFromPhone;
-	}
-	for(i=3; i< 5; i++) {
-		dbg_error[i] = commandPacketsFromPhone;
-	}
-	for(i=5; i< 10; i++) {
-		dbg_error[i] = statePacketsFromPhone;
-	}
+
 
 	commSendRFMPacket(COMM_CHANNEL_STL, GROUND, COMM_CMD_DBG_SHORT, (unsigned char *) dbg_error, 0);
 	
@@ -400,9 +384,9 @@ void gspControl(unsigned int test_number, unsigned int test_time, unsigned int m
 //	send_payload_state_estimate_packet_to_phone();
 	commSendRFMPacket(COMM_CHANNEL_STL, GROUND, COMM_CMD_DBG_FLOAT, (unsigned char *) dbg_target, 0);
 //	expv2_uart_send_w_het_header(EXPv2_CH1_HWID, sizeof(comm_payload_telemetry), (unsigned char *)&payload, COMM_CMD_BACKGROUND);
-*/
+
     
-/*    if(testclass == CHECKOUT) {
+    if(testclass == CHECKOUT) {
     	gspControl_Checkout(test_number, test_time, maneuver_number, maneuver_time);
     	return;
     }
@@ -484,7 +468,7 @@ void gspControl(unsigned int test_number, unsigned int test_time, unsigned int m
 		}
 	#endif
 	
-	if(global_target_reached==TRUE) {
+	/*if(global_target_reached==TRUE) {
 		dbg_target[0] = 555;
 		dbg_target[1] = 555;
 		dbg_target[2] = 555;
@@ -494,7 +478,7 @@ void gspControl(unsigned int test_number, unsigned int test_time, unsigned int m
 		dbg_target[6] = 0;
 		dbg_target[7] = 555;	
 		
-	} else {
+	} else {*/
 		
 	dbg_target[0] = maneuver_time;
 	dbg_target[1] = ctrlStateTarget[POS_X];
@@ -504,7 +488,7 @@ void gspControl(unsigned int test_number, unsigned int test_time, unsigned int m
 	dbg_target[5] = ctrlStateTarget[QUAT_2];
 	dbg_target[6] = ctrlStateTarget[QUAT_3];
 	dbg_target[7] = ctrlStateTarget[QUAT_4];		
- 	}
+ //	}
  	
 	dbg_error[0] = maneuver_time/1000;
 	dbg_error[1] = ctrlStateError[POS_X]*1000;
@@ -517,12 +501,12 @@ void gspControl(unsigned int test_number, unsigned int test_time, unsigned int m
 	dbg_error[8] = ctrlStateError[QUAT_4]*1000;
 	dbg_error[9] = fabs(getQuaternionMagnitude(ctrlStateError[QUAT_4]))*1000.0;
 	dbg_error[10] = QUAT_AXIS_MARGIN*1000.0;
-	dbg_error[11] = global_target_reached;*/
+	dbg_error[11] = global_target_reached;
 
-/*	send_SOH_packet_to_phone();
+	send_SOH_packet_to_phone();
 
 	commSendRFMPacket(COMM_CHANNEL_STL, GROUND, COMM_CMD_DBG_FLOAT, (unsigned char *) dbg_target, 0);
-	commSendRFMPacket(COMM_CHANNEL_STL, GROUND, COMM_CMD_DBG_SHORT, (unsigned char *) dbg_error, 0);*/
+	commSendRFMPacket(COMM_CHANNEL_STL, GROUND, COMM_CMD_DBG_SHORT, (unsigned char *) dbg_error, 0);
 }
 
 // rotates quaternion 1 by quaternion 2 and returns as total (xyzw)
@@ -560,7 +544,8 @@ void gspProcessPhoneCommandFloat(unsigned char channel, unsigned char* buffer, u
 	phone_cmd_float* cmd = (phone_cmd_float*)buffer;
 	float x2, y2, z2, w2;
 	float target_quat[4];
-	
+	dbg_float_packet dbg_target;
+		
 	commandPacketsFromPhone++;
 
 
@@ -569,7 +554,18 @@ void gspProcessPhoneCommandFloat(unsigned char channel, unsigned char* buffer, u
 
 	// acknowledge that I received this command correctly
 	global_last_cmd = cmd->seq_num;
+/*
+	dbg_target[0] = cmd->cmd;
+	dbg_target[1] = cmd->x;
+	dbg_target[2] = cmd->y;
+	dbg_target[3] = cmd->z;
+	dbg_target[4] = cmd->qx;
+	dbg_target[5] = cmd->qy;
+	dbg_target[6] = cmd->qz;
+	dbg_target[7] = cmd->qw;		
 
+	commSendRFMPacket(COMM_CHANNEL_STL, GROUND, COMM_CMD_DBG_FLOAT, (unsigned char *) dbg_target, 0);
+*/
 	if(cmd->cmd == JUST_DRIFT)
 	{
 		//ctrlManeuverNumSet(DRIFT_MODE);
@@ -695,7 +691,7 @@ void gspProcessPhoneCommandFloat(unsigned char channel, unsigned char* buffer, u
  }
 
 void gspProcessPhoneStateEstimate(unsigned char channel, unsigned char* buffer, unsigned int len) {
-	state_vector phoneStateEstimate;
+
 	comm_payload_state_estimate* pkt = (comm_payload_state_estimate*)buffer;
 	
 	if(ctrlTestNumGet() != USE_PHONE_ESTIMATE) {
@@ -726,6 +722,7 @@ void gspDifferentiatePhoneMessage(unsigned char channel, unsigned char* buffer, 
 	het_header* header = (het_header*)buffer;
 
 	packetsFromPhone++;
+	
 	// check the checksum
 	if(!checksumChecks(buffer, len)) {
 		return;
