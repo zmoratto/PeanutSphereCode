@@ -163,7 +163,7 @@ void gspInitProgram()
 	
    expv2_init(); // still needed? not in VERTIGO_ExpV2_Testing
    expv2_uart_cbk_register(1,&gspDifferentiatePhoneMessage);
-    expv2_uart_baud_set(1,9600);
+    expv2_uart_baud_set(1,115200);
 }
 
 unsigned char cnt;
