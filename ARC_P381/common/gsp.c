@@ -126,6 +126,8 @@ static int packetsFromPhone =0;
 static int statePacketsFromPhone =0;
 static int commandPacketsFromPhone =0;
 state_vector phoneStateEstimate;
+float phone_pos_in_sphere_coords[3] = {0.15, 0.0, 0.0};
+float phone_rigid_rot[4] = {0.0, 0.0, 0.0, 1.0};
 
 // callback function prototype
 void gspDifferentiatePhoneMessage(unsigned char channel, unsigned char* buffer, unsigned int len);
@@ -187,7 +189,6 @@ void gspInitTest(unsigned int test_number)
                                 PADS_INIT_THRUST_INT_ENABLE,PADS_BEACONS_SET_1TO9); // ISS
 #endif
 
-    
     memset(ctrlStateTarget,0,sizeof(state_vector));
 	ctrlStateTarget[POS_Z] = DEFAULT_Z;
     ctrlStateTarget[QUAT_1] = BIAS_QX;
@@ -325,6 +326,7 @@ void send_SOH_packet_to_phone() {
 	expv2_uart_send_w_het_header(EXPv2_CH1_HWID, sizeof(comm_payload_soh), (unsigned char *)&my_soh, COMM_CMD_SOH);
 }
 
+// never called
 void send_payload_state_estimate_packet_to_phone() {
     comm_payload_state_estimate packet_float;
  	
@@ -378,12 +380,8 @@ void gspControl(unsigned int test_number, unsigned int test_time, unsigned int m
 	dbg_target[0] = maneuver_time;
 
 
-	commSendRFMPacket(COMM_CHANNEL_STL, GROUND, COMM_CMD_DBG_SHORT, (unsigned char *) dbg_error, 0);
-	
-
-//	send_payload_state_estimate_packet_to_phone();
-	commSendRFMPacket(COMM_CHANNEL_STL, GROUND, COMM_CMD_DBG_FLOAT, (unsigned char *) dbg_target, 0);
-//	expv2_uart_send_w_het_header(EXPv2_CH1_HWID, sizeof(comm_payload_telemetry), (unsigned char *)&payload, COMM_CMD_BACKGROUND);
+//	commSendRFMPacket(COMM_CHANNEL_STL, GROUND, COMM_CMD_DBG_SHORT, (unsigned char *) dbg_error, 0);
+//	commSendRFMPacket(COMM_CHANNEL_STL, GROUND, COMM_CMD_DBG_FLOAT, (unsigned char *) dbg_target, 0);
 
     
     if(testclass == CHECKOUT) {
@@ -544,7 +542,7 @@ void gspProcessPhoneCommandFloat(unsigned char channel, unsigned char* buffer, u
 	phone_cmd_float* cmd = (phone_cmd_float*)buffer;
 	float x2, y2, z2, w2;
 	float target_quat[4];
-	dbg_float_packet dbg_target;
+//	dbg_float_packet dbg_target;
 		
 	commandPacketsFromPhone++;
 
@@ -554,18 +552,7 @@ void gspProcessPhoneCommandFloat(unsigned char channel, unsigned char* buffer, u
 
 	// acknowledge that I received this command correctly
 	global_last_cmd = cmd->seq_num;
-/*
-	dbg_target[0] = cmd->cmd;
-	dbg_target[1] = cmd->x;
-	dbg_target[2] = cmd->y;
-	dbg_target[3] = cmd->z;
-	dbg_target[4] = cmd->qx;
-	dbg_target[5] = cmd->qy;
-	dbg_target[6] = cmd->qz;
-	dbg_target[7] = cmd->qw;		
 
-	commSendRFMPacket(COMM_CHANNEL_STL, GROUND, COMM_CMD_DBG_FLOAT, (unsigned char *) dbg_target, 0);
-*/
 	if(cmd->cmd == JUST_DRIFT)
 	{
 		//ctrlManeuverNumSet(DRIFT_MODE);
@@ -690,31 +677,170 @@ void gspProcessPhoneCommandFloat(unsigned char channel, unsigned char* buffer, u
 		}
  }
 
+
+void rotatePhonePositionByQuaternion(float q[4], float res[3]) {
+// http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToMatrix/index.htm
+	float m00, m01, m02, m10, m11, m12, m20, m21, m22;
+	float qx, qy, qz, qw;
+	float v0, v1, v2;
+	qw = q[3];
+	qx = q[0];
+	qy = q[1];
+	qz = q[2];
+	v0 = phone_pos_in_sphere_coords[0];
+	v1 = phone_pos_in_sphere_coords[1];
+	v2 = phone_pos_in_sphere_coords[2];
+	
+	m00 = 1 - 2*qy*qy - 2*qz*qz;
+	m01 = 2*qx*qy - 2*qz*qw;
+	m02 = 2*qx*qz - 2*qy*qw;
+	m10 = 2*qx*qy + 2*qz*qw;
+	m11 = 1 - 2*qx*qx - 2*qz*qz;
+	m12 = 2*qy*qz - 2*qx*qw;
+	m20 = 2*qx*qz - 2*qy*qw;
+	m21 = 2*qy*qz + 2*qx*qw;
+	m22 = 1 - 2*qx*qx - 2*qy*qy;
+	
+	res[0] = m00*v0 + m01*v1 + m02*v2;
+	res[1] = m10*v0 + m11*v1 + m12*v2;
+	res[2] = m20*v0 + m21*v1 + m22*v2;
+}
+
+void gspFindQDot(float q[4], float rotVel[3], float qdot[4]) {
+	float wx, wy, wz;
+	float o00, o01, o02, o03;
+	float o10, o11, o12, o13;
+	float o20, o21, o22, o23;
+	float o30, o31, o32, o33;
+	
+	wx = rotVel[0];
+	wy = rotVel[1];
+	wz = rotVel[2];
+	
+	o00 =   0;
+	o10 = -wz;
+	o20 =  wy;
+	o30 = -wx;
+	
+	o01 =  wz;
+	o11 =   0;
+	o21 = -wx;
+	o31 = -wy;
+	
+	o02 = -wy;
+	o12 =  wx;
+	o22 =   0;
+	o32 = -wz;
+	
+	o03 =  wx;
+	o13 =  wy;
+	o23 =  wz;
+	o33 =   0;
+
+	qdot[0] = o00*q[0] + o01*q[1] + o02*q[2] + o03*q[3];
+	qdot[1] = o10*q[0] + o11*q[1] + o12*q[2] + o13*q[3];
+	qdot[2] = o20*q[0] + o21*q[1] + o22*q[2] + o23*q[3];
+	qdot[3] = o30*q[0] + o31*q[1] + o32*q[2] + o33*q[3];
+}
+
+void gspQuatMatrixDerivative(float quat[4], float qdot[4], float matrix[3][3]) {
+	float qx, qy, qz, qw;
+	float qxdot, qydot, qzdot, qwdot;
+	float m00dot, m01dot, m02dot, m10dot, m11dot, m12dot, m20dot, m21dot, m22dot;
+	
+	qx = quat[0];
+	qy = quat[1];
+	qz = quat[2];
+	qw = quat[3];
+	
+	qxdot = qdot[0];
+	qydot = qdot[1];
+	qzdot = qdot[2];
+	qwdot = qdot[3];
+
+	m00dot = -4*(qy*qydot + qz*qzdot);
+
+	m01dot = -2*qz*qwdot - 2*qw*qzdot + 2*qy*qxdot + 2*qx*qydot;
+
+	m02dot = 2*qy*qwdot + 2*qw*qydot + 2*qz*qxdot + 2*qx*qzdot;
+
+	m10dot = 2*qz*qwdot + 2*qw*qzdot + 2*qy*qxdot + 2*qx*qydot;
+
+	m11dot = -4*(qx*qxdot + qz*qzdot);
+
+	m12dot = -2*qx*qwdot - 2*qw*qxdot + 2*qz*qydot + 2*qy*qzdot;
+
+	m20dot =  -2*qy*qwdot - 2*qw*qydot + 2*qz*qxdot + 2*qx*qzdot;
+
+	m21dot = 2*qx*qwdot + 2*qw*qxdot + 2*qz*qydot + 2*qy*qzdot;
+
+	m22dot =  -4*(qx*qxdot + qy*qydot);
+
+	matrix[0][0] = m00dot;
+	matrix[0][1] = m01dot;
+	matrix[0][2] = m02dot;
+
+	matrix[1][0] = m10dot;
+	matrix[1][1] = m11dot;
+	matrix[1][2] = m12dot;
+
+	matrix[2][0] = m20dot;
+	matrix[2][1] = m21dot;
+	matrix[2][2] = m22dot;
+}
+
+
 void gspProcessPhoneStateEstimate(unsigned char channel, unsigned char* buffer, unsigned int len) {
 
 	comm_payload_state_estimate* pkt = (comm_payload_state_estimate*)buffer;
+	float rotated_position[3] = {0.0, 0.0, 0.0};
+	float rotated_rotation[4] = {0.0, 0.0, 0.0, 0.0};
+	float qdot[4] = {0.0, 0.0, 0.0, 0.0};
+	float rotMatDot[3][3] = {{0.0, 0.0, 0.0},{0.0, 0.0, 0.0},{0.0, 0.0, 0.0}};
+	float velFromRot[3] = {0.0, 0.0, 0.0};
 	
 	if(ctrlTestNumGet() != USE_PHONE_ESTIMATE) {
 		return;
 	}
 	
-	//// maybe want to use padsStateSet for debugging (pads_internal.h)
-	phoneStateEstimate[POS_X] = pkt->pos[0];
-	phoneStateEstimate[POS_Y] = pkt->pos[1];
-	phoneStateEstimate[POS_Z] = pkt->pos[2];
-	phoneStateEstimate[VEL_X] = pkt->vel[0];
-	phoneStateEstimate[VEL_Y] = pkt->vel[1];
-	phoneStateEstimate[VEL_Z] = pkt->vel[2];
-	phoneStateEstimate[QUAT_1]= pkt->quat[0];
-	phoneStateEstimate[QUAT_2]= pkt->quat[1];
-	phoneStateEstimate[QUAT_3]= pkt->quat[2];
-	phoneStateEstimate[QUAT_4]= pkt->quat[3];
-	phoneStateEstimate[RATE_X]= pkt->rate[0];
+	// correct for offset between phone and sphere
+	rotatePhonePositionByQuaternion(pkt->quat, rotated_position);
+		
+	// maybe want to use padsStateSet for debugging (pads_internal.h)
+	phoneStateEstimate[POS_X] = pkt->pos[0] - rotated_position[0];
+	phoneStateEstimate[POS_Y] = pkt->pos[1] - rotated_position[1];
+	phoneStateEstimate[POS_Z] = pkt->pos[2] - rotated_position[2];
+
+	// correct for rotation between phone and sphere
+	gspRotateByQuaternion(pkt->quat[0], pkt->quat[1], pkt->quat[2], pkt->quat[3],
+							phone_rigid_rot[0], phone_rigid_rot[1], phone_rigid_rot[2], phone_rigid_rot[3],
+							rotated_rotation);
+
+	phoneStateEstimate[QUAT_1]= rotated_rotation[0];
+	phoneStateEstimate[QUAT_2]= rotated_rotation[1];
+	phoneStateEstimate[QUAT_3]= rotated_rotation[2];
+	phoneStateEstimate[QUAT_4]= rotated_rotation[3];
+	
+	// find velocity caused by rotation
+	gspFindQDot(pkt->quat, pkt->rate, qdot);
+	
+	gspQuatMatrixDerivative(pkt->quat, qdot, rotMatDot);
+	
+	velFromRot[0] = rotMatDot[0][0] * phone_pos_in_sphere_coords[0] + rotMatDot[0][1] * phone_pos_in_sphere_coords[1] + rotMatDot[0][2] * phone_pos_in_sphere_coords[2];
+	velFromRot[1] = rotMatDot[1][0] * phone_pos_in_sphere_coords[0] + rotMatDot[1][1] * phone_pos_in_sphere_coords[1] + rotMatDot[1][2] * phone_pos_in_sphere_coords[2];
+	velFromRot[2] = rotMatDot[2][0] * phone_pos_in_sphere_coords[0] + rotMatDot[2][1] * phone_pos_in_sphere_coords[1] + rotMatDot[2][2] * phone_pos_in_sphere_coords[2];
+	
+	phoneStateEstimate[VEL_X] = pkt->vel[0] - velFromRot[0];
+	phoneStateEstimate[VEL_Y] = pkt->vel[1] - velFromRot[1];
+	phoneStateEstimate[VEL_Z] = pkt->vel[2] - velFromRot[2];
+	
+	// will be identical for phone and sphere because they are rigidly connected
+	phoneStateEstimate[RATE_X]= pkt->rate[0]; // phi-dot, about Xphone
 	phoneStateEstimate[RATE_Y]= pkt->rate[1];
-	phoneStateEstimate[RATE_Z]= pkt->rate[2];
+	phoneStateEstimate[RATE_Z]= pkt->rate[2]; // theta-dot, about Zphone
 		
 	padsStateSet(phoneStateEstimate, ctrlTestTimeGet());
-		
+    
 	statePacketsFromPhone++;
 }
 
