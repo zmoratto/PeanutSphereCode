@@ -18,7 +18,7 @@
 
 // Recommended EKF initialization vector
 // upside down coordinates
-state_vector initState = {0.5f,0.0f,-0.65f,  0.0f,0.0f,0.0f,  0.0f,0.0f,0.0f,1.0f,  0.0f,0.0f,0.0f};
+state_vector initState = {0.0f,0.0f,-0.65f,  0.0f,0.0f,0.0f,  0.0f,0.0f,0.0f,1.0f,  0.0f,0.0f,0.0f};
 //state_vector initState = {0.0f,0.0f,0.00f,  0.0f,0.0f,0.0f,  0.0f,0.0f,0.0f,1.0f,  0.0f,0.0f,0.0f};
 // Sideways coord: Tank ovhd
 //state_vector initState = {0.0f,0.0f,0.56f,  0.0f,0.0f,0.0f,  1.0f,0.0f,0.0f,0.0f,  0.0f,0.0f,0.0f};

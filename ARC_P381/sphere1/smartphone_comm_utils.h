@@ -19,6 +19,8 @@
 #define POS_AND_HOLD	8
 #define ORIENT_AND_HOLD	9
 #define POS_FROM_PHONE  10
+#define COMM_COMMAND_FLOAT 0x40
+#define COMM_PAYLOAD_STATE_EST 0x42
 
 #define SERIAL_DEVICE_1	1
 #define SERIAL_DEVICE_2	2
@@ -60,14 +62,15 @@ typedef struct{
 } phone_cmd_float;
 
 /// Packet payload overlay for COMM_CMD_BACKGROUND and COMM_CMD_SOH_STATE
-typedef struct _comm_payload_telemetry_float {
-   unsigned int   time_and_id_field;
-   float          pos[3];
-   float          vel[3];
-   float          quat[4];
-   float          rate[3];
-   unsigned short source;
-} comm_payload_telemetry_float;
+typedef struct _comm_payload_state_estimate {
+ 	het_header     hdr;
+    unsigned int   time_and_id_field;
+    float          pos[3];
+    float          vel[3];
+    float          quat[4];
+    float          rate[3];
+    unsigned short source;
+} comm_payload_state_estimate;
 
 
 void expv2_uart_send_w_het_header(unsigned char channel, unsigned char len, unsigned char *data, unsigned char cmd);	

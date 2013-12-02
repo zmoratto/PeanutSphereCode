@@ -44,7 +44,7 @@ Source="..\..\..\..\SpheresCore\Utilities\math_matrix.c"
 Source="..\..\..\..\SpheresCore\Utilities\util_serial_printf.c"
 Source="..\common\gsp.c"
 Source="smartphone_comm_utils.c"
-Source="spheres_physical_ISS_SMARTPHONE_primary.c"
+Source="spheres_physical_LAB_SINGLE_PUCK_SMARTPHONE_primary.c"
 Source="espv2_het_test.rcp"
 
 [Generated Files]
