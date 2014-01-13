@@ -1,5 +1,8 @@
 #include "exp_v2.h"
 #include "smartphone_comm_utils.h"
+#include "std_includes.h"
+#include "math.h"
+#include "spheres_constants.h"
 
 void smtExpV2UARTSendWHETHeader(unsigned char channel, unsigned char len, unsigned char *data, unsigned char cmd) {
   short big_chk = 0;
@@ -88,7 +91,8 @@ int smtChecksumVerify(unsigned char* buffer, unsigned int len) {
   return TRUE;
 }
 
-void smtRotatePhonePositionByQuaternion(float q[4], float res[3]) {
+void smtRotatePhonePositionByQuaternion(float q[4], float position[3],
+                                        float res[3]) {
   // http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToMatrix/index.htm
   float m00, m01, m02, m10, m11, m12, m20, m21, m22;
   float qx, qy, qz, qw;
@@ -97,9 +101,9 @@ void smtRotatePhonePositionByQuaternion(float q[4], float res[3]) {
   qx = q[0];
   qy = q[1];
   qz = q[2];
-  v0 = g_phone_pos_in_sphere_coords[0];
-  v1 = g_phone_pos_in_sphere_coords[1];
-  v2 = g_phone_pos_in_sphere_coords[2];
+  v0 = position[0];
+  v1 = position[1];
+  v2 = position[2];
 
   m00 = 1 - 2*qy*qy - 2*qz*qz;
   m01 = 2*qx*qy - 2*qz*qw;

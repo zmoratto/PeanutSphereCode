@@ -3,27 +3,84 @@
  *
  *
  *  Created by Wheeler, DW  (ARC-TI)[Stinger Ghaffarian Technologies Inc. (SGT Inc.)] on 3/14/12.
- *  Copyright 2012 __MyCompanyName__. All rights reserved.
+ *  Copyright 2012 Intelligent Robotics Group. All rights reserved.
  *
  */
 
 #ifndef SMARTPHONE_COMM_UTILS
 #define SMARTPHONE_COMM_UTILS
 
-#define GO_TO_XYZ               1
-#define GO_TO_QUAT              2
+// Should the commands below be an enum?
+#define GO_TO_XYZ       1
+#define GO_TO_QUAT      2
 #define RELATIVE_XYZ    3
 #define RELATIVE_QUAT   4
 #define HOLD_POSITION   5
-#define JUST_DRIFT              6
+#define JUST_DRIFT      6
 #define POS_AND_HOLD    8
 #define ORIENT_AND_HOLD 9
 #define POS_FROM_PHONE  10
-#define COMM_COMMAND_FLOAT 0x40
-#define COMM_PAYLOAD_STATE_EST 0x42
+#define COMM_COMMAND_FLOAT (0x40)
+#define PHONE_ESTIMATE_PKT (0x41)
+#define COMM_PAYLOAD_STATE_EST (0x42)
 
 #define SERIAL_DEVICE_1 1
 #define SERIAL_DEVICE_2 2
+
+// pick ONE
+#define LAB_VERSION
+//#define ISS_VERSION
+
+#ifdef ISS_VERSION
+#define DEFAULT_Z 0.0
+#define THE_PROGRAM_NUMBER 410
+#else //LAB_VERSION
+#define DEFAULT_Z -0.65
+#define THE_PROGRAM_NUMBER 223
+#endif
+
+#define QX 0
+#define QY 1
+#define QZ 2
+#define QW 3
+#define MAX_MANEUVERS 21
+#define ESTIMATOR_TIME 10000
+#define MANEUVER_TIME_OUT 600000
+#define MIN_MANEUVER_TIME 1000
+
+#define BIAS_QX 0.0
+#define BIAS_QY 0.0
+#define BIAS_QZ 0.0
+#define BIAS_QW 1.0
+
+// translation margin could be 0.05 in orbit, but with the sphere sideways, want it bigger
+// especially for testing now
+// was 0.09
+#define TRANSLATION_MARGIN 0.05
+#ifdef ISS_VERSION
+#define X_MARGIN TRANSLATION_MARGIN
+#else // lab version
+#define X_MARGIN TRANSLATION_MARGIN
+#endif
+
+#define VELOCITY_MARGIN 0.05
+// 0.35 rad ~ 20 degrees
+#define QUAT_AXIS_MARGIN 0.35
+//#define QUAT_ANGLE_MARGIN 0.99
+#define RATE_MARGIN 0.1
+#define EPSILON 0.01
+#define TIMED_OUT 2
+
+#define CHECKOUT 33
+#define NOT_CHECKOUT 44
+
+#define CONVERGE_MODE 1
+#define DRIFT_MODE 2
+#define WAYPOINT_MODE 3
+
+#define USE_SPHERES_ESTIMATE 2
+#define USE_PHONE_ESTIMATE 3
+
 
 typedef struct{
   unsigned char preamble[4];
@@ -89,7 +146,8 @@ void smtRotateByQuaternion(float x2, float y2, float z2, float w2,
 
 int smtChecksumVerify(unsigned char* buffer, unsigned int len);
 
-void smtRotatePhonePositionByQuaternion(float q[4], float res[3]);
+void smtRotatePhonePositionByQuaternion(float q[4], float position[3],
+                                        float res[3]);
 
 void smtFindQDot(float q[4], float rotVel[3], float qdot[4]);
 

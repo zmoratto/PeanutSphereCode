@@ -48,66 +48,6 @@
 #include "smartphone_comm_utils.h"
 #include "math.h"
 
-// pick ONE
-#define LAB_VERSION
-//#define ISS_VERSION
-
-#ifdef ISS_VERSION
-#define DEFAULT_Z 0.0
-#define THE_PROGRAM_NUMBER 410
-#else //LAB_VERSION
-#define DEFAULT_Z -0.65
-#define THE_PROGRAM_NUMBER 223
-#endif
-
-#define QX 0
-#define QY 1
-#define QZ 2
-#define QW 3
-#define MAX_MANEUVERS 21
-#define ESTIMATOR_TIME 10000
-#define MANEUVER_TIME_OUT 600000
-#define MIN_MANEUVER_TIME 1000
-
-#define BIAS_QX 0.0
-#define BIAS_QY 0.0
-#define BIAS_QZ 0.0
-#define BIAS_QW 1.0
-
-// translation margin could be 0.05 in orbit, but with the sphere sideways, want it bigger
-// especially for testing now
-// was 0.09
-#define TRANSLATION_MARGIN 0.05
-#ifdef ISS_VERSION
-#define X_MARGIN TRANSLATION_MARGIN
-#else // lab version
-#define X_MARGIN TRANSLATION_MARGIN
-#endif
-
-#define VELOCITY_MARGIN 0.05
-// 0.35 rad ~ 20 degrees
-#define QUAT_AXIS_MARGIN 0.35
-//#define QUAT_ANGLE_MARGIN 0.99
-#define RATE_MARGIN 0.1
-#define EPSILON 0.01
-#define TIMED_OUT 2
-
-#define CHECKOUT 33
-#define NOT_CHECKOUT 44
-
-#define CONVERGE_MODE 1
-#define DRIFT_MODE 2
-#define WAYPOINT_MODE 3
-
-#define USE_SPHERES_ESTIMATE 2
-#define USE_PHONE_ESTIMATE 3
-#define PHONE_ESTIMATE_PKT (0x41)
-
-#ifndef _TMS320C6X
-#define DEBUG(arg)  mexprintf arg
-#else
-#define DEBUG(arg)
-#endif
 
 // GLOBAL VARIABLES
 
@@ -132,6 +72,7 @@ extern state_vector g_init_state;
 // FORWARD DECLARATIONS
 void DifferentiatePhoneMessage(unsigned char channel,
                                unsigned char* buffer, unsigned int len);
+void SendSOHPacketToPhone();
 
 // FUNCTION IMPLEMENTATIONS
 
@@ -297,7 +238,7 @@ void gspControl(unsigned int test_number,
 
   padsStateGet(ctrlState);
 
-  send_SOH_packet_to_phone();
+  SendSOHPacketToPhone();
 
   dbg_target[0] = maneuver_time;
 
@@ -388,7 +329,7 @@ void gspControl(unsigned int test_number,
   dbg_error[6] = ctrlStateError[QUAT_2]*1000;
   dbg_error[7] = ctrlStateError[QUAT_3]*1000;
   dbg_error[8] = ctrlStateError[QUAT_4]*1000;
-  dbg_error[9] = fabs(getQuaternionMagnitude(ctrlStateError[QUAT_4]))*1000.0;
+  dbg_error[9] = fabs(smtGetQuaternionMagnitude(ctrlStateError[QUAT_4]))*1000.0;
   dbg_error[10] = QUAT_AXIS_MARGIN*1000.0;
   dbg_error[11] = g_target_reached;
 
@@ -413,8 +354,8 @@ void SendSOHPacketToPhone() {
   my_soh.unused[2]              = g_last_cmd & 0xFF;
 
   // send it
-  ExpV2UARTSendWHETHeader(EXPv2_CH1_HWID, sizeof(comm_payload_soh),
-                          (unsigned char *)&my_soh, COMM_CMD_SOH);
+  smtExpV2UARTSendWHETHeader(EXPv2_CH1_HWID, sizeof(comm_payload_soh),
+                             (unsigned char *)&my_soh, COMM_CMD_SOH);
 }
 
 void ProcessPhoneCommandFloat(unsigned char channel,
@@ -572,7 +513,8 @@ void ProcessPhoneStateEstimate(unsigned char channel, unsigned char* buffer, uns
   }
 
   // correct for offset between phone and sphere
-  smtRotatePhonePositionByQuaternion(pkt->quat, rotated_position);
+  smtRotatePhonePositionByQuaternion(pkt->quat, g_phone_pos_in_sphere_coords,
+                                     rotated_position);
 
   // maybe want to use padsStateSet for debugging (pads_internal.h)
   g_phone_state_estimate[POS_X] = pkt->pos[0] - rotated_position[0];
