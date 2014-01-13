@@ -129,11 +129,11 @@ float g_phone_pos_in_sphere_coords[3] = {0.15, 0.0, 0.0};
 float g_phone_rigid_rot[4] = {0.0, 0.0, 0.0, 1.0};
 extern state_vector g_init_state;
 
-// FUNCTION IMPLEMENTATIONS
-
-// callback function prototype
+// FORWARD DECLARATIONS
 void DifferentiatePhoneMessage(unsigned char channel,
-                                  unsigned char* buffer, unsigned int len);
+                               unsigned char* buffer, unsigned int len);
+
+// FUNCTION IMPLEMENTATIONS
 
 // Set satellite identity. The first primary interface function
 // called.
@@ -270,61 +270,6 @@ void gspTaskRun(unsigned int gsp_task_trigger, unsigned int extra_data) {
     }
 }
 
-float getQuaternionMagnitude(float qw) {
-  return 2*acos(qw);
-}
-
-
-int atPositionRotation(state_vector error) {
-#ifdef ISS_VERSION
-  if( (fabs(error[POS_Y]) < TRANSLATION_MARGIN) && (fabs(error[POS_Z]) < TRANSLATION_MARGIN) &&
-      (fabs(error[POS_X]) < TRANSLATION_MARGIN) &&
-      (fabs(getQuaternionMagnitude(error[QUAT_4])) < QUAT_AXIS_MARGIN))
-#else // on ground, only care about roll
-    if( (fabs(error[POS_X]) < TRANSLATION_MARGIN) && (fabs(error[POS_Y]) < TRANSLATION_MARGIN) &&
-        (fabs(getQuaternionMagnitude(error[QUAT_4])) < QUAT_AXIS_MARGIN))
-#endif
-      {
-        return TRUE;
-      } else {
-      return FALSE;
-    }
-}
-
-int atZeroVelocity(state_vector error) {
-#ifdef ISS_VERSION
-  if( (fabs(error[VEL_X]) < VELOCITY_MARGIN) && (fabs(error[VEL_Y]) < VELOCITY_MARGIN) &&
-      (fabs(error[VEL_Z]) < VELOCITY_MARGIN) &&
-      (fabs(error[RATE_X]) < RATE_MARGIN) && (fabs(error[RATE_Y]) < RATE_MARGIN) &&
-      (fabs(error[RATE_Z]) < RATE_MARGIN) )
-#else
-    if( (fabs(error[VEL_X]) < VELOCITY_MARGIN) && (fabs(error[VEL_Y]) < VELOCITY_MARGIN) &&
-        (fabs(error[RATE_Z]) < RATE_MARGIN) )
-#endif
-      {
-        return TRUE;
-      } else {
-      return FALSE;
-    }
-}
-
-void send_SOH_packet_to_phone() {
-  comm_payload_soh my_soh;
-
-  // get my SOH information
-  commBackgroundSOHGet(SPHERE_ID, &my_soh);
-
-  // set the fields I need
-  my_soh.unused[0]              = g_target_reached;
-  my_soh.unused[1]              = g_sphere_error;
-  my_soh.unused[3]              = (g_last_cmd>>8) & 0xFF; // <<-- is this right?
-  my_soh.unused[2]              = g_last_cmd & 0xFF;
-
-  // send it
-  expv2_uart_send_w_het_header(EXPv2_CH1_HWID, sizeof(comm_payload_soh),
-                               (unsigned char *)&my_soh, COMM_CMD_SOH);
-}
-
 // Apply control laws and set thruster on-times. Called periodically.
 void gspControl(unsigned int test_number,
                 unsigned int test_time,
@@ -364,22 +309,21 @@ void gspControl(unsigned int test_number,
     return;
   }
 
-  if (maneuver_number == CONVERGE_MODE) //Estimator initialization
-    {
-      if (test_time >= ESTIMATOR_TIME){
-        g_maneuver_num_index++;
-        ctrlManeuverNumSet(g_maneuver_nums[g_maneuver_num_index]);
-        memcpy(g_ctrl_state_target,ctrlState,sizeof(state_vector));
-        g_ctrl_state_target[VEL_X]=0.0f;
-        g_ctrl_state_target[VEL_Y]=0.0f;
-        g_ctrl_state_target[VEL_Z]=0.0f;
-        g_ctrl_state_target[RATE_X]=0.0f;
-        g_ctrl_state_target[RATE_Y]=0.0f;
-        g_ctrl_state_target[RATE_Z]=0.0f;
-        memcpy(g_cmd_state_target,g_ctrl_state_target,sizeof(state_vector));
-      }
+  if (maneuver_number == CONVERGE_MODE) { //Estimator initialization
+    if (test_time >= ESTIMATOR_TIME){
+      g_maneuver_num_index++;
+      ctrlManeuverNumSet(g_maneuver_nums[g_maneuver_num_index]);
+      memcpy(g_ctrl_state_target,ctrlState,sizeof(state_vector));
+      g_ctrl_state_target[VEL_X]=0.0f;
+      g_ctrl_state_target[VEL_Y]=0.0f;
+      g_ctrl_state_target[VEL_Z]=0.0f;
+      g_ctrl_state_target[RATE_X]=0.0f;
+      g_ctrl_state_target[RATE_Y]=0.0f;
+      g_ctrl_state_target[RATE_Z]=0.0f;
+      memcpy(g_cmd_state_target,g_ctrl_state_target,sizeof(state_vector));
+    }
 
-    } else if (maneuver_number == DRIFT_MODE) {
+  } else if (maneuver_number == DRIFT_MODE) {
     // do nothing - just drift!
   } else if (maneuver_number == WAYPOINT_MODE) {
     //Disable estimator during closed loop firing
@@ -411,16 +355,15 @@ void gspControl(unsigned int test_number,
 
     // termination conditions
     if(maneuver_time > MIN_MANEUVER_TIME) {
-      if ((atPositionRotation(ctrlStateError)))
-        {
-          // if rotation test, just need x correct
-          // if maneuver 20 or not rotation test, need x and x_dot correct
-          if((!g_stop_at_end) || (atZeroVelocity(ctrlStateError)))
-            {
-              //  we got there
-              g_target_reached = TRUE;
-            }
+      if ((smtAtPositionRotation(ctrlStateError))) {
+        // if rotation test, just need x correct
+        // if maneuver 20 or not rotation test, need x and x_dot correct
+        if((!g_stop_at_end) || (smtAtZeroVelocity(ctrlStateError))) {
+
+          //  we got there
+          g_target_reached = TRUE;
         }
+      }
     }
     if(maneuver_time > MANEUVER_TIME_OUT) {
       g_target_reached = TIMED_OUT;
@@ -449,7 +392,7 @@ void gspControl(unsigned int test_number,
   dbg_error[10] = QUAT_AXIS_MARGIN*1000.0;
   dbg_error[11] = g_target_reached;
 
-  send_SOH_packet_to_phone();
+  SendSOHPacketToPhone();
 
   commSendRFMPacket(COMM_CHANNEL_STL, GROUND,
                     COMM_CMD_DBG_FLOAT, (unsigned char *) dbg_target, 0);
@@ -457,36 +400,25 @@ void gspControl(unsigned int test_number,
                     COMM_CMD_DBG_SHORT, (unsigned char *) dbg_error, 0);
 }
 
-// rotates quaternion 1 by quaternion 2 and returns as total (xyzw)
-void gspRotateByQuaternion(float x2, float y2, float z2, float w2,
-                           float x1, float y1, float z1, float w1, float* answer) {
-  // quats are xyzw
-  answer[0] = w1*x2 + x1*w2 + y1*z2 - z1*y2;
-  answer[1] = w1*y2 - x1*z2 + y1*w2 + z1*x2;
-  answer[2] = w1*z2 + x1*y2 - y1*x2 + z1*w2;
-  answer[3] = w1*w2 - x1*x2 - y1*y2 - z1*z2;
-}
+void SendSOHPacketToPhone() {
+  comm_payload_soh my_soh;
 
-int checksumChecks(unsigned char* buffer, unsigned int len) {
-  int i;
-  unsigned short bigcheck=0;
+  // get my SOH information
+  commBackgroundSOHGet(SPHERE_ID, &my_soh);
 
-  het_header* hdr = (het_header*) buffer;
+  // set the fields I need
+  my_soh.unused[0]              = g_target_reached;
+  my_soh.unused[1]              = g_sphere_error;
+  my_soh.unused[3]              = (g_last_cmd>>8) & 0xFF; // <<-- is this right?
+  my_soh.unused[2]              = g_last_cmd & 0xFF;
 
-  if(len != (8 + hdr->len) )
-    return FALSE;
-
-  for(i=8; i<len; i++)
-    bigcheck += buffer[i];
-
-  if(bigcheck != hdr->chk)
-    return FALSE;
-
-  return TRUE;
+  // send it
+  ExpV2UARTSendWHETHeader(EXPv2_CH1_HWID, sizeof(comm_payload_soh),
+                          (unsigned char *)&my_soh, COMM_CMD_SOH);
 }
 
 void ProcessPhoneCommandFloat(unsigned char channel,
-                                 unsigned char* buffer, unsigned int len) {
+                              unsigned char* buffer, unsigned int len) {
   state_vector ctrlState; // current state vector of the sphere
   phone_cmd_float* cmd = (phone_cmd_float*)buffer;
   float x2, y2, z2, w2;
@@ -502,7 +434,7 @@ void ProcessPhoneCommandFloat(unsigned char channel,
 
   if(cmd->cmd == JUST_DRIFT) {
     //ctrlManeuverNumSet(DRIFT_MODE);
-    send_SOH_packet_to_phone();
+    SendSOHPacketToPhone();
 
     ctrlTestTerminate(TEST_RESULT_NORMAL);
     //ctrlTestTerminate(1);
@@ -568,7 +500,7 @@ void ProcessPhoneCommandFloat(unsigned char channel,
     z2 = cmd->qz;
     w2 = cmd->qw;
 
-    gspRotateByQuaternion(x2, y2, z2, w2,
+    smtRotateByQuaternion(x2, y2, z2, w2,
                           ctrlState[QUAT_1], ctrlState[QUAT_2],
                           ctrlState[QUAT_3], ctrlState[QUAT_4],
                           target_quat);
@@ -626,119 +558,6 @@ void ProcessPhoneCommandFloat(unsigned char channel,
   }
 }
 
-
-void rotatePhonePositionByQuaternion(float q[4], float res[3]) {
-  // http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToMatrix/index.htm
-  float m00, m01, m02, m10, m11, m12, m20, m21, m22;
-  float qx, qy, qz, qw;
-  float v0, v1, v2;
-  qw = q[3];
-  qx = q[0];
-  qy = q[1];
-  qz = q[2];
-  v0 = g_phone_pos_in_sphere_coords[0];
-  v1 = g_phone_pos_in_sphere_coords[1];
-  v2 = g_phone_pos_in_sphere_coords[2];
-
-  m00 = 1 - 2*qy*qy - 2*qz*qz;
-  m01 = 2*qx*qy - 2*qz*qw;
-  m02 = 2*qx*qz - 2*qy*qw;
-  m10 = 2*qx*qy + 2*qz*qw;
-  m11 = 1 - 2*qx*qx - 2*qz*qz;
-  m12 = 2*qy*qz - 2*qx*qw;
-  m20 = 2*qx*qz - 2*qy*qw;
-  m21 = 2*qy*qz + 2*qx*qw;
-  m22 = 1 - 2*qx*qx - 2*qy*qy;
-
-  res[0] = m00*v0 + m01*v1 + m02*v2;
-  res[1] = m10*v0 + m11*v1 + m12*v2;
-  res[2] = m20*v0 + m21*v1 + m22*v2;
-}
-
-void gspFindQDot(float q[4], float rotVel[3], float qdot[4]) {
-  float wx, wy, wz;
-  float o00, o01, o02, o03;
-  float o10, o11, o12, o13;
-  float o20, o21, o22, o23;
-  float o30, o31, o32, o33;
-
-  wx = rotVel[0];
-  wy = rotVel[1];
-  wz = rotVel[2];
-
-  o00 =   0;
-  o10 = -wz;
-  o20 =  wy;
-  o30 = -wx;
-
-  o01 =  wz;
-  o11 =   0;
-  o21 = -wx;
-  o31 = -wy;
-
-  o02 = -wy;
-  o12 =  wx;
-  o22 =   0;
-  o32 = -wz;
-
-  o03 =  wx;
-  o13 =  wy;
-  o23 =  wz;
-  o33 =   0;
-
-  qdot[0] = o00*q[0] + o01*q[1] + o02*q[2] + o03*q[3];
-  qdot[1] = o10*q[0] + o11*q[1] + o12*q[2] + o13*q[3];
-  qdot[2] = o20*q[0] + o21*q[1] + o22*q[2] + o23*q[3];
-  qdot[3] = o30*q[0] + o31*q[1] + o32*q[2] + o33*q[3];
-}
-
-void gspQuatMatrixDerivative(float quat[4], float qdot[4], float matrix[3][3]) {
-  float qx, qy, qz, qw;
-  float qxdot, qydot, qzdot, qwdot;
-  float m00dot, m01dot, m02dot, m10dot, m11dot, m12dot, m20dot, m21dot, m22dot;
-
-  qx = quat[0];
-  qy = quat[1];
-  qz = quat[2];
-  qw = quat[3];
-
-  qxdot = qdot[0];
-  qydot = qdot[1];
-  qzdot = qdot[2];
-  qwdot = qdot[3];
-
-  m00dot = -4*(qy*qydot + qz*qzdot);
-
-  m01dot = -2*qz*qwdot - 2*qw*qzdot + 2*qy*qxdot + 2*qx*qydot;
-
-  m02dot = 2*qy*qwdot + 2*qw*qydot + 2*qz*qxdot + 2*qx*qzdot;
-
-  m10dot = 2*qz*qwdot + 2*qw*qzdot + 2*qy*qxdot + 2*qx*qydot;
-
-  m11dot = -4*(qx*qxdot + qz*qzdot);
-
-  m12dot = -2*qx*qwdot - 2*qw*qxdot + 2*qz*qydot + 2*qy*qzdot;
-
-  m20dot =  -2*qy*qwdot - 2*qw*qydot + 2*qz*qxdot + 2*qx*qzdot;
-
-  m21dot = 2*qx*qwdot + 2*qw*qxdot + 2*qz*qydot + 2*qy*qzdot;
-
-  m22dot =  -4*(qx*qxdot + qy*qydot);
-
-  matrix[0][0] = m00dot;
-  matrix[0][1] = m01dot;
-  matrix[0][2] = m02dot;
-
-  matrix[1][0] = m10dot;
-  matrix[1][1] = m11dot;
-  matrix[1][2] = m12dot;
-
-  matrix[2][0] = m20dot;
-  matrix[2][1] = m21dot;
-  matrix[2][2] = m22dot;
-}
-
-
 void ProcessPhoneStateEstimate(unsigned char channel, unsigned char* buffer, unsigned int len) {
 
   comm_payload_state_estimate* pkt = (comm_payload_state_estimate*)buffer;
@@ -753,7 +572,7 @@ void ProcessPhoneStateEstimate(unsigned char channel, unsigned char* buffer, uns
   }
 
   // correct for offset between phone and sphere
-  rotatePhonePositionByQuaternion(pkt->quat, rotated_position);
+  smtRotatePhonePositionByQuaternion(pkt->quat, rotated_position);
 
   // maybe want to use padsStateSet for debugging (pads_internal.h)
   g_phone_state_estimate[POS_X] = pkt->pos[0] - rotated_position[0];
@@ -761,7 +580,7 @@ void ProcessPhoneStateEstimate(unsigned char channel, unsigned char* buffer, uns
   g_phone_state_estimate[POS_Z] = pkt->pos[2] - rotated_position[2];
 
   // correct for rotation between phone and sphere
-  gspRotateByQuaternion(pkt->quat[0], pkt->quat[1],
+  smtRotateByQuaternion(pkt->quat[0], pkt->quat[1],
                         pkt->quat[2], pkt->quat[3],
                         g_phone_rigid_rot[0], g_phone_rigid_rot[1],
                         g_phone_rigid_rot[2], g_phone_rigid_rot[3],
@@ -773,9 +592,9 @@ void ProcessPhoneStateEstimate(unsigned char channel, unsigned char* buffer, uns
   g_phone_state_estimate[QUAT_4]= rotated_rotation[3];
 
   // find velocity caused by rotation
-  gspFindQDot(pkt->quat, pkt->rate, qdot);
+  smtFindQDot(pkt->quat, pkt->rate, qdot);
 
-  gspQuatMatrixDerivative(pkt->quat, qdot, rotMatDot);
+  smtQuatMatrixDerivative(pkt->quat, qdot, rotMatDot);
 
   velFromRot[0] =
     rotMatDot[0][0] * g_phone_pos_in_sphere_coords[0] +
@@ -811,7 +630,7 @@ void DifferentiatePhoneMessage(unsigned char channel,
   g_packets_from_phone++;
 
   // check the checksum
-  if(!checksumChecks(buffer, len)) {
+  if(!smtChecksumVerify(buffer, len)) {
     return;
   }
 
