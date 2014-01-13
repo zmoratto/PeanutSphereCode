@@ -67,7 +67,6 @@ static int g_cmd_packets_from_phone =0;
 state_vector g_phone_state_estimate;
 float g_phone_pos_in_sphere_coords[3] = {0.15, 0.0, 0.0};
 float g_phone_rigid_rot[4] = {0.0, 0.0, 0.0, 1.0};
-extern state_vector g_init_state;
 
 // FORWARD DECLARATIONS
 void DifferentiatePhoneMessage(unsigned char channel,
@@ -120,9 +119,11 @@ void gspInitProgram()
 // test.
 void gspInitTest(unsigned int test_number)
 {
+  extern state_vector initState;
+
   ctrlPeriodSet(1000);
 
-  padsEstimatorInitWaitAndSet(g_init_state, 50, 200, 105,
+  padsEstimatorInitWaitAndSet(initState, 50, 200, 105,
                               PADS_INIT_THRUST_INT_ENABLE,
                               PADS_BEACONS_SET_1TO9); // ISS
 
@@ -153,7 +154,7 @@ void gspInitTest(unsigned int test_number)
       g_stop_at_end = TRUE;
 
       // turn on the estimator
-      padsEstimatorInitWaitAndSet(g_init_state, 50, 200, 405,
+      padsEstimatorInitWaitAndSet(initState, 50, 200, 405,
                                   PADS_INIT_THRUST_INT_ENABLE,PADS_BEACONS_SET_1TO9); // ISS
       break;
     case USE_PHONE_ESTIMATE: // use Phone estimate
@@ -167,7 +168,7 @@ void gspInitTest(unsigned int test_number)
 
       // don't turn on the estimator
       // not sure if I actually need both of these
-      //                padsEstimatorInitWaitAndSet(g_init_state, 50, SYS_FOREVER, SYS_FOREVER,
+      //                padsEstimatorInitWaitAndSet(initState, 50, SYS_FOREVER, SYS_FOREVER,
       //        PADS_INIT_THRUST_INT_ENABLE,PADS_BEACONS_SET_1TO9); // ISS
 
       padsEstimatorDisable();
