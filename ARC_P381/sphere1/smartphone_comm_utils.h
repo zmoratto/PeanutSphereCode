@@ -13,13 +13,7 @@
 // Should the commands below be an enum?
 #define GO_TO_XYZ       1
 #define GO_TO_QUAT      2
-#define RELATIVE_XYZ    3
-#define RELATIVE_QUAT   4
-#define HOLD_POSITION   5
 #define JUST_DRIFT      6
-#define POS_AND_HOLD    8
-#define ORIENT_AND_HOLD 9
-#define POS_FROM_PHONE  10
 #define COMM_COMMAND_FLOAT (0x40)
 #define PHONE_ESTIMATE_PKT (0x41)
 #define COMM_PAYLOAD_STATE_EST (0x42)

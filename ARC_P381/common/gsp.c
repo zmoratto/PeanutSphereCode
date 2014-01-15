@@ -54,8 +54,7 @@
 int g_maneuver_nums[MAX_MANEUVERS];
 int g_maneuver_num_index;
 static int g_test_class;
-state_vector g_ctrl_state_target;
-state_vector g_cmd_state_target;
+state_vector g_ctrl_state_target;  // Error vector is calculated against this.
 char g_stop_at_end;
 unsigned char g_target_reached = FALSE;
 unsigned char g_sphere_error = FALSE;
@@ -133,7 +132,6 @@ void gspInitTest(unsigned int test_number)
   g_ctrl_state_target[QUAT_2] = BIAS_QY;
   g_ctrl_state_target[QUAT_3] = BIAS_QZ;
   g_ctrl_state_target[QUAT_4] = BIAS_QW;
-  memcpy(g_cmd_state_target, g_ctrl_state_target, sizeof(state_vector));
 
   g_maneuver_num_index = 0;
   g_test_class = NOT_CHECKOUT;
@@ -217,34 +215,25 @@ void gspControl(unsigned int test_number,
                 unsigned int test_time,
                 unsigned int maneuver_number,
                 unsigned int maneuver_time) {
-  state_vector ctrlState; // current state vector of the sphere
-  state_vector ctrlStateError; // difference btwn ctrlState and
+  state_vector curr_state; // current state vector of the sphere
+  state_vector ctrl_state_error; // difference btwn curr_state and
                                // g_ctrl_state_target
-  float ctrlControl[6];
+  float ctrl_control[6];
   prop_time firing_times;
   const int min_pulse = 10;
   extern const float KPattitudePD, KDattitudePD, KPpositionPD, KDpositionPD;
   dbg_float_packet dbg_target;
   dbg_short_packet dbg_error;
 
-  memset(dbg_error,0,sizeof(dbg_short_packet));
   //Clear all uninitialized vectors
-  memset(ctrlControl,0,sizeof(float)*6);
-  memset(ctrlStateError,0,sizeof(state_vector));
-
+  memset(ctrl_control,0,sizeof(float)*6);
+  memset(ctrl_state_error,0,sizeof(state_vector));
+  memset(dbg_error,0,sizeof(dbg_short_packet));
   memset(dbg_target,0,sizeof(dbg_float_packet));
 
-  //    memset(my_soh,0,sizeof(comm_payload_soh));
-  //    global_test_time = test_time;
-
-  padsStateGet(ctrlState);
+  padsStateGet(curr_state);
 
   SendSOHPacketToPhone();
-
-  dbg_target[0] = maneuver_time;
-
-  //    commSendRFMPacket(COMM_CHANNEL_STL, GROUND, COMM_CMD_DBG_SHORT, (unsigned char *) dbg_error, 0);
-  //    commSendRFMPacket(COMM_CHANNEL_STL, GROUND, COMM_CMD_DBG_FLOAT, (unsigned char *) dbg_target, 0);
 
   if(g_test_class == CHECKOUT) {
     gspControl_Checkout(test_number, test_time, maneuver_number, maneuver_time);
@@ -253,18 +242,19 @@ void gspControl(unsigned int test_number,
 
   if (maneuver_number == CONVERGE_MODE) { //Estimator initialization
     if (test_time >= ESTIMATOR_TIME){
+      // If it seems that it is about time that the estimator should
+      // have converged. Then we'll command the sphere to hold current
+      // position.
       g_maneuver_num_index++;
       ctrlManeuverNumSet(g_maneuver_nums[g_maneuver_num_index]);
-      memcpy(g_ctrl_state_target,ctrlState,sizeof(state_vector));
+      memcpy(g_ctrl_state_target,curr_state,sizeof(state_vector));
       g_ctrl_state_target[VEL_X]=0.0f;
       g_ctrl_state_target[VEL_Y]=0.0f;
       g_ctrl_state_target[VEL_Z]=0.0f;
       g_ctrl_state_target[RATE_X]=0.0f;
       g_ctrl_state_target[RATE_Y]=0.0f;
       g_ctrl_state_target[RATE_Z]=0.0f;
-      memcpy(g_cmd_state_target,g_ctrl_state_target,sizeof(state_vector));
     }
-
   } else if (maneuver_number == DRIFT_MODE) {
     // do nothing - just drift!
   } else if (maneuver_number == WAYPOINT_MODE) {
@@ -273,21 +263,21 @@ void gspControl(unsigned int test_number,
 
     //find error
     if(test_number == USE_PHONE_ESTIMATE) {
-      findStateError(ctrlStateError,g_phone_state_estimate,g_ctrl_state_target);
+      findStateError(ctrl_state_error,g_phone_state_estimate,g_ctrl_state_target);
     } else {
-      findStateError(ctrlStateError,ctrlState,g_ctrl_state_target);
+      findStateError(ctrl_state_error,curr_state,g_ctrl_state_target);
     }
 
     //call controllers
     ctrlPositionPDgains(KPpositionPD, KDpositionPD, KPpositionPD,
                         KDpositionPD, KPpositionPD, KDpositionPD,
-                        ctrlStateError, ctrlControl);
+                        ctrl_state_error, ctrl_control);
     ctrlAttitudeNLPDwie(KPattitudePD, KDattitudePD, KPattitudePD,
                         KDattitudePD, KPattitudePD, KDattitudePD,
-                        ctrlStateError, ctrlControl);
+                        ctrl_state_error, ctrl_control);
 
     //mix forces/torques into thruster commands
-    ctrlMixWLoc(&firing_times, ctrlControl, ctrlState,
+    ctrlMixWLoc(&firing_times, ctrl_control, curr_state,
                 min_pulse, 20.0f, FORCE_FRAME_INERTIAL);
 
     //Set firing times
@@ -297,10 +287,10 @@ void gspControl(unsigned int test_number,
 
     // termination conditions
     if(maneuver_time > MIN_MANEUVER_TIME) {
-      if ((smtAtPositionRotation(ctrlStateError))) {
+      if ((smtAtPositionRotation(ctrl_state_error))) {
         // if rotation test, just need x correct
         // if maneuver 20 or not rotation test, need x and x_dot correct
-        if((!g_stop_at_end) || (smtAtZeroVelocity(ctrlStateError))) {
+        if((!g_stop_at_end) || (smtAtZeroVelocity(ctrl_state_error))) {
 
           //  we got there
           g_target_reached = TRUE;
@@ -322,15 +312,15 @@ void gspControl(unsigned int test_number,
   dbg_target[7] = g_ctrl_state_target[QUAT_4];
 
   dbg_error[0] = maneuver_time/1000;
-  dbg_error[1] = ctrlStateError[POS_X]*1000;
-  dbg_error[2] = ctrlStateError[POS_Y]*1000;
-  dbg_error[3] = ctrlStateError[POS_Z]*1000;
+  dbg_error[1] = ctrl_state_error[POS_X]*1000;
+  dbg_error[2] = ctrl_state_error[POS_Y]*1000;
+  dbg_error[3] = ctrl_state_error[POS_Z]*1000;
   dbg_error[4] = 0;
-  dbg_error[5] = ctrlStateError[QUAT_1]*1000;
-  dbg_error[6] = ctrlStateError[QUAT_2]*1000;
-  dbg_error[7] = ctrlStateError[QUAT_3]*1000;
-  dbg_error[8] = ctrlStateError[QUAT_4]*1000;
-  dbg_error[9] = fabs(smtGetQuaternionMagnitude(ctrlStateError[QUAT_4]))*1000.0;
+  dbg_error[5] = ctrl_state_error[QUAT_1]*1000;
+  dbg_error[6] = ctrl_state_error[QUAT_2]*1000;
+  dbg_error[7] = ctrl_state_error[QUAT_3]*1000;
+  dbg_error[8] = ctrl_state_error[QUAT_4]*1000;
+  dbg_error[9] = fabs(smtGetQuaternionMagnitude(ctrl_state_error[QUAT_4]))*1000.0;
   dbg_error[10] = QUAT_AXIS_MARGIN*1000.0;
   dbg_error[11] = g_target_reached;
 
@@ -349,10 +339,10 @@ void SendSOHPacketToPhone() {
   commBackgroundSOHGet(SPHERE_ID, &my_soh);
 
   // set the fields I need
-  my_soh.unused[0]              = g_target_reached;
-  my_soh.unused[1]              = g_sphere_error;
-  my_soh.unused[3]              = (g_last_cmd>>8) & 0xFF; // <<-- is this right?
-  my_soh.unused[2]              = g_last_cmd & 0xFF;
+  my_soh.unused[0] = g_target_reached;
+  my_soh.unused[1] = g_sphere_error;
+  my_soh.unused[3] = (g_last_cmd>>8) & 0xFF;
+  my_soh.unused[2] = g_last_cmd & 0xFF;
 
   // send it
   smtExpV2UARTSendWHETHeader(EXPv2_CH1_HWID, sizeof(comm_payload_soh),
@@ -361,122 +351,21 @@ void SendSOHPacketToPhone() {
 
 void ProcessPhoneCommandFloat(unsigned char channel,
                               unsigned char* buffer, unsigned int len) {
-  state_vector ctrlState; // current state vector of the sphere
   phone_cmd_float* cmd = (phone_cmd_float*)buffer;
-  float x2, y2, z2, w2;
-  float target_quat[4];
 
   g_cmd_packets_from_phone++;
 
+  // TODO: This looks dangerous. What happens when this wraps due to a
+  // lot of commands?
   if(cmd->seq_num <= g_last_cmd)
     return; // I've seen this command before
 
   // acknowledge that I received this command correctly
   g_last_cmd = cmd->seq_num;
 
-  if(cmd->cmd == JUST_DRIFT) {
-    //ctrlManeuverNumSet(DRIFT_MODE);
-    SendSOHPacketToPhone();
-
-    ctrlTestTerminate(TEST_RESULT_NORMAL);
-    //ctrlTestTerminate(1);
-    return;
-  }
-
-  // find out where we (think we) are
-  padsStateGet(ctrlState);
-
   switch(cmd->cmd) {
   case GO_TO_XYZ:
     // aim for commanded position, and last commanded orientation
-    g_cmd_state_target[POS_X] = cmd->x;
-    g_cmd_state_target[POS_Y] = cmd->y;
-    g_cmd_state_target[POS_Z] = cmd->z;
-
-    g_target_reached = FALSE;
-    memcpy( g_ctrl_state_target, g_cmd_state_target,
-            sizeof(state_vector));
-    g_stop_at_end = cmd->stop_at_end;
-    ctrlManeuverNumSet(WAYPOINT_MODE);
-    break;
-
-  case GO_TO_QUAT:
-    // Updates quat that goes in the commandStateVector. Meaning ...
-    // we are going to over-ride all past relative/manual movements.
-
-    // aim for commanded orientation, and last commanded position
-    g_cmd_state_target[QUAT_1] = cmd->qx;
-    g_cmd_state_target[QUAT_2] = cmd->qy;
-    g_cmd_state_target[QUAT_3] = cmd->qz;
-    g_cmd_state_target[QUAT_4] = cmd->qw;
-
-    g_target_reached = FALSE;
-    memcpy( g_ctrl_state_target, g_cmd_state_target, sizeof(state_vector));
-    g_stop_at_end = cmd->stop_at_end;
-    ctrlManeuverNumSet(WAYPOINT_MODE);
-    break;
-
-  case RELATIVE_XYZ:
-    // This operates relative to actual sphere location.
-
-    // aim for current position plus command, and don't change
-    // orientation goal
-    g_ctrl_state_target[POS_X] = ctrlState[POS_X] + cmd->x;
-    g_ctrl_state_target[POS_Y] = ctrlState[POS_Y] + cmd->y;
-    g_ctrl_state_target[POS_Z] = ctrlState[POS_Z] + cmd->z;
-
-    g_target_reached = FALSE;
-    g_stop_at_end = cmd->stop_at_end;
-    ctrlManeuverNumSet(WAYPOINT_MODE);
-    break;
-
-  case RELATIVE_QUAT:
-    // This operates relative to actual sphere location.
-
-    // aim for current position
-
-    // aim for current orientation plus command, and don't change
-    // position goal
-    x2 = cmd->qx;
-    y2 = cmd->qy;
-    z2 = cmd->qz;
-    w2 = cmd->qw;
-
-    smtRotateByQuaternion(x2, y2, z2, w2,
-                          ctrlState[QUAT_1], ctrlState[QUAT_2],
-                          ctrlState[QUAT_3], ctrlState[QUAT_4],
-                          target_quat);
-
-    g_ctrl_state_target[QUAT_1] = target_quat[0];
-    g_ctrl_state_target[QUAT_2] = target_quat[1];
-    g_ctrl_state_target[QUAT_3] = target_quat[2];
-    g_ctrl_state_target[QUAT_4] = target_quat[3];
-
-    g_target_reached = FALSE;
-    g_stop_at_end = cmd->stop_at_end;
-    ctrlManeuverNumSet(WAYPOINT_MODE);
-    break;
-
-  case HOLD_POSITION:
-    // This tells us to hold actual sphere location
-
-    // We DO need to read the current state for this
-    g_ctrl_state_target[POS_X] = ctrlState[POS_X];
-    g_ctrl_state_target[POS_Y] = ctrlState[POS_Y];
-    g_ctrl_state_target[POS_Z] = ctrlState[POS_Z];
-
-    g_ctrl_state_target[QUAT_1] = ctrlState[QUAT_1];
-    g_ctrl_state_target[QUAT_2] = ctrlState[QUAT_2];
-    g_ctrl_state_target[QUAT_3] = ctrlState[QUAT_3];
-    g_ctrl_state_target[QUAT_4] = ctrlState[QUAT_4];
-
-    g_target_reached = FALSE;
-    g_stop_at_end = cmd->stop_at_end;
-    ctrlManeuverNumSet(WAYPOINT_MODE);
-    break;
-
-  case POS_AND_HOLD:
-    // aim for new position, and don't change orientation goal
     g_ctrl_state_target[POS_X] = cmd->x;
     g_ctrl_state_target[POS_Y] = cmd->y;
     g_ctrl_state_target[POS_Z] = cmd->z;
@@ -486,8 +375,11 @@ void ProcessPhoneCommandFloat(unsigned char channel,
     ctrlManeuverNumSet(WAYPOINT_MODE);
     break;
 
-  case ORIENT_AND_HOLD:
-    // aim for new orientation, and don't change position goal
+  case GO_TO_QUAT:
+    // Updates quat that goes in the commandStateVector. Meaning ...
+    // we are going to over-ride all past relative/manual movements.
+
+    // aim for commanded orientation, and last commanded position
     g_ctrl_state_target[QUAT_1] = cmd->qx;
     g_ctrl_state_target[QUAT_2] = cmd->qy;
     g_ctrl_state_target[QUAT_3] = cmd->qz;
@@ -496,6 +388,13 @@ void ProcessPhoneCommandFloat(unsigned char channel,
     g_target_reached = FALSE;
     g_stop_at_end = cmd->stop_at_end;
     ctrlManeuverNumSet(WAYPOINT_MODE);
+    break;
+
+  case JUST_DRIFT:
+    //ctrlManeuverNumSet(DRIFT_MODE);
+    SendSOHPacketToPhone();
+
+    ctrlTestTerminate(TEST_RESULT_NORMAL);
     break;
   }
 }

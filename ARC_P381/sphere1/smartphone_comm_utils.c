@@ -75,7 +75,7 @@ void smtRotateByQuaternion(float x2, float y2, float z2, float w2,
 
 int smtChecksumVerify(unsigned char* buffer, unsigned int len) {
   int i;
-  unsigned short bigcheck=0;
+  unsigned short big_check = 0;
 
   het_header* hdr = (het_header*) buffer;
 
@@ -83,9 +83,9 @@ int smtChecksumVerify(unsigned char* buffer, unsigned int len) {
     return FALSE;
 
   for(i=8; i<len; i++)
-    bigcheck += buffer[i];
+    big_check += buffer[i];
 
-  if(bigcheck != hdr->chk)
+  if(big_check != hdr->chk)
     return FALSE;
 
   return TRUE;
