@@ -320,7 +320,7 @@ void gspControl(unsigned int test_number,
   dbg_error[6] = ctrl_state_error[QUAT_2]*1000;
   dbg_error[7] = ctrl_state_error[QUAT_3]*1000;
   dbg_error[8] = ctrl_state_error[QUAT_4]*1000;
-  dbg_error[9] = fabs(smtGetQuaternionMagnitude(ctrl_state_error[QUAT_4]))*1000.0;
+  dbg_error[9] = fabs(smtGetQuaternionMagnitude(ctrl_state_error))*1000.0;
   dbg_error[10] = QUAT_AXIS_MARGIN*1000.0;
   dbg_error[11] = g_target_reached;
 

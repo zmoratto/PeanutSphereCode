@@ -25,42 +25,56 @@ void smtExpV2UARTSendWHETHeader(unsigned char channel, unsigned char len, unsign
   expv2_uart_send(channel, len, data);
 }
 
-float smtGetQuaternionMagnitude(float qw) {
-  return 2*acos(qw);
+float smtGetQuaternionMagnitude(state_vector error) {
+  return 2.0f*acos(error[QUAT_4]);
 }
 
-
 int smtAtPositionRotation(state_vector error) {
+  float position_error, angle_error;
 #ifdef ISS_VERSION
-  if( (fabs(error[POS_Y]) < TRANSLATION_MARGIN) && (fabs(error[POS_Z]) < TRANSLATION_MARGIN) &&
-      (fabs(error[POS_X]) < TRANSLATION_MARGIN) &&
-      (fabs(smtGetQuaternionMagnitude(error[QUAT_4])) < QUAT_AXIS_MARGIN))
-#else // on ground, only care about roll
-    if( (fabs(error[POS_X]) < TRANSLATION_MARGIN) && (fabs(error[POS_Y]) < TRANSLATION_MARGIN) &&
-        (fabs(smtGetQuaternionMagnitude(error[QUAT_4])) < QUAT_AXIS_MARGIN))
+  position_error =
+    sqrt(error[POS_X]*error[POS_X] +
+	 error[POS_Y]*error[POS_Y] +
+	 error[POS_Z]*error[POS_Z]);
+#else
+  position_error =
+    sqrt(error[POS_X]*error[POS_X] +
+	 error[POS_Y]*error[POS_Y]);
 #endif
-      {
-        return TRUE;
-      } else {
-      return FALSE;
-    }
+  angle_error = fabs(smtGetQuaternionMagnitude(error));
+
+  if ( position_error < TRANSLATION_MARGIN &&
+       angle_error < QUAT_AXIS_MARGIN ) {
+    return TRUE;
+  }
+
+  return FALSE;
 }
 
 int smtAtZeroVelocity(state_vector error) {
+  float velocity_error, angvelocity_error;
 #ifdef ISS_VERSION
-  if( (fabs(error[VEL_X]) < VELOCITY_MARGIN) && (fabs(error[VEL_Y]) < VELOCITY_MARGIN) &&
-      (fabs(error[VEL_Z]) < VELOCITY_MARGIN) &&
-      (fabs(error[RATE_X]) < RATE_MARGIN) && (fabs(error[RATE_Y]) < RATE_MARGIN) &&
-      (fabs(error[RATE_Z]) < RATE_MARGIN) )
+  velocity_error =
+    sqrt(error[VEL_X]*error[VEL_X] +
+	 error[VEL_Y]*error[VEL_Y] +
+	 error[VEL_Z]*error[VEL_Z]);
+  angvelocity_error =
+    sqrt(error[RATE_X]*error[RATE_X] +
+	 error[RATE_Y]*error[RATE_Y] +
+	 error[RATE_Z]*error[RATE_Z]);
 #else
-    if( (fabs(error[VEL_X]) < VELOCITY_MARGIN) && (fabs(error[VEL_Y]) < VELOCITY_MARGIN) &&
-        (fabs(error[RATE_Z]) < RATE_MARGIN) )
+  velocity_error =
+    sqrt(error[VEL_X]*error[VEL_X] +
+	 error[VEL_Y]*error[VEL_Y]);
+  angvelocity_error =
+    fabs(error[RATE_Z]);
 #endif
-      {
-        return TRUE;
-      } else {
-      return FALSE;
-    }
+
+  if ( velocity_error < VELOCITY_MARGIN &&
+       angvelocity_error < RATE_MARGIN ) {
+    return TRUE;
+  }
+  return FALSE;
 }
 
 // rotates quaternion 1 by quaternion 2 and returns as total (xyzw)

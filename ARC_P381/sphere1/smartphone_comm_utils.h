@@ -127,7 +127,7 @@ typedef struct _comm_payload_state_estimate {
 void smtExpV2UARTSendWHETHeader(unsigned char channel, unsigned char len,
                                 unsigned char *data, unsigned char cmd);
 
-float smtGetQuaternionMagnitude(float qw);
+float smtGetQuaternionMagnitude(state_vector error);
 
 int smtAtPositionRotation(state_vector error);
 
