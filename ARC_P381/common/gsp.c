@@ -181,14 +181,13 @@ void gspInitTask() {
 // Perform state estimate based on inertial data. Called periodically.
 void gspPadsInertial(IMU_sample *accel, IMU_sample *gyro,
                      unsigned int num_samples) {
-  switch (g_test_class)
-    {
-    case CHECKOUT:
-      gspPadsInertial_Checkout(accel, gyro, num_samples);
-      break;
-    default:
-      break;
-    }
+  switch (g_test_class) {
+  case CHECKOUT:
+    gspPadsInertial_Checkout(accel, gyro, num_samples);
+    break;
+  default:
+    break;
+  }
 }
 
 // Record global data. Called at the end of each beacon's transmission
@@ -200,14 +199,13 @@ void gspPadsGlobal(unsigned int beacon,
 // Event driven task for estimation, control, and
 // communications. Called whenever a masked event occurs.
 void gspTaskRun(unsigned int gsp_task_trigger, unsigned int extra_data) {
-  switch (g_test_class)
-    {
-    case CHECKOUT:
-      gspTaskRun_Checkout(gsp_task_trigger,extra_data);
-      break;
-    default:
-      break;
-    }
+  switch (g_test_class) {
+  case CHECKOUT:
+    gspTaskRun_Checkout(gsp_task_trigger,extra_data);
+    break;
+  default:
+    break;
+  }
 }
 
 // Apply control laws and set thruster on-times. Called periodically.
@@ -217,7 +215,7 @@ void gspControl(unsigned int test_number,
                 unsigned int maneuver_time) {
   state_vector curr_state; // current state vector of the sphere
   state_vector ctrl_state_error; // difference btwn curr_state and
-                               // g_ctrl_state_target
+  // g_ctrl_state_target
   float ctrl_control[6];
   prop_time firing_times;
   const int min_pulse = 10;
@@ -225,17 +223,22 @@ void gspControl(unsigned int test_number,
   dbg_float_packet dbg_target;
   dbg_short_packet dbg_error;
 
-  //Clear all uninitialized vectors
+  // Clear all uninitialized vectors
   memset(ctrl_control,0,sizeof(float)*6);
   memset(ctrl_state_error,0,sizeof(state_vector));
   memset(dbg_error,0,sizeof(dbg_short_packet));
   memset(dbg_target,0,sizeof(dbg_float_packet));
 
-  padsStateGet(curr_state);
+  // Get an estimate for where we are
+  if ( test_number == USE_PHONE_ESTIMATE ) {
+    memcpy(curr_state, g_phone_state_estimate, sizeof(state_vector));
+  } else {
+    padsStateGet(curr_state);
+  }
 
-  SendSOHPacketToPhone();
-
-  if(g_test_class == CHECKOUT) {
+  // Check for early exit condition
+  if( g_test_class == CHECKOUT ) {
+    SendSOHPacketToPhone();
     gspControl_Checkout(test_number, test_time, maneuver_number, maneuver_time);
     return;
   }
@@ -247,13 +250,13 @@ void gspControl(unsigned int test_number,
       // position.
       g_maneuver_num_index++;
       ctrlManeuverNumSet(g_maneuver_nums[g_maneuver_num_index]);
-      memcpy(g_ctrl_state_target,curr_state,sizeof(state_vector));
-      g_ctrl_state_target[VEL_X]=0.0f;
-      g_ctrl_state_target[VEL_Y]=0.0f;
-      g_ctrl_state_target[VEL_Z]=0.0f;
-      g_ctrl_state_target[RATE_X]=0.0f;
-      g_ctrl_state_target[RATE_Y]=0.0f;
-      g_ctrl_state_target[RATE_Z]=0.0f;
+      memcpy(g_ctrl_state_target, curr_state, sizeof(state_vector));
+      g_ctrl_state_target[VEL_X] = 0.0f;
+      g_ctrl_state_target[VEL_Y] = 0.0f;
+      g_ctrl_state_target[VEL_Z] = 0.0f;
+      g_ctrl_state_target[RATE_X] = 0.0f;
+      g_ctrl_state_target[RATE_Y] = 0.0f;
+      g_ctrl_state_target[RATE_Z] = 0.0f;
     }
   } else if (maneuver_number == DRIFT_MODE) {
     // do nothing - just drift!
@@ -261,12 +264,7 @@ void gspControl(unsigned int test_number,
     //Disable estimator during closed loop firing
     padsGlobalPeriodSet(SYS_FOREVER);
 
-    //find error
-    if(test_number == USE_PHONE_ESTIMATE) {
-      findStateError(ctrl_state_error,g_phone_state_estimate,g_ctrl_state_target);
-    } else {
-      findStateError(ctrl_state_error,curr_state,g_ctrl_state_target);
-    }
+    findStateError(ctrl_state_error,curr_state,g_ctrl_state_target);
 
     //call controllers
     ctrlPositionPDgains(KPpositionPD, KDpositionPD, KPpositionPD,
