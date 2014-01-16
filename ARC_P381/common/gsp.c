@@ -278,6 +278,14 @@ void gspControl(unsigned int test_number,
                         KDattitudePD, KPattitudePD, KDattitudePD,
                         ctrl_state_error, ctrl_control);
 
+#ifdef LAB_VERSION
+    // Don't bother trying to control the sphere in translation Z or
+    // rotation about X, Y, since we are on a granite table.
+    ctrl_control[FORCE_Z] = 0.0;
+    ctrl_control[TORQUE_X] = 0.0;
+    ctrl_control[TORQUE_Y] = 0.0;
+#endif
+
     //mix forces/torques into thruster commands
     ctrlMixWLoc(&firing_times, ctrl_control, curr_state,
                 min_pulse, 20.0f, FORCE_FRAME_INERTIAL);
