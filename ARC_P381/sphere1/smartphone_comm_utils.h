@@ -115,12 +115,11 @@ typedef struct{
 /// Packet payload overlay for COMM_CMD_BACKGROUND and COMM_CMD_SOH_STATE
 typedef struct _comm_payload_state_estimate {
   het_header     hdr;
-  unsigned int   time_and_id_field;
+  unsigned int   timestamp;
   float          pos[3];
   float          vel[3];
   float          quat[4];
   float          rate[3];
-  unsigned short source;
 } comm_payload_state_estimate;
 
 

@@ -71,6 +71,7 @@ float g_phone_rigid_rot[4] = {0.0, 0.0, 0.0, 1.0};
 void DifferentiatePhoneMessage(unsigned char channel,
                                unsigned char* buffer, unsigned int len);
 void SendSOHPacketToPhone();
+void SendEstimatePacketToPhone();
 
 // FUNCTION IMPLEMENTATIONS
 
@@ -236,6 +237,9 @@ void gspControl(unsigned int test_number,
     padsStateGet(curr_state);
   }
 
+  // Send out a telemetry packet that shows what we're operating on.
+  SendEstimatePacketToPhone();
+
   // Check for early exit condition
   if( g_test_class == CHECKOUT ) {
     SendSOHPacketToPhone();
@@ -328,6 +332,34 @@ void gspControl(unsigned int test_number,
                     COMM_CMD_DBG_FLOAT, (unsigned char *) dbg_target, 0);
   commSendRFMPacket(COMM_CHANNEL_STL, GROUND,
                     COMM_CMD_DBG_SHORT, (unsigned char *) dbg_error, 0);
+}
+
+void SendEstimatePacketToPhone() {
+  comm_payload_state_estimate my_state;
+  state_vector curr_state;
+
+  // Get an estimate for where we are
+  if ( test_number == USE_PHONE_ESTIMATE ) {
+    memcpy(curr_state, g_phone_state_estimate, sizeof(state_vector));
+  } else {
+    padsStateGet(curr_state);
+  }
+
+  // Fill the packet
+  my_state.timestamp = sysSphereTimeGet();
+  memcpy( &my_state.pos[0], &curr_state[POS_X], 3 );
+  memcpy( &my_state.vel[0], &curr_state[VEL_X], 3 );
+  memcpy( &my_state.quat[0], &curr_state[QUAT_1], 4 );
+  memcpy( &my_state.rate[0], &curr_state[RATE_X], 3 );
+
+  // Send it out. There is some weirdness happening here since
+  // comm_payload_state_estimate includes space for SPHERE/HET header
+  // when the next function call is going to generate that for me.
+  smtExpV2UARTSendWHETHeader
+    (EXPv2_CH1_HWID,
+     sizeof(comm_payload_state_estimate) - sizeof(het_header),
+     (unsigned char*)&comm_payload_state_estimate + sizeof(het_header),
+     0x42);
 }
 
 void SendSOHPacketToPhone() {
