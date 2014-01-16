@@ -214,11 +214,10 @@ void gspControl(unsigned int test_number,
                 unsigned int test_time,
                 unsigned int maneuver_number,
                 unsigned int maneuver_time) {
-  state_vector curr_state; // current state vector of the sphere
-  state_vector ctrl_state_error; // difference btwn curr_state and
-  // g_ctrl_state_target
-  float ctrl_control[6];
-  prop_time firing_times;
+  static state_vector curr_state; // current state vector of the sphere
+  static state_vector ctrl_state_error; // difference btwn curr_state and
+  static float ctrl_control[6];
+  static prop_time firing_times;
   const int min_pulse = 10;
   extern const float KPattitudePD, KDattitudePD, KPpositionPD, KDpositionPD;
   dbg_float_packet dbg_target;
@@ -278,17 +277,26 @@ void gspControl(unsigned int test_number,
                         KDattitudePD, KPattitudePD, KDattitudePD,
                         ctrl_state_error, ctrl_control);
 
-#ifdef LAB_VERSION
-    // Don't bother trying to control the sphere in translation Z or
-    // rotation about X, Y, since we are on a granite table.
-    ctrl_control[FORCE_Z] = 0.0;
-    ctrl_control[TORQUE_X] = 0.0;
-    ctrl_control[TORQUE_Y] = 0.0;
-#endif
-
     //mix forces/torques into thruster commands
     ctrlMixWLoc(&firing_times, ctrl_control, curr_state,
                 min_pulse, 20.0f, FORCE_FRAME_INERTIAL);
+
+#ifdef LAB_VERSION
+    // Don't bother using the Z thrusters. Their aligned with the
+    // granite table.
+
+    // This can't be perform with ctrl_control because those
+    // measurements are done in the global coordinate frame and then
+    // get rotated to the body frame. Meaning it will still try to
+    // fire in Z direction.
+
+    // Thrusters aligned with axis Z have indices 5,6,11,12. See Mark
+    // Hilstad's thesis.
+    firing_times.off_time[5] = firing_times.on_time[5] = 0;
+    firing_times.off_time[6] = firing_times.on_time[6] = 0;
+    firing_times.off_time[11] = firing_times.on_time[11] = 0;
+    firing_times.off_time[12] = firing_times.on_time[12] = 0;
+#endif
 
     //Set firing times
     propSetThrusterTimes(&firing_times);
