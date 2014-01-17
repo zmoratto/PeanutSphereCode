@@ -58,8 +58,8 @@
 #endif
 
 #define VELOCITY_MARGIN 0.05
-// 0.1745 rad ~ 10 degrees
-#define QUAT_AXIS_MARGIN 0.1745
+// 0.43633 rad ~ 25 degrees
+#define QUAT_AXIS_MARGIN 0.43633232
 // 6 degrees per second
 #define RATE_MARGIN 0.1
 #define EPSILON 0.01

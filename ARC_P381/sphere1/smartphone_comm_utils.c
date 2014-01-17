@@ -32,6 +32,24 @@ float smtGetQuaternionMagnitude(state_vector error) {
 int smtAtPositionRotation(state_vector error) {
   float position_error, angle_error;
 #ifdef ISS_VERSION
+  // Use an actual angle difference
+  angle_error = fabs(smtGetQuaternionMagnitude(error));
+#else
+  // In the lab, all we care about is the error about Z
+  float m00, m10;
+  float qx, qy, qz, qw;
+  qx = error[QUAT_1];
+  qy = error[QUAT_2];
+  qz = error[QUAT_3];
+  qw = error[QUAT_4];
+
+  m00 = 1 - 2*qy*qy - 2*qz*qz;
+  m10 = 2*qx*qy + 2*qz*qw;
+  angle_error =
+    fabs(atan2( m10, m00 ));
+#endif
+
+#ifdef ISS_VERSION
   position_error =
     sqrt(error[POS_X]*error[POS_X] +
 	 error[POS_Y]*error[POS_Y] +
@@ -41,7 +59,6 @@ int smtAtPositionRotation(state_vector error) {
     sqrt(error[POS_X]*error[POS_X] +
 	 error[POS_Y]*error[POS_Y]);
 #endif
-  angle_error = fabs(smtGetQuaternionMagnitude(error));
 
   if ( position_error < TRANSLATION_MARGIN &&
        angle_error < QUAT_AXIS_MARGIN ) {

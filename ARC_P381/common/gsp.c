@@ -221,6 +221,7 @@ void gspControl(unsigned int test_number,
   extern const float KPattitudePD, KDattitudePD, KPpositionPD, KDpositionPD;
   dbg_float_packet dbg_target;
   dbg_short_packet dbg_error;
+  float m00, m10, qx, qy, qz, qw;
 
   // Clear all uninitialized vectors
   memset(ctrl_control,0,sizeof(float)*6);
@@ -321,14 +322,13 @@ void gspControl(unsigned int test_number,
   //  - degree error
   //  - velocity error
   //  - rate error
-  //  - quaternion magnitude in degrees
+  //  - degree error projected in Z.
   dbg_target[0] = g_ctrl_state_target[POS_X];
   dbg_target[1] = g_ctrl_state_target[POS_Y];
   dbg_target[2] = g_ctrl_state_target[POS_Z];
   dbg_target[3] =
     sqrt(ctrl_state_error[POS_X]*ctrl_state_error[POS_X] +
-         ctrl_state_error[POS_Y]*ctrl_state_error[POS_Y] +
-         ctrl_state_error[POS_Z]*ctrl_state_error[POS_Z]);
+         ctrl_state_error[POS_Y]*ctrl_state_error[POS_Y]);
   dbg_target[4] =
     smtGetQuaternionMagnitude(ctrl_state_error) * 180 / 3.14159;
   dbg_target[5] =
@@ -339,12 +339,19 @@ void gspControl(unsigned int test_number,
     sqrt(ctrl_state_error[RATE_X]*ctrl_state_error[RATE_X] +
          ctrl_state_error[RATE_Y]*ctrl_state_error[RATE_Y] +
          ctrl_state_error[RATE_Z]*ctrl_state_error[RATE_Z]);
+  // Different method for calculating angular error.
+  qx = ctrl_state_error[QUAT_1];
+  qy = ctrl_state_error[QUAT_2];
+  qz = ctrl_state_error[QUAT_3];
+  qw = ctrl_state_error[QUAT_4];
+  m00 = 1 - 2*qy*qy - 2*qz*qz;
+  m10 = 2*qx*qy + 2*qz*qw;
   dbg_target[7] =
-    smtGetQuaternionMagnitude(g_ctrl_state_target) * 180 / 3.14159;
+    fabs(atan2(m10,m00)) * 180 / 3.14159;
 
   dbg_error[0] = maneuver_time/1000;
-  dbg_error[1] = 0;
-  dbg_error[2] = 0;
+  dbg_error[1] = smtAtPositionRotation(ctrl_state_error);
+  dbg_error[2] = smtAtZeroVelocity(ctrl_state_error);
   dbg_error[3] = 0;
   dbg_error[4] = 0;
   dbg_error[5] = 0;
