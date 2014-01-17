@@ -63,7 +63,6 @@ unsigned short g_last_cmd = 0;
 static int g_packets_from_phone =0;
 static int g_state_packets_from_phone =0;
 static int g_cmd_packets_from_phone =0;
-state_vector g_phone_state_estimate;
 float g_phone_pos_in_sphere_coords[3] = {0.15, 0.0, 0.0};
 float g_phone_rigid_rot[4] = {0.0, 0.0, 0.0, 1.0};
 
@@ -229,12 +228,8 @@ void gspControl(unsigned int test_number,
   memset(dbg_error,0,sizeof(dbg_short_packet));
   memset(dbg_target,0,sizeof(dbg_float_packet));
 
-  // Get an estimate for where we are
-  if ( test_number == USE_PHONE_ESTIMATE ) {
-    memcpy(curr_state, g_phone_state_estimate, sizeof(state_vector));
-  } else {
-    padsStateGet(curr_state);
-  }
+  // Get the current result for localization
+  padsStateGet(curr_state);
 
   // Send out a telemetry packet that shows what we're operating on.
   SendEstimatePacketToPhone(test_number);
@@ -354,12 +349,7 @@ void SendEstimatePacketToPhone(unsigned int test_number) {
   comm_payload_state_estimate my_state;
   state_vector curr_state;
 
-  // Get an estimate for where we are
-  if ( test_number == USE_PHONE_ESTIMATE ) {
-    memcpy(curr_state, g_phone_state_estimate, sizeof(state_vector));
-  } else {
-    padsStateGet(curr_state);
-  }
+  padsStateGet(curr_state);
 
   // Fill the packet
   my_state.timestamp = sysSphereTimeGet();
@@ -448,65 +438,18 @@ void ProcessPhoneCommandFloat(unsigned char channel,
 void ProcessPhoneStateEstimate(unsigned char channel, unsigned char* buffer, unsigned int len) {
 
   comm_payload_state_estimate* pkt = (comm_payload_state_estimate*)buffer;
-  float rotated_position[3] = {0.0, 0.0, 0.0};
-  float rotated_rotation[4] = {0.0, 0.0, 0.0, 0.0};
-  float qdot[4] = {0.0, 0.0, 0.0, 0.0};
-  float rotMatDot[3][3] = {{0.0, 0.0, 0.0},{0.0, 0.0, 0.0},{0.0, 0.0, 0.0}};
-  float velFromRot[3] = {0.0, 0.0, 0.0};
+  static state_vector phone_estimate;
 
   if(ctrlTestNumGet() != USE_PHONE_ESTIMATE) {
     return;
   }
 
-  // correct for offset between phone and sphere
-  smtRotatePhonePositionByQuaternion(pkt->quat, g_phone_pos_in_sphere_coords,
-                                     rotated_position);
+  memcpy( &phone_estimate[POS_X],  &pkt->pos[0], 3*sizeof(float) );
+  memcpy( &phone_estimate[VEL_X],  &pkt->vel[0], 3*sizeof(float) );
+  memcpy( &phone_estimate[QUAT_1], &pkt->quat[0], 4*sizeof(float) );
+  memcpy( &phone_estimate[RATE_X], &pkt->rate[0], 3*sizeof(float) );
 
-  // maybe want to use padsStateSet for debugging (pads_internal.h)
-  g_phone_state_estimate[POS_X] = pkt->pos[0] - rotated_position[0];
-  g_phone_state_estimate[POS_Y] = pkt->pos[1] - rotated_position[1];
-  g_phone_state_estimate[POS_Z] = pkt->pos[2] - rotated_position[2];
-
-  // correct for rotation between phone and sphere
-  smtRotateByQuaternion(pkt->quat[0], pkt->quat[1],
-                        pkt->quat[2], pkt->quat[3],
-                        g_phone_rigid_rot[0], g_phone_rigid_rot[1],
-                        g_phone_rigid_rot[2], g_phone_rigid_rot[3],
-                        rotated_rotation);
-
-  g_phone_state_estimate[QUAT_1]= rotated_rotation[0];
-  g_phone_state_estimate[QUAT_2]= rotated_rotation[1];
-  g_phone_state_estimate[QUAT_3]= rotated_rotation[2];
-  g_phone_state_estimate[QUAT_4]= rotated_rotation[3];
-
-  // find velocity caused by rotation
-  smtFindQDot(pkt->quat, pkt->rate, qdot);
-
-  smtQuatMatrixDerivative(pkt->quat, qdot, rotMatDot);
-
-  velFromRot[0] =
-    rotMatDot[0][0] * g_phone_pos_in_sphere_coords[0] +
-    rotMatDot[0][1] * g_phone_pos_in_sphere_coords[1] +
-    rotMatDot[0][2] * g_phone_pos_in_sphere_coords[2];
-  velFromRot[1] =
-    rotMatDot[1][0] * g_phone_pos_in_sphere_coords[0] +
-    rotMatDot[1][1] * g_phone_pos_in_sphere_coords[1] +
-    rotMatDot[1][2] * g_phone_pos_in_sphere_coords[2];
-  velFromRot[2] =
-    rotMatDot[2][0] * g_phone_pos_in_sphere_coords[0] +
-    rotMatDot[2][1] * g_phone_pos_in_sphere_coords[1] +
-    rotMatDot[2][2] * g_phone_pos_in_sphere_coords[2];
-
-  g_phone_state_estimate[VEL_X] = pkt->vel[0] - velFromRot[0];
-  g_phone_state_estimate[VEL_Y] = pkt->vel[1] - velFromRot[1];
-  g_phone_state_estimate[VEL_Z] = pkt->vel[2] - velFromRot[2];
-
-  // will be identical for phone and sphere because they are rigidly connected
-  g_phone_state_estimate[RATE_X]= pkt->rate[0]; // phi-dot, about Xphone
-  g_phone_state_estimate[RATE_Y]= pkt->rate[1];
-  g_phone_state_estimate[RATE_Z]= pkt->rate[2]; // theta-dot, about Zphone
-
-  padsStateSet(g_phone_state_estimate, ctrlTestTimeGet());
+  padsStateSet(phone_estimate, ctrlTestTimeGet());
 
   g_state_packets_from_phone++;
 }
