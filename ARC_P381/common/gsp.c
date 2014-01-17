@@ -315,27 +315,45 @@ void gspControl(unsigned int test_number,
     }
   }
 
-  dbg_target[0] = maneuver_time;
-  dbg_target[1] = g_ctrl_state_target[POS_X];
-  dbg_target[2] = g_ctrl_state_target[POS_Y];
-  dbg_target[3] = g_ctrl_state_target[POS_Z];
-  dbg_target[4] = g_ctrl_state_target[QUAT_1];
-  dbg_target[5] = g_ctrl_state_target[QUAT_2];
-  dbg_target[6] = g_ctrl_state_target[QUAT_3];
-  dbg_target[7] = g_ctrl_state_target[QUAT_4];
+  // Display:
+  //  - current position [X, Y, Z]
+  //  - position error
+  //  - degree error
+  //  - velocity error
+  //  - rate error
+  //  - quaternion magnitude in degrees
+  dbg_target[0] = g_ctrl_state_target[POS_X];
+  dbg_target[1] = g_ctrl_state_target[POS_Y];
+  dbg_target[2] = g_ctrl_state_target[POS_Z];
+  dbg_target[3] =
+    sqrt(ctrl_state_error[POS_X]*ctrl_state_error[POS_X] +
+         ctrl_state_error[POS_Y]*ctrl_state_error[POS_Y] +
+         ctrl_state_error[POS_Z]*ctrl_state_error[POS_Z]);
+  dbg_target[4] =
+    smtGetQuaternionMagnitude(ctrl_state_error) * 180 / 3.14159;
+  dbg_target[5] =
+    sqrt(ctrl_state_error[VEL_X]*ctrl_state_error[VEL_X] +
+         ctrl_state_error[VEL_Y]*ctrl_state_error[VEL_Y] +
+         ctrl_state_error[VEL_Z]*ctrl_state_error[VEL_Z]);
+  dbg_target[6] =
+    sqrt(ctrl_state_error[RATE_X]*ctrl_state_error[RATE_X] +
+         ctrl_state_error[RATE_Y]*ctrl_state_error[RATE_Y] +
+         ctrl_state_error[RATE_Z]*ctrl_state_error[RATE_Z]);
+  dbg_target[7] =
+    smtGetQuaternionMagnitude(g_ctrl_state_target) * 180 / 3.14159;
 
   dbg_error[0] = maneuver_time/1000;
-  dbg_error[1] = ctrl_state_error[POS_X]*1000;
-  dbg_error[2] = ctrl_state_error[POS_Y]*1000;
-  dbg_error[3] = ctrl_state_error[POS_Z]*1000;
+  dbg_error[1] = 0;
+  dbg_error[2] = 0;
+  dbg_error[3] = 0;
   dbg_error[4] = 0;
-  dbg_error[5] = ctrl_state_error[QUAT_1]*1000;
-  dbg_error[6] = ctrl_state_error[QUAT_2]*1000;
-  dbg_error[7] = ctrl_state_error[QUAT_3]*1000;
-  dbg_error[8] = ctrl_state_error[QUAT_4]*1000;
-  dbg_error[9] = fabs(smtGetQuaternionMagnitude(ctrl_state_error))*1000.0;
-  dbg_error[10] = QUAT_AXIS_MARGIN*1000.0;
-  dbg_error[11] = g_target_reached;
+  dbg_error[5] = 0;
+  dbg_error[6] = 0;
+  dbg_error[7] = 0;
+  dbg_error[8] = 0;
+  dbg_error[9] = 0;
+  dbg_error[10] = 0;
+  dbg_error[11] = 0;
 
   SendSOHPacketToPhone();
 

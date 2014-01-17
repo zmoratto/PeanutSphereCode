@@ -29,7 +29,7 @@
 #define DEFAULT_Z 0.0
 #define THE_PROGRAM_NUMBER 410
 #else //LAB_VERSION
-#define DEFAULT_Z -0.65
+#define DEFAULT_Z -0.79
 #define THE_PROGRAM_NUMBER 223
 #endif
 
@@ -58,9 +58,9 @@
 #endif
 
 #define VELOCITY_MARGIN 0.05
-// 0.35 rad ~ 20 degrees
-#define QUAT_AXIS_MARGIN 0.35
-//#define QUAT_ANGLE_MARGIN 0.99
+// 0.1745 rad ~ 10 degrees
+#define QUAT_AXIS_MARGIN 0.1745
+// 6 degrees per second
 #define RATE_MARGIN 0.1
 #define EPSILON 0.01
 #define TIMED_OUT 2
