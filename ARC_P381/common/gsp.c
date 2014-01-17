@@ -292,10 +292,10 @@ void gspControl(unsigned int test_number,
 
     // Thrusters aligned with axis Z have indices 5,6,11,12. See Mark
     // Hilstad's thesis.
+    firing_times.off_time[4] = firing_times.on_time[4] = 0;
     firing_times.off_time[5] = firing_times.on_time[5] = 0;
-    firing_times.off_time[6] = firing_times.on_time[6] = 0;
+    firing_times.off_time[10] = firing_times.on_time[10] = 0;
     firing_times.off_time[11] = firing_times.on_time[11] = 0;
-    firing_times.off_time[12] = firing_times.on_time[12] = 0;
 #endif
 
     //Set firing times
