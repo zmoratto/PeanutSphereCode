@@ -71,6 +71,8 @@ void DifferentiatePhoneMessage(unsigned char channel,
                                unsigned char* buffer, unsigned int len);
 void SendSOHPacketToPhone();
 void SendEstimatePacketToPhone(unsigned int test_number);
+void CustomMixWLoc( prop_time *firing_times, float *control, float *state,
+                    unsigned int minPulseWidth, float duty_cycle );
 
 // FUNCTION IMPLEMENTATIONS
 
@@ -166,8 +168,8 @@ void gspInitTest(unsigned int test_number)
 
       // don't turn on the estimator
       // not sure if I actually need both of these
-      //                padsEstimatorInitWaitAndSet(initState, 50, SYS_FOREVER, SYS_FOREVER,
-      //        PADS_INIT_THRUST_INT_ENABLE,PADS_BEACONS_SET_1TO9); // ISS
+      // padsEstimatorInitWaitAndSet(initState, 50, SYS_FOREVER, SYS_FOREVER,
+      //      PADS_INIT_THRUST_INT_ENABLE,PADS_BEACONS_SET_1TO9); // ISS
 
       padsEstimatorDisable();
       break;
@@ -274,8 +276,14 @@ void gspControl(unsigned int test_number,
                         ctrl_state_error, ctrl_control);
 
     //mix forces/torques into thruster commands
-    ctrlMixWLoc(&firing_times, ctrl_control, curr_state,
-                min_pulse, 20.0f, FORCE_FRAME_INERTIAL);
+    // ctrlMixWLoc(&firing_times, ctrl_control, curr_state,
+    //            min_pulse, 20.0f, FORCE_FRAME_INERTIAL);
+
+    // Mix forces/torque into thruster commands. This is a custom
+    // variant that compensates for the shift in center of gravity due
+    // to the PeanutMM.
+    CustomMixWLoc(&firing_times, ctrl_control, curr_state,
+                  min_pulse, 20.0f);
 
 #ifdef LAB_VERSION
     // Don't bother using the Z thrusters. Their aligned with the
@@ -499,6 +507,93 @@ void DifferentiatePhoneMessage(unsigned char channel,
     break;
   default:
     break; // don't recognize this
+  }
+}
+
+void CustomMixWLoc( prop_time *firing_times, float *control, float *state,
+                    unsigned int minPulseWidth, float duty_cycle ) {
+  float slopeForce;
+  float u[12] = {0.0f}, scale, maxu;
+  float b2g[3][3]; // body to global rotation matrix
+  float MixingMat[6][6] =
+    {{0.5f, 0.0f, -0.10309278f, 0.0f, 5.15463918f, 0.0f},
+     {0.5f, 0.0f, 0.10309278f, 0.0f, -5.15463918f, 0.0f},
+     {0.0f, 0.60309278f, 0.0f, 0.0f, 0.0f, 5.15463918f},
+     {0.0f, 0.39690722f, 0.0f, 0.0f, 0.0f, -5.15463918f},
+     {0.0f, 0.0f, 0.5f, 5.15463918f, 0.0f, 0.0f},
+     {0.0f, 0.0f, 0.5f, -5.15463918f, 0.0f, 0.0f}};
+  float controlPair[6] = {0};
+  float controlBody[6] = {0};
+  int   i, u_over_2, half_width, add_one;
+  float thruster_force = 0.0f;
+  unsigned int maxPulseWidth = 0;
+
+  maxPulseWidth = (unsigned int) (ctrlPeriodGet() * 0.01 * duty_cycle);
+  half_width =  (maxPulseWidth >> 1);
+
+  if (fMixSimpleCompatibility)
+    thruster_force = DEFAULT_THRUSTER_FORCE;
+  else
+    thruster_force = (duty_cycle*0.01f) * VEHICLE_THRUST_FORCE;
+
+  slopeForce  = ((float) maxPulseWidth)/thruster_force;
+
+  // change forces from global frame to body frame
+  mathBody2Global(b2g, state);
+  controlBody[0] = b2g[0][0]*control[0] + b2g[1][0]*control[1] + b2g[2][0]*control[2];
+  controlBody[1] = b2g[0][1]*control[0] + b2g[1][1]*control[1] + b2g[2][1]*control[2];
+  controlBody[2] = b2g[0][2]*control[0] + b2g[1][2]*control[1] + b2g[2][2]*control[2];
+
+  // torques are already in body frame
+  controlBody[3] = control[3];
+  controlBody[4] = control[4];
+  controlBody[5] = control[5];
+
+  // determine thruster pair forces as specified in Mark Hilstad thesis p.38-39
+  mathMatVecMult(controlPair, (float **)MixingMat, controlBody, 6, 6);
+
+  // determine thruster duration from thruster pair forces
+  for ( i = 0; i < 6; i++ ) {
+    if (controlPair[i] > 0) {
+      u[i] = slopeForce * controlPair[i];
+    } else {
+      u[i+6] = - slopeForce * controlPair[i];
+    }
+  }
+
+  // find maximum thruster command
+  maxu = u[0];
+  for (i=1; i<12; i++) if (u[i] > maxu) maxu = u[i];
+
+  // scale thruster vector to preserve direction
+  if (maxu > ((float) maxPulseWidth))
+    scale = ((float) maxPulseWidth)/maxu;
+  else
+    scale = 1.0;
+
+  // set thruster on-times
+  for (i=0; i<12; i++) {
+    // thruster on-time in milliseconds
+    u[i] = scale*u[i];
+
+    // implement deadband
+    if (u[i] < ((float) minPulseWidth)) {
+      firing_times->off_time[i] = 0;
+      firing_times->on_time[i] = 0;
+    }
+    // if thruster is on almost full time, make it on full time
+    else if ((1.05*u[i]) > ((float) maxPulseWidth)) {
+      firing_times->on_time[i]  = 0;
+      firing_times->off_time[i] = (int) maxPulseWidth;
+    }
+    // set remaining thruster on-times and center pulses
+    else {
+      u_over_2 = (int) (u[i]);
+      add_one  = u_over_2 & 0x1;
+      u_over_2 = (u_over_2 >> 1);
+      firing_times->on_time[i]  = half_width - u_over_2;
+      firing_times->off_time[i] = half_width + u_over_2 + add_one;
+    }
   }
 }
 
