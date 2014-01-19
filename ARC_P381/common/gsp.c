@@ -28,6 +28,7 @@
 #include "gsp.h"
 #include "gsp_task.h"
 #include "housekeeping.h"
+#include "math_matrix.h"
 #include "pads.h"
 #include "pads_internal.h"
 #include "prop.h"
@@ -531,10 +532,7 @@ void CustomMixWLoc( prop_time *firing_times, float *control, float *state,
   maxPulseWidth = (unsigned int) (ctrlPeriodGet() * 0.01 * duty_cycle);
   half_width =  (maxPulseWidth >> 1);
 
-  if (fMixSimpleCompatibility)
-    thruster_force = DEFAULT_THRUSTER_FORCE;
-  else
-    thruster_force = (duty_cycle*0.01f) * VEHICLE_THRUST_FORCE;
+  thruster_force = (duty_cycle*0.01f) * VEHICLE_THRUST_FORCE;
 
   slopeForce  = ((float) maxPulseWidth)/thruster_force;
 
