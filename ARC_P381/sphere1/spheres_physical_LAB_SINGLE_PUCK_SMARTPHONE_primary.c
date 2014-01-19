@@ -18,10 +18,7 @@
 
 // Recommended EKF initialization vector
 // upside down coordinates
-state_vector initState = {0.0f,0.0f,-0.65f,  0.0f,0.0f,0.0f,  0.0f,0.0f,0.0f,1.0f,  0.0f,0.0f,0.0f};
-//state_vector initState = {0.0f,0.0f,0.00f,  0.0f,0.0f,0.0f,  0.0f,0.0f,0.0f,1.0f,  0.0f,0.0f,0.0f};
-// Sideways coord: Tank ovhd
-//state_vector initState = {0.0f,0.0f,0.56f,  0.0f,0.0f,0.0f,  1.0f,0.0f,0.0f,0.0f,  0.0f,0.0f,0.0f};
+state_vector initState = {0.0f,0.0f,-0.79f,  0.0f,0.0f,0.0f,  0.0f,0.0f,0.0f,1.0f,  0.0f,0.0f,0.0f};
 
 // changed quaterion 9/6/11 DW
 // 106 - normal -z face - 96 same but "ISS" (to use w/ flight gui)
@@ -34,11 +31,11 @@ const unsigned char PHYS_PROP = 106; // was 2? what is that?
 
 const unsigned int DOCK_MECHANISM_PRESENT	= 0;
 
-// 12.43 + 0.174g smartphone + 0.142g batteries + 0.122g Smartphone cable
-//const float VEHICLE_MASS = 12.75f;    		// [kg] Mass with air carriage  
-
-// recalculated 8/8/12
-const float VEHICLE_MASS = 12.87f; 
+// Zack Moratto 1/19/14
+// SPHERE + MM = 5.32 kg
+// Carriage    = 8.42 kg
+// TOTAL       = 13.74 kg
+const float VEHICLE_MASS = 13.74f; 
 const float VEHICLE_ROT_ACCEL = 0.124f;		// [rad/s/s] Vehicle Rotational acceleration
 const float VEHICLE_LIN_ACCEL = 0.0069f;	// [m/s/s] Vehicle Linear acceleration  
 const float VEHICLE_THRUST_FORCE = 0.08798f; 	// [N] VEHICLE_LIN_ACCEL * VEHICLE_MASS
@@ -61,14 +58,10 @@ const float VEHICLE_THRUST_FORCE_MULTIPLIER = 0.39f;	// maps efficient thruster 
 // PD controller
 // original gains (used this in lab)
 const float KPpositionPD = 0.497f; // Proportional gain for position control wn=0.200 rad/s
-//const float KPpositionPD = 0.25f;
-///const float KDpositionPD = 4.972f; // Derivative gain for position control wn=0.200 rad/s
-const float KDpositionPD = 9.8;
+const float KDpositionPD = 4.97f;
 
 const float KPattitudePD = 0.0107f; // Proportional gain for attitude control wn=0.400 rad/s
 const float KDattitudePD = 0.0402f; // Derivative gain for attitude control wn=0.400 rad/s with 25% damping reduction
-//const float KPattitudePD = 0.00553f; 
-//const float KDattitudePD = 0.09f; 
 
 // PID controller (the integral term is set for a time constant of approximately 20 sec)
 const float KPattitudePID = 0.0134f; // Proportional gain for attitude control wn=0.400 rad/s

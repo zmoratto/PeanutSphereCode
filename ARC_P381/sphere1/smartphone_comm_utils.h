@@ -47,17 +47,16 @@
 #define BIAS_QZ 0.0
 #define BIAS_QW 1.0
 
-// translation margin could be 0.05 in orbit, but with the sphere sideways, want it bigger
-// especially for testing now
-// was 0.09
-#define TRANSLATION_MARGIN 0.05
+// translation margin could be 0.05 in orbit, but with the sphere
+// sideways, want it bigger. Was 0.09
+#define TRANSLATION_MARGIN 0.06
 #ifdef ISS_VERSION
 #define X_MARGIN TRANSLATION_MARGIN
 #else // lab version
 #define X_MARGIN TRANSLATION_MARGIN
 #endif
 
-#define VELOCITY_MARGIN 0.05
+#define VELOCITY_MARGIN 0.04
 // 0.43633 rad ~ 25 degrees
 #define QUAT_AXIS_MARGIN 0.43633232
 // 6 degrees per second
