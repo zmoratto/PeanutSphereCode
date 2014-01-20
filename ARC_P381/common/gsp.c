@@ -72,6 +72,7 @@ void DifferentiatePhoneMessage(unsigned char channel,
                                unsigned char* buffer, unsigned int len);
 void SendSOHPacketToPhone();
 void SendEstimatePacketToPhone(unsigned int test_number);
+void SendThrusterTimingsToPhone( prop_time *firing_times);
 void CustomMixWLoc( prop_time *firing_times, float *control, float *state,
                     unsigned int minPulseWidth, float duty_cycle );
 
@@ -303,10 +304,12 @@ void gspControl(unsigned int test_number,
     firing_times.off_time[11] = firing_times.on_time[11] = 0;
 #endif
 
-    //Set firing times
+    // Set firing times
     propSetThrusterTimes(&firing_times);
-
     padsGlobalPeriodSetAndWait(200,405);
+
+    // Tell the Phone about our firing solutions
+    SendThrusterTimingsToPhone(&firing_times);
 
     // termination conditions
     if(maneuver_time > MIN_MANEUVER_TIME) {
@@ -400,6 +403,23 @@ void SendEstimatePacketToPhone(unsigned int test_number) {
      sizeof(comm_payload_state_estimate) - sizeof(het_header),
      (unsigned char*)&my_state + sizeof(het_header),
      0x42);
+}
+
+void SendThrusterTimingsToPhone( prop_time *firing_times) {
+  static unsigned char packet[28];
+  int i = 0;
+
+  // Fill the packet
+  *(unsigned int *)(packet) = sysSphereTimeGet();
+  for ( i = 0; i < 12; i++ ) {
+    packet[i+4] = (unsigned char)firing_times->on_time[i]
+  }
+  for ( i = 0; i < 12; i++ ) {
+    packet[i+4+12] = (unsigned_char)firing_times->off_time[i]
+  }
+
+  // Send it out. The call will prepend a header and checksum
+  smtExpV2UARTSendWHETHeader(EXPv2_CH1_HWID, 28, packet, 0x43 );
 }
 
 void SendSOHPacketToPhone() {
