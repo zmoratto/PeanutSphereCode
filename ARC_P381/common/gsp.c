@@ -412,10 +412,10 @@ void SendThrusterTimingsToPhone( prop_time *firing_times) {
   // Fill the packet
   *(unsigned int *)(packet) = sysSphereTimeGet();
   for ( i = 0; i < 12; i++ ) {
-    packet[i+4] = (unsigned char)firing_times->on_time[i]
+    packet[i+4] = (unsigned char)firing_times->on_time[i];
   }
   for ( i = 0; i < 12; i++ ) {
-    packet[i+4+12] = (unsigned_char)firing_times->off_time[i]
+    packet[i+4+12] = (unsigned char)firing_times->off_time[i];
   }
 
   // Send it out. The call will prepend a header and checksum
