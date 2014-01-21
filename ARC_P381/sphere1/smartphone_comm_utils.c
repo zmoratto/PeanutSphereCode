@@ -5,9 +5,9 @@
 #include "spheres_constants.h"
 
 void smtExpV2UARTSendWHETHeader(unsigned char channel, unsigned char len, unsigned char *data, unsigned char cmd) {
-  short big_chk = 0;
   het_header het_hdr;
-  int i;
+  unsigned short big_chk = 0;
+  unsigned char i;
 
   for (i=0; i < len; i++)
     big_chk += data[i];
@@ -21,7 +21,7 @@ void smtExpV2UARTSendWHETHeader(unsigned char channel, unsigned char len, unsign
   het_hdr.cmd = cmd;
   het_hdr.len = len;
 
-  expv2_uart_send(channel, sizeof(het_header), (unsigned char *)&het_hdr);
+  expv2_uart_send(channel, 8, (unsigned char *)&het_hdr);
   expv2_uart_send(channel, len, data);
 }
 

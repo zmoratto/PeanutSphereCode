@@ -77,7 +77,7 @@
 
 typedef struct{
   unsigned char preamble[4];
-  short chk;
+  unsigned short chk;
   unsigned char cmd;
   unsigned char len;
 } het_header;

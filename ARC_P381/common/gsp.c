@@ -73,6 +73,7 @@ void DifferentiatePhoneMessage(unsigned char channel,
 void SendSOHPacketToPhone();
 void SendEstimatePacketToPhone(unsigned int test_number);
 void SendThrusterTimingsToPhone( prop_time *firing_times);
+void SendTelemetryPacketToPhone();
 void CustomMixWLoc( prop_time *firing_times, float *control, float *state,
                     unsigned int minPulseWidth, float duty_cycle );
 
@@ -227,6 +228,10 @@ void gspControl(unsigned int test_number,
   dbg_short_packet dbg_error;
   float m00, m10, qx, qy, qz, qw;
 
+  // Always send a SOH and Telemetry down the line
+  SendSOHPacketToPhone();
+  SendTelemetryPacketToPhone();
+
   // Clear all uninitialized vectors
   memset(ctrl_control,0,sizeof(float)*6);
   memset(ctrl_state_error,0,sizeof(state_vector));
@@ -236,12 +241,8 @@ void gspControl(unsigned int test_number,
   // Get the current result for localization
   padsStateGet(curr_state);
 
-  // Send out a telemetry packet that shows what we're operating on.
-  SendEstimatePacketToPhone(test_number);
-
   // Check for early exit condition
   if( g_test_class == CHECKOUT ) {
-    SendSOHPacketToPhone();
     gspControl_Checkout(test_number, test_time, maneuver_number, maneuver_time);
     return;
   }
@@ -374,8 +375,6 @@ void gspControl(unsigned int test_number,
   dbg_error[10] = 0;
   dbg_error[11] = 0;
 
-  SendSOHPacketToPhone();
-
   commSendRFMPacket(COMM_CHANNEL_STL, GROUND,
                     COMM_CMD_DBG_FLOAT, (unsigned char *) dbg_target, 0);
   commSendRFMPacket(COMM_CHANNEL_STL, GROUND,
@@ -389,7 +388,7 @@ void SendEstimatePacketToPhone(unsigned int test_number) {
   padsStateGet(curr_state);
 
   // Fill the packet
-  my_state.timestamp = sysSphereTimeGet();
+  my_state.timestamp = 0;//sysSphereTimeGet();
   memcpy( &my_state.pos[0], &curr_state[POS_X], 3*sizeof(float) );
   memcpy( &my_state.vel[0], &curr_state[VEL_X], 3*sizeof(float) );
   memcpy( &my_state.quat[0], &curr_state[QUAT_1], 4*sizeof(float) );
@@ -437,6 +436,18 @@ void SendSOHPacketToPhone() {
   // send it
   smtExpV2UARTSendWHETHeader(EXPv2_CH1_HWID, sizeof(comm_payload_soh),
                              (unsigned char *)&my_soh, COMM_CMD_SOH);
+}
+
+void SendTelemetryPacketToPhone() {
+  comm_payload_telemetry my_telemetry;
+
+  // Get Telemetry Information
+  commBackgroundPayloadPack(&my_telemetry);
+  
+  // send it out
+  smtExpV2UARTSendWHETHeader(EXPv2_CH1_HWID, sizeof(comm_payload_telemetry),
+			     (unsigned char *)&my_telemetry,
+			     COMM_CMD_BACKGROUND);
 }
 
 void ProcessPhoneCommandFloat(unsigned char channel,
