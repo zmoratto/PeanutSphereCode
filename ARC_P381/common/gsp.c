@@ -189,16 +189,15 @@ void gspPadsInertial(IMU_sample *accel, IMU_sample *gyro,
     gspPadsInertial_Checkout(accel, gyro, num_samples);
     return;
   }
-
-  if (ctrlManeuverNumGet() == WAYPOINT_MODE) {
-    SendTelemetryPacketToPhone();
-  }
 }
 
 // Record global data. Called at the end of each beacon's transmission
 // period.
 void gspPadsGlobal(unsigned int beacon,
                    beacon_measurement_matrix measurements) {
+  if (ctrlManeuverNumGet() == WAYPOINT_MODE) {
+    SendTelemetryPacketToPhone();
+  }
 }
 
 // Event driven task for estimation, control, and
