@@ -74,6 +74,7 @@ void SendSOHPacketToPhone();
 void SendEstimatePacketToPhone(unsigned int test_number);
 void SendThrusterTimingsToPhone( prop_time *firing_times);
 void SendTelemetryPacketToPhone();
+void SendInertialPacketToPhone(IMU_sample *accel, IMU_sample *gyro);
 void CustomMixWLoc( prop_time *firing_times, float *control, float *state,
                     unsigned int minPulseWidth, float duty_cycle );
 
@@ -188,6 +189,10 @@ void gspPadsInertial(IMU_sample *accel, IMU_sample *gyro,
   if (g_test_class == CHECKOUT) {
     gspPadsInertial_Checkout(accel, gyro, num_samples);
     return;
+  }
+
+  if (ctrlManeuverNumGet() == WAYPOINT_MODE) {
+    SendInertialPacketToPhone(accel, gyro);
   }
 }
 
@@ -418,6 +423,18 @@ void SendThrusterTimingsToPhone( prop_time *firing_times) {
 
   // Send it out. The call will prepend a header and checksum
   smtExpV2UARTSendWHETHeader(EXPv2_CH1_HWID, 28, packet, 0x43 );
+}
+
+void SendInertialPacketToPhone(IMU_sample *accel, IMU_sample *gyro) {
+  static unsigned char packet[28];
+
+  // Fill the packet
+  *(unsigned int *)(packet) = sysSphereTimeGet();
+  memcpy(packet + 4, accel, sizeof(unsigned int) * 3);
+  memcpy(packet + 16, gyro, sizeof(unsigned int) * 3);
+
+  // Send it out. The call will prepend a header and checksum
+  smtExpV2UARTSendWHETHeader(EXPv2_CH1_HWID, 28, packet, 0x44 );
 }
 
 void SendSOHPacketToPhone() {

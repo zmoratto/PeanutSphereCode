@@ -94,7 +94,6 @@ typedef struct{
   unsigned short seq_num; // sequence number of this command
   unsigned char stop_at_end; // include zero velocity as termination criteria
   unsigned char cmd; // identifies which command
-
 } phone_cmd;
 
 typedef struct{
