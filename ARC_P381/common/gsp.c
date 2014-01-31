@@ -141,42 +141,41 @@ void gspInitTest(unsigned int test_number)
   g_maneuver_num_index = 0;
   g_test_class = NOT_CHECKOUT;
 
-  switch (test_number)
-    {
-    case 1: // Quick Checkout
-      g_test_class = CHECKOUT;
-      gspInitTest_Checkout(test_number);
-      break;
-    case USE_SPHERES_ESTIMATE: // use SPHERES estimate
-      g_target_reached = FALSE;
-      g_sphere_error = FALSE;
-      g_last_cmd = 0;
-      g_maneuver_nums[ 0] =  CONVERGE_MODE;
-      g_maneuver_nums[ 1] =  WAYPOINT_MODE;//DRIFT_MODE; XXX
-      g_maneuver_nums[ 2] =  WAYPOINT_MODE;
-      g_stop_at_end = TRUE;
+  switch (test_number) {
+  case 1: // Quick Checkout
+    g_test_class = CHECKOUT;
+    gspInitTest_Checkout(test_number);
+    break;
+  case USE_SPHERES_ESTIMATE: // use SPHERES estimate
+    g_target_reached = FALSE;
+    g_sphere_error = FALSE;
+    g_last_cmd = 0;
+    g_maneuver_nums[ 0] =  CONVERGE_MODE;
+    g_maneuver_nums[ 1] =  WAYPOINT_MODE;//DRIFT_MODE; XXX
+    g_maneuver_nums[ 2] =  WAYPOINT_MODE;
+    g_stop_at_end = TRUE;
 
-      // turn on the estimator
-      padsEstimatorInitWaitAndSet(initState, 50, 200, 405,
-                                  PADS_INIT_THRUST_INT_ENABLE,PADS_BEACONS_SET_1TO9); // ISS
-      break;
-    case USE_PHONE_ESTIMATE: // use Phone estimate
-      g_target_reached = FALSE;
-      g_sphere_error = FALSE;
-      g_last_cmd = 0;
-      g_maneuver_nums[ 0] =  CONVERGE_MODE;
-      g_maneuver_nums[ 1] =  WAYPOINT_MODE;//DRIFT_MODE; XXX
-      g_maneuver_nums[ 2] =  WAYPOINT_MODE;
-      g_stop_at_end = TRUE;
+    // turn on the estimator
+    padsEstimatorInitWaitAndSet(initState, 50, 200, 405,
+                                PADS_INIT_THRUST_INT_ENABLE,PADS_BEACONS_SET_1TO9); // ISS
+    break;
+  case USE_PHONE_ESTIMATE: // use Phone estimate
+    g_target_reached = FALSE;
+    g_sphere_error = FALSE;
+    g_last_cmd = 0;
+    g_maneuver_nums[ 0] =  CONVERGE_MODE;
+    g_maneuver_nums[ 1] =  WAYPOINT_MODE;//DRIFT_MODE; XXX
+    g_maneuver_nums[ 2] =  WAYPOINT_MODE;
+    g_stop_at_end = TRUE;
 
-      // don't turn on the estimator
-      // not sure if I actually need both of these
-      // padsEstimatorInitWaitAndSet(initState, 50, SYS_FOREVER, SYS_FOREVER,
-      //      PADS_INIT_THRUST_INT_ENABLE,PADS_BEACONS_SET_1TO9); // ISS
+    // don't turn on the estimator
+    // not sure if I actually need both of these
+    // padsEstimatorInitWaitAndSet(initState, 50, SYS_FOREVER, SYS_FOREVER,
+    //      PADS_INIT_THRUST_INT_ENABLE,PADS_BEACONS_SET_1TO9); // ISS
 
-      padsEstimatorDisable();
-      break;
-    }
+    padsEstimatorDisable();
+    break;
+  }
 }
 
 // Specify task trigger mask
@@ -186,12 +185,13 @@ void gspInitTask() {
 // Perform state estimate based on inertial data. Called periodically.
 void gspPadsInertial(IMU_sample *accel, IMU_sample *gyro,
                      unsigned int num_samples) {
-  switch (g_test_class) {
-  case CHECKOUT:
+  if (g_test_class == CHECKOUT) {
     gspPadsInertial_Checkout(accel, gyro, num_samples);
-    break;
-  default:
-    break;
+    return;
+  }
+
+  if (ctrlManeuverNumGet() == WAYPOINT_MODE) {
+    SendTelemetryPacketToPhone();
   }
 }
 
@@ -313,18 +313,18 @@ void gspControl(unsigned int test_number,
     SendThrusterTimingsToPhone(&firing_times);
 
     // termination conditions
-    if(maneuver_time > MIN_MANEUVER_TIME) {
+    if (maneuver_time > MIN_MANEUVER_TIME) {
       if ((smtAtPositionRotation(ctrl_state_error))) {
         // if rotation test, just need x correct
         // if maneuver 20 or not rotation test, need x and x_dot correct
-        if((!g_stop_at_end) || (smtAtZeroVelocity(ctrl_state_error))) {
+        if ((!g_stop_at_end) || (smtAtZeroVelocity(ctrl_state_error))) {
 
           //  we got there
           g_target_reached = TRUE;
         }
       }
     }
-    if(maneuver_time > MANEUVER_TIME_OUT) {
+    if (maneuver_time > MANEUVER_TIME_OUT) {
       g_target_reached = TIMED_OUT;
     }
   }
@@ -443,11 +443,11 @@ void SendTelemetryPacketToPhone() {
 
   // Get Telemetry Information
   commBackgroundPayloadPack(&my_telemetry);
-  
+
   // send it out
   smtExpV2UARTSendWHETHeader(EXPv2_CH1_HWID, sizeof(comm_payload_telemetry),
-			     (unsigned char *)&my_telemetry,
-			     COMM_CMD_BACKGROUND);
+                             (unsigned char *)&my_telemetry,
+                             COMM_CMD_BACKGROUND);
 }
 
 void ProcessPhoneCommandFloat(unsigned char channel,
