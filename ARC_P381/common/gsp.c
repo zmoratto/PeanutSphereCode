@@ -74,7 +74,8 @@ void SendSOHPacketToPhone();
 void SendEstimatePacketToPhone(unsigned int test_number);
 void SendThrusterTimingsToPhone( prop_time *firing_times);
 void SendTelemetryPacketToPhone();
-void SendInertialPacketToPhone(IMU_sample *accel, IMU_sample *gyro);
+void SendInertialPacketToPhone(IMU_sample *accel, IMU_sample *gyro,
+                               unsigned int num_samples);
 void CustomMixWLoc( prop_time *firing_times, float *control, float *state,
                     unsigned int minPulseWidth, float duty_cycle );
 
@@ -192,7 +193,7 @@ void gspPadsInertial(IMU_sample *accel, IMU_sample *gyro,
   }
 
   if (ctrlManeuverNumGet() == WAYPOINT_MODE) {
-    SendInertialPacketToPhone(accel, gyro);
+    SendInertialPacketToPhone(accel, gyro, num_samples);
   }
 }
 
@@ -425,16 +426,27 @@ void SendThrusterTimingsToPhone( prop_time *firing_times) {
   smtExpV2UARTSendWHETHeader(EXPv2_CH1_HWID, 28, packet, 0x43 );
 }
 
-void SendInertialPacketToPhone(IMU_sample *accel, IMU_sample *gyro) {
-  static unsigned char packet[28];
+void SendInertialPacketToPhone(IMU_sample *accel, IMU_sample *gyro, unsigned int num_samples) {
+  static unsigned char packet[16];
+  static unsigned int accel_lp[3], gyro_lp[3];
+
+  // This is actually a sinc, perfect low pass filter
+  padsFilterGyroData(accel, num_samples, accel_lp);
+  padsFilterGyroData(gyro, num_samples, gyro_lp);
+
+  // Here we only send a short when we have an uint32 because the
 
   // Fill the packet
   *(unsigned int *)(packet) = sysSphereTimeGet();
-  memcpy(packet + 4, accel, sizeof(unsigned int) * 3);
-  memcpy(packet + 16, gyro, sizeof(unsigned int) * 3);
+  *(unsigned short *)(packet+4) = (unsigned short)accel_lp[0];
+  *(unsigned short *)(packet+6) = (unsigned short)accel_lp[1];
+  *(unsigned short *)(packet+8) = (unsigned short)accel_lp[2];
+  *(unsigned short *)(packet+10) = (unsigned short)gyro_lp[0];
+  *(unsigned short *)(packet+12) = (unsigned short)gyro_lp[1];
+  *(unsigned short *)(packet+14) = (unsigned short)gyro_lp[2];
 
   // Send it out. The call will prepend a header and checksum
-  smtExpV2UARTSendWHETHeader(EXPv2_CH1_HWID, 28, packet, 0x44 );
+  smtExpV2UARTSendWHETHeader(EXPv2_CH1_HWID, 16, packet, 0x44 );
 }
 
 void SendSOHPacketToPhone() {
