@@ -75,8 +75,7 @@ void SendSOHPacketToPhone();
 void SendEstimatePacketToPhone(unsigned int test_number);
 void SendThrusterTimingsToPhone( prop_time *firing_times);
 void SendTelemetryPacketToPhone();
-void SendInertialPacketToPhone(IMU_sample *accel, IMU_sample *gyro,
-                               unsigned int num_samples);
+void SendInertialPacketToPhone();
 void CustomMixWLoc( prop_time *firing_times, float *control, float *state,
                     unsigned int minPulseWidth, float duty_cycle );
 
@@ -194,7 +193,7 @@ void gspPadsInertial(IMU_sample *accel, IMU_sample *gyro,
   }
 
   if (ctrlManeuverNumGet() == WAYPOINT_MODE) {
-    SendInertialPacketToPhone(accel, gyro, num_samples);
+    SendInertialPacketToPhone();
   }
 }
 
@@ -204,7 +203,7 @@ void gspPadsGlobal(unsigned int beacon,
                    beacon_measurement_matrix measurements) {
   if (ctrlManeuverNumGet() == WAYPOINT_MODE) {
     SendTelemetryPacketToPhone();
-    SendInertialPacketToPhone(accel, gyro, num_samples);
+    SendInertialPacketToPhone();
   }
 }
 
@@ -428,7 +427,7 @@ void SendThrusterTimingsToPhone( prop_time *firing_times) {
   smtExpV2UARTSendWHETHeader(EXPv2_CH1_HWID, 28, packet, 0x43 );
 }
 
-void SendInertialPacketToPhone(IMU_sample *accel, IMU_sample *gyro, unsigned int num_samples) {
+void SendInertialPacketToPhone(){
   static unsigned char packet[16];
   static unsigned int accel_lp[3], gyro_lp[3];
 
@@ -436,16 +435,16 @@ void SendInertialPacketToPhone(IMU_sample *accel, IMU_sample *gyro, unsigned int
   // no way for us to determine if it is current or stale since the
   // index is hidden. Instead, I'll just pull from FPGA's memory the
   // current accel and gyro measurement unfiltered.
-  gyro_lp[0] = ADC_MAX - (A2D_Gyros[0] & ADC_MASK);
-  gyro_lp[1] = A2D_Gyros[1] & ADC_MASK;
-  gyro_lp[2] = A2D_Gyros[2] & ADC_MASK;
+  gyro_lp[0] = 0xfff - (A2D_Gyros[0] & 0xfff);
+  gyro_lp[1] = A2D_Gyros[1] & 0xfff;
+  gyro_lp[2] = A2D_Gyros[2] & 0xfff;
 
-  accel_lp[0] = ADC_MAX - (A2D_Accel[0] & ADC_MASK);
+  accel_lp[0] = 0xfff - (A2D_Accel[0] & 0xfff);
   if (commHWAddrGet() != 0x32)
-    accel_lp[1] = ADC_MAX - (A2D_Accel[2] & ADC_MASK);
+    accel_lp[1] = 0xfff - (A2D_Accel[2] & 0xfff);
   else
-    accel_lp[1] = A2D_Accel[2] & ADC_MASK;
-  accel_lp[2] = A2D_Accel[1] & ADC_MASK;
+    accel_lp[1] = A2D_Accel[2] & 0xfff;
+  accel_lp[2] = A2D_Accel[1] & 0xfff;
 
   // Here we only send a short when we have an uint32 because the fill
   // the packet
