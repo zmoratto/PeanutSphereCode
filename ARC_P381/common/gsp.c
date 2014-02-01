@@ -22,9 +22,11 @@
 
 #include "comm.h"
 #include "comm_internal.h"
-#include "commands.h"
 #include "comm_process_rx_packet.h"
+#include "commands.h"
 #include "control.h"
+#include "exp_v2.h"
+#include "fpga.h"
 #include "gsp.h"
 #include "gsp_task.h"
 #include "housekeeping.h"
@@ -32,14 +34,13 @@
 #include "pads.h"
 #include "pads_internal.h"
 #include "prop.h"
+#include "smt335async.h"
 #include "spheres_constants.h"
 #include "spheres_physical_parameters.h"
 #include "spheres_types.h"
 #include "std_includes.h"
 #include "system.h"
 #include "util_memory.h"
-#include "smt335async.h"
-#include "exp_v2.h"
 #include <string.h>
 
 
@@ -203,6 +204,7 @@ void gspPadsGlobal(unsigned int beacon,
                    beacon_measurement_matrix measurements) {
   if (ctrlManeuverNumGet() == WAYPOINT_MODE) {
     SendTelemetryPacketToPhone();
+    SendInertialPacketToPhone(accel, gyro, num_samples);
   }
 }
 
@@ -430,13 +432,23 @@ void SendInertialPacketToPhone(IMU_sample *accel, IMU_sample *gyro, unsigned int
   static unsigned char packet[16];
   static unsigned int accel_lp[3], gyro_lp[3];
 
-  // This is actually a sinc, perfect low pass filter
-  padsFilterGyroData(accel, num_samples, accel_lp);
-  padsFilterGyroData(gyro, num_samples, gyro_lp);
+  // The incoming accel and gyro are from a circlar buffer. There is
+  // no way for us to determine if it is current or stale since the
+  // index is hidden. Instead, I'll just pull from FPGA's memory the
+  // current accel and gyro measurement unfiltered.
+  gyro_lp[0] = ADC_MAX - (A2D_Gyros[0] & ADC_MASK);
+  gyro_lp[1] = A2D_Gyros[1] & ADC_MASK;
+  gyro_lp[2] = A2D_Gyros[2] & ADC_MASK;
 
-  // Here we only send a short when we have an uint32 because the
+  accel_lp[0] = ADC_MAX - (A2D_Accel[0] & ADC_MASK);
+  if (commHWAddrGet() != 0x32)
+    accel_lp[1] = ADC_MAX - (A2D_Accel[2] & ADC_MASK);
+  else
+    accel_lp[1] = A2D_Accel[2] & ADC_MASK;
+  accel_lp[2] = A2D_Accel[1] & ADC_MASK;
 
-  // Fill the packet
+  // Here we only send a short when we have an uint32 because the fill
+  // the packet
   *(unsigned int *)(packet) = sysSphereTimeGet();
   *(unsigned short *)(packet+4) = (unsigned short)accel_lp[0];
   *(unsigned short *)(packet+6) = (unsigned short)accel_lp[1];
