@@ -71,10 +71,6 @@
 #define DRIFT_MODE 2
 #define WAYPOINT_MODE 3
 
-#define USE_SPHERES_ESTIMATE 2
-#define USE_PHONE_ESTIMATE 3
-
-
 typedef struct{
   unsigned char preamble[4];
   unsigned short chk;

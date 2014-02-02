@@ -148,7 +148,8 @@ void gspInitTest(unsigned int test_number)
     g_test_class = CHECKOUT;
     gspInitTest_Checkout(test_number);
     break;
-  case USE_SPHERES_ESTIMATE: // use SPHERES estimate
+  case 2: // use SPHERES estimate
+  case 3:
     g_target_reached = FALSE;
     g_sphere_error = FALSE;
     g_last_cmd = 0;
@@ -161,7 +162,8 @@ void gspInitTest(unsigned int test_number)
     padsEstimatorInitWaitAndSet(initState, 50, 200, 405,
                                 PADS_INIT_THRUST_INT_ENABLE,PADS_BEACONS_SET_1TO9); // ISS
     break;
-  case USE_PHONE_ESTIMATE: // use Phone estimate
+  case 4: // use Phone estimate
+  case 5:
     g_target_reached = FALSE;
     g_sphere_error = FALSE;
     g_last_cmd = 0;
@@ -285,14 +287,19 @@ void gspControl(unsigned int test_number,
                         ctrl_state_error, ctrl_control);
 
     //mix forces/torques into thruster commands
-    // ctrlMixWLoc(&firing_times, ctrl_control, curr_state,
-    //            min_pulse, 20.0f, FORCE_FRAME_INERTIAL);
+    if ( test_number && 0x1 ) {
+      // If the number is odd ...  (like 3 and 5) .. use the custom
+      // mixer
 
-    // Mix forces/torque into thruster commands. This is a custom
-    // variant that compensates for the shift in center of gravity due
-    // to the PeanutMM.
-    CustomMixWLoc(&firing_times, ctrl_control, curr_state,
-                  min_pulse, 20.0f);
+      // Mix forces/torque into thruster commands. This is a custom
+      // variant that compensates for the shift in center of gravity due
+      // to the PeanutMM.
+      CustomMixWLoc(&firing_times, ctrl_control, curr_state,
+                    min_pulse, 20.0f);
+    } else {
+      ctrlMixWLoc(&firing_times, ctrl_control, curr_state,
+                  min_pulse, 20.0f, FORCE_FRAME_INERTIAL);
+    }
 
 #ifdef LAB_VERSION
     // Don't bother using the Z thrusters. Their aligned with the
@@ -587,12 +594,12 @@ void CustomMixWLoc( prop_time *firing_times, float *control, float *state,
   float u[12] = {0.0f}, scale, maxu;
   float b2g[3][3]; // body to global rotation matrix
   float MixingMat[6][6] =
-    {{0.5f, 0.0f, -0.10309278f, 0.0f, 5.15463918f, 0.0f},
-     {0.5f, 0.0f, 0.10309278f, 0.0f, -5.15463918f, 0.0f},
-     {0.0f, 0.60309278f, 0.0f, 0.0f, 0.0f, 5.15463918f},
-     {0.0f, 0.39690722f, 0.0f, 0.0f, 0.0f, -5.15463918f},
-     {0.0f, 0.0f, 0.5f, 5.15463918f, 0.0f, 0.0f},
-     {0.0f, 0.0f, 0.5f, -5.15463918f, 0.0f, 0.0f}};
+    {{0.5f, 0.0f, -0.10362694f, 0.0f, 5.18134715f, 0.0f},
+     {0.5f, 0.0f, 0.10362694f, 0.0f, -5.18134715f, 0.0f},
+     {0.0f, 0.60362694f, 0.0f, 0.0f, 0.0f, 5.18134715f},
+     {0.0f, 0.39637306f, 0.0f, 0.0f, 0.0f, -5.18134715f},
+     {0.0f, 0.0f, 0.5f, 5.18134715f, 0.0f, 0.0f},
+     {0.0f, 0.0f, 0.5f, -5.18134715f, 0.0f, 0.0f}};
   float controlPair[6] = {0};
   float controlBody[6] = {0};
   int   i, u_over_2, half_width, add_one;
