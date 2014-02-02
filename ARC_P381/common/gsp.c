@@ -159,7 +159,7 @@ void gspInitTest(unsigned int test_number)
     g_stop_at_end = TRUE;
 
     // turn on the estimator
-    padsEstimatorInitWaitAndSet(initState, 50, 200, 405,
+    padsEstimatorInitWaitAndSet(initState, 50, 200, 205,
                                 PADS_INIT_THRUST_INT_ENABLE,PADS_BEACONS_SET_1TO9); // ISS
     break;
   case 4: // use Phone estimate
@@ -320,7 +320,7 @@ void gspControl(unsigned int test_number,
 
     // Set firing times
     propSetThrusterTimes(&firing_times);
-    padsGlobalPeriodSetAndWait(200,405);
+    padsGlobalPeriodSetAndWait(200,205);
 
     // Tell the Phone about our firing solutions
     SendThrusterTimingsToPhone(&firing_times);
@@ -551,7 +551,7 @@ void ProcessPhoneStateEstimate(unsigned char channel, unsigned char* buffer, uns
   comm_payload_state_estimate* pkt = (comm_payload_state_estimate*)buffer;
   static state_vector phone_estimate;
 
-  if(ctrlTestNumGet() != USE_PHONE_ESTIMATE) {
+  if(ctrlTestNumGet() < 4) {
     return;
   }
 
