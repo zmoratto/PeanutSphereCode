@@ -17,17 +17,12 @@
 // positive 90 about +Y
 
 // Recommended EKF initialization vector
-// upside down coordinates
-state_vector initState = {0.0f,0.0f,-0.79f,  0.0f,0.0f,0.0f,  0.0f,0.0f,0.0f,1.0f,  0.0f,0.0f,0.0f};
+state_vector initState = {0.0f,0.0f,-0.95f,  0.0f,0.0f,0.0f,  0.0f,-0.71f,0.0f,0.71f,  0.0f,0.0f,0.0f};
 
 // changed quaterion 9/6/11 DW
 // 106 - normal -z face - 96 same but "ISS" (to use w/ flight gui)
-// 108 - lying on -x face - 98 same but "ISS"
-// 110 - " " +z "
-// 112 - " " +y "
-// 114 - lying on +x face
-// 116 - lying on -y face
-const unsigned char PHYS_PROP = 106; // was 2? what is that?
+// 150 - location Vomet (ignore -X face)
+const unsigned char PHYS_PROP = 150; 
 
 const unsigned int DOCK_MECHANISM_PRESENT	= 0;
 
