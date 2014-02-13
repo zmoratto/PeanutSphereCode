@@ -17,7 +17,7 @@
 // positive 90 about +Y
 
 // Recommended EKF initialization vector
-state_vector initState = {0.0f,0.0f,-0.95f,  0.0f,0.0f,0.0f,  0.0f,-0.71f,0.0f,0.71f,  0.0f,0.0f,0.0f};
+state_vector initState = {0.0f,0.0f,0.0f,  0.0f,0.0f,0.0f,  0.0f,0.0f,0.0f,1.0f,  0.0f,0.0f,0.0f};
 
 // changed quaterion 9/6/11 DW
 // 106 - normal -z face - 96 same but "ISS" (to use w/ flight gui)

@@ -10,7 +10,6 @@
  * Copyright 2005 Massachusetts Institute of Technology
  */
 
-
 /*----------------------------------------------------------------------------*/
 /*                         Do not modify this section.                        */
 /*----------------------------------------------------------------------------*/
@@ -208,7 +207,7 @@ void gspPadsInertial(IMU_sample *accel, IMU_sample *gyro,
 
   //if (ctrlManeuverNumGet() == WAYPOINT_MODE) {
     SendInertialPacketToPhone();
-  //}
+  // }
 }
 
 // Record global data. Called at the end of each beacon's transmission
