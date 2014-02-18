@@ -22,9 +22,9 @@
 #define SERIAL_DEVICE_2 2
 
 // pick ONE
-#define VOMIT_VERSION
+//#define VOMIT_VERSION
 //#define ISS_VERSION
-//#define LAB_VERSION
+#define LAB_VERSION
 
 #ifdef LAB_VERSION
 #define DEFAULT_Z -0.79
@@ -38,8 +38,9 @@
 
 #ifdef VOMIT_VERSION
 #define DEFAULT_Z 0.0
-#define THE_PROGRAM_NUMBER 229
+#define THE_PROGRAM_NUMBER 225
 #endif /* VOMIT_VERSION */
+
 
 #define QX 0
 #define QY 1
