@@ -238,7 +238,7 @@ void gspInitTest(unsigned int test_number)
     g_micro_maneuver_nums[0] = 1;  // 0 0 0
     g_micro_maneuver_nums[1] = 13; // -.3 0 0 
     g_micro_maneuver_nums[2] = 14; // -.3 0 .3
-  break;
+  	break;
   
   // fall through intended for 6-17:
   case 6: // +X
@@ -262,7 +262,6 @@ void gspInitTest(unsigned int test_number)
     padsEstimatorInitWaitAndSet(initState, 50, 200, 205,
                                 PADS_INIT_THRUST_INT_ENABLE,PADS_BEACONS_SET_1TO9); // ISS
     break;
-    
   }
   g_last_cmd = 0;
   g_micro_maneuver_index = 0;
@@ -280,19 +279,14 @@ void gspPadsInertial(IMU_sample *accel, IMU_sample *gyro,
     return;
   }
 
-  //if (ctrlManeuverNumGet() == WAYPOINT_MODE) {
-    SendInertialPacketToPhone();
-  // }
+  SendInertialPacketToPhone();
 }
 
 // Record global data. Called at the end of each beacon's transmission
 // period.
 void gspPadsGlobal(unsigned int beacon,
                    beacon_measurement_matrix measurements) {
-//  if (ctrlManeuverNumGet() == WAYPOINT_MODE) {
-    SendTelemetryPacketToPhone();
-    SendInertialPacketToPhone();
-//  }
+  SendTelemetryPacketToPhone();
 }
 
 // Event driven task for estimation, control, and
@@ -324,7 +318,6 @@ void gspControl(unsigned int test_number,
 
   // Always send a SOH and Telemetry down the line
   SendSOHPacketToPhone();
-  SendTelemetryPacketToPhone();
 
   // Clear all uninitialized vectors
   memset(ctrl_control,0,sizeof(float)*6);
@@ -342,19 +335,9 @@ void gspControl(unsigned int test_number,
   }
   
   // set so we're ready for maneuvers 6 and up
-  firing_times.off_time[0] = firing_times.on_time[0] = 0;
-  firing_times.off_time[1] = firing_times.on_time[1] = 0;
-  firing_times.off_time[2] = firing_times.on_time[2] = 0;
-  firing_times.off_time[3] = firing_times.on_time[3] = 0;
-  firing_times.off_time[4] = firing_times.on_time[4] = 0;
-  firing_times.off_time[5] = firing_times.on_time[5] = 0;
-  firing_times.off_time[6] = firing_times.on_time[6] = 0;
-  firing_times.off_time[7] = firing_times.on_time[7] = 0;
-  firing_times.off_time[8] = firing_times.on_time[8] = 0;
-  firing_times.off_time[9] = firing_times.on_time[9] = 0;
-  firing_times.off_time[10] = firing_times.on_time[10] = 0;
-  firing_times.off_time[11] = firing_times.on_time[11] = 0;
-
+  memset(firing_times.off_time, 0, 12);
+  memset(firing_times.on_time, 0, 12);
+  
   if (maneuver_number == CONVERGE_MODE) { //Estimator initialization
     if (test_time >= ESTIMATOR_TIME){
       // If it seems that it is about time that the estimator should
@@ -366,6 +349,7 @@ void gspControl(unsigned int test_number,
       if(g_received_phone_command == FALSE) {
         memcpy(g_ctrl_state_target, curr_state, sizeof(state_vector));
       }
+      
       // we're never going to command a non-zero velocity, or rate
       g_ctrl_state_target[VEL_X] = 0.0f;
       g_ctrl_state_target[VEL_Y] = 0.0f;
