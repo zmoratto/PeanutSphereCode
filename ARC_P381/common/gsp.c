@@ -430,234 +430,61 @@ void gspControl(unsigned int test_number,
     }
   } // closes WAYPOINT_MODE
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-  else if (maneuver_number == 6) { 
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@  GO TO +X
+  else if (maneuver_number >= 6 && maneuver_number <= 17) { 
     //Disable estimator during closed loop firing
     padsGlobalPeriodSet(SYS_FOREVER);
 
-    firing_times.off_time[0] = 200;
-    firing_times.off_time[1] = 200;
-   
-    // Set firing times
-    propSetThrusterTimes(&firing_times);
-    padsGlobalPeriodSetAndWait(200,205);
-
-    // Tell the Phone about our firing solutions
-    SendThrusterTimingsToPhone(&firing_times);
-
-    // termination conditions
-    if (maneuver_time > THRUSTER_TEST_TIME) {
-    	SendSOHPacketToPhone();
-        ctrlTestTerminate(TEST_RESULT_NORMAL);
+    // set firing times
+    switch(maneuver_number) {
+    case 6: // GO TO +X
+      firing_times.off_time[0] = 200;
+      firing_times.off_time[1] = 200;
+      break;
+    case 7: // GO TO -X
+      firing_times.off_time[6] = 200;
+      firing_times.off_time[7] = 200;
+      break;
+    case 8: // GO TO +Y
+      firing_times.off_time[2] = 200;
+      firing_times.off_time[3] = 200;
+      break;
+    case 9: // GO TO -Y
+      firing_times.off_time[8] = 200;
+      firing_times.off_time[9] = 200;
+      break;
+    case 10: // GO TO +Z - a
+      firing_times.off_time[4] = 200;
+      firing_times.off_time[5] = 200;
+      break;
+    case 11: // GO TO -Z - b
+      firing_times.off_time[10] = 200;
+      firing_times.off_time[11] = 200;
+      break;
+    case 12: // Rotate +Roll - c
+      firing_times.off_time[4] = 200;
+      firing_times.off_time[11] = 200;
+      break;
+    case 13: // Rotate -Roll - d
+      firing_times.off_time[5] = 200;
+      firing_times.off_time[10]= 200;
+      break;
+    case 14: // Rotate +pitch - e
+      firing_times.off_time[0] = 200;
+      firing_times.off_time[7] = 200;
+      break;
+    case 15: // Rotate -pitch - f
+      firing_times.off_time[1] = 200;
+      firing_times.off_time[6] = 200;
+      break;
+    case 16: // Rotate +yaw - g
+      firing_times.off_time[2] = 200;
+      firing_times.off_time[9] = 200;
+      break;
+    case 17: // Rotate -yaw - h
+      firing_times.off_time[3] = 200;
+      firing_times.off_time[8] = 200;
+      break;
     }
-  } else if (maneuver_number == 7) { 
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@  GO TO -X
-    //Disable estimator during closed loop firing
-    padsGlobalPeriodSet(SYS_FOREVER);
-
-    firing_times.off_time[6] = 200;
-    firing_times.off_time[7] = 200;
-   
-    // Set firing times
-    propSetThrusterTimes(&firing_times);
-    padsGlobalPeriodSetAndWait(200,205);
-
-    // Tell the Phone about our firing solutions
-    SendThrusterTimingsToPhone(&firing_times);
-
-    // termination conditions
-    if (maneuver_time > THRUSTER_TEST_TIME) {
-    	SendSOHPacketToPhone();
-        ctrlTestTerminate(TEST_RESULT_NORMAL);
-    }
-  } else if (maneuver_number == 8) { 
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@  GO TO +Y
-    //Disable estimator during closed loop firing
-    padsGlobalPeriodSet(SYS_FOREVER);
-
-    firing_times.off_time[2] = 200;
-    firing_times.off_time[3] = 200;
-   
-    // Set firing times
-    propSetThrusterTimes(&firing_times);
-    padsGlobalPeriodSetAndWait(200,205);
-
-    // Tell the Phone about our firing solutions
-    SendThrusterTimingsToPhone(&firing_times);
-
-    	SendSOHPacketToPhone();
-    // termination conditions
-    if (maneuver_time > THRUSTER_TEST_TIME) {
-        ctrlTestTerminate(TEST_RESULT_NORMAL);
-    }
-  } else if (maneuver_number == 9) { 
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@  GO TO -Y
-    //Disable estimator during closed loop firing
-    padsGlobalPeriodSet(SYS_FOREVER);
-
-    firing_times.off_time[8] = 200;
-    firing_times.off_time[9] = 200;
-   
-    // Set firing times
-    propSetThrusterTimes(&firing_times);
-    padsGlobalPeriodSetAndWait(200,205);
-
-    // Tell the Phone about our firing solutions
-    SendThrusterTimingsToPhone(&firing_times);
-
-    // termination conditions
-    if (maneuver_time > THRUSTER_TEST_TIME) {
-    	SendSOHPacketToPhone();
-        ctrlTestTerminate(TEST_RESULT_NORMAL);
-    }
-  } else if (maneuver_number == 10) { // a 
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@  GO TO +Z
-    //Disable estimator during closed loop firing
-    padsGlobalPeriodSet(SYS_FOREVER);
-
-    firing_times.off_time[4] = 200;
-    firing_times.off_time[5] = 200;
-   
-    // Set firing times
-    propSetThrusterTimes(&firing_times);
-    padsGlobalPeriodSetAndWait(200,205);
-
-    // Tell the Phone about our firing solutions
-    SendThrusterTimingsToPhone(&firing_times);
-
-    // termination conditions
-    if (maneuver_time > THRUSTER_TEST_TIME) {
-    	SendSOHPacketToPhone();
-        ctrlTestTerminate(TEST_RESULT_NORMAL);
-    }
-  } else if (maneuver_number == 11) { // b
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@  GO TO -Z
-    //Disable estimator during closed loop firing
-    padsGlobalPeriodSet(SYS_FOREVER);
-
-    firing_times.off_time[10] = 200;
-    firing_times.off_time[11] = 200;
-   
-    // Set firing times
-    propSetThrusterTimes(&firing_times);
-    padsGlobalPeriodSetAndWait(200,205);
-
-    // Tell the Phone about our firing solutions
-    SendThrusterTimingsToPhone(&firing_times);
-
-    // termination conditions
-    if (maneuver_time > THRUSTER_TEST_TIME) {
-    	SendSOHPacketToPhone();
-        ctrlTestTerminate(TEST_RESULT_NORMAL);
-    }
-  } else if (maneuver_number == 12) { // c
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@  Rotate +Roll
-    //Disable estimator during closed loop firing
-    padsGlobalPeriodSet(SYS_FOREVER);
-
-    firing_times.off_time[4] = 200;
-    firing_times.off_time[11] = 200;
-   
-    // Set firing times
-    propSetThrusterTimes(&firing_times);
-    padsGlobalPeriodSetAndWait(200,205);
-
-    // Tell the Phone about our firing solutions
-    SendThrusterTimingsToPhone(&firing_times);
-
-    // termination conditions
-    if (maneuver_time > THRUSTER_TEST_TIME) {
-    	SendSOHPacketToPhone();
-        ctrlTestTerminate(TEST_RESULT_NORMAL);
-    }
-  } else if (maneuver_number == 13) { // d
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@  Rotate -Roll
-    //Disable estimator during closed loop firing
-    padsGlobalPeriodSet(SYS_FOREVER);
-
-    firing_times.off_time[5] = 200;
-    firing_times.off_time[10]= 200;
-   
-    // Set firing times
-    propSetThrusterTimes(&firing_times);
-    padsGlobalPeriodSetAndWait(200,205);
-
-    // Tell the Phone about our firing solutions
-    SendThrusterTimingsToPhone(&firing_times);
-
-    // termination conditions
-    if (maneuver_time > THRUSTER_TEST_TIME) {
-    	SendSOHPacketToPhone();
-        ctrlTestTerminate(TEST_RESULT_NORMAL);
-    }
-  } else if (maneuver_number == 14) { // e
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@  Rotate +pitch
-    //Disable estimator during closed loop firing
-    padsGlobalPeriodSet(SYS_FOREVER);
-
-    firing_times.off_time[0] = 200;
-    firing_times.off_time[7] = 200;
-   
-    // Set firing times
-    propSetThrusterTimes(&firing_times);
-    padsGlobalPeriodSetAndWait(200,205);
-
-    // Tell the Phone about our firing solutions
-    SendThrusterTimingsToPhone(&firing_times);
-
-    // termination conditions
-    if (maneuver_time > THRUSTER_TEST_TIME) {
-    	SendSOHPacketToPhone();
-        ctrlTestTerminate(TEST_RESULT_NORMAL);
-    }
-  } else if (maneuver_number == 15) { // f
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@  Rotate -pitch
-    //Disable estimator during closed loop firing
-    padsGlobalPeriodSet(SYS_FOREVER);
-
-    firing_times.off_time[1] = 200;
-    firing_times.off_time[6] = 200;
-   
-    // Set firing times
-    propSetThrusterTimes(&firing_times);
-    padsGlobalPeriodSetAndWait(200,205);
-
-    // Tell the Phone about our firing solutions
-    SendThrusterTimingsToPhone(&firing_times);
-
-    // termination conditions
-    if (maneuver_time > THRUSTER_TEST_TIME) {
-    	SendSOHPacketToPhone();
-        ctrlTestTerminate(TEST_RESULT_NORMAL);
-    }
-  } else if (maneuver_number == 16) { // g 
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@  Rotate +yaw
-    //Disable estimator during closed loop firing
-    padsGlobalPeriodSet(SYS_FOREVER);
-
-    firing_times.off_time[2] = 200;
-    firing_times.off_time[9] = 200;
-   
-    // Set firing times
-    propSetThrusterTimes(&firing_times);
-    padsGlobalPeriodSetAndWait(200,205);
-
-    // Tell the Phone about our firing solutions
-    SendThrusterTimingsToPhone(&firing_times);
-
-    // termination conditions
-    if (maneuver_time > THRUSTER_TEST_TIME) {
-    	SendSOHPacketToPhone();
-        ctrlTestTerminate(TEST_RESULT_NORMAL);
-    }
-  } else if (maneuver_number == 17) { // h
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@  Rotate -yaw
-    //Disable estimator during closed loop firing
-    padsGlobalPeriodSet(SYS_FOREVER);
-
-    firing_times.off_time[3] = 200;
-    firing_times.off_time[8] = 200;
-   
     // Set firing times
     propSetThrusterTimes(&firing_times);
     padsGlobalPeriodSetAndWait(200,205);
