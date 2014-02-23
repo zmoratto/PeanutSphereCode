@@ -12,14 +12,17 @@
 
 
 // Recommended EKF initialization vector
-state_vector initState = {-0.5f,0.0f,0.0f,  0.0f,0.0f,0.0f,  0.0f,0.0f,0.0f,1.0f,  0.0f,0.0f,0.0f};
+state_vector initState = {0.0f,0.0f,1.0f,  0.0f,0.0f,0.0f,  0.0f,0.71f,0.0f,0.71f,  0.0f,0.0f,0.0f};
 
-const unsigned char PHYS_PROP = 2;
+//const unsigned char PHYS_PROP = 2;
+// for vomit comet
+const unsigned char PHYS_PROP = 150;
 
 const unsigned int DOCK_MECHANISM_PRESENT	= 0;
 
 // 4.3g sphere + 0.174g smartphone + 0.142g batteries + 0.122g Smartphone cable
-const float VEHICLE_MASS = 4.738f;      			// [kg] Sphere mass with about 1/2 fuel capacity
+// Spheres + MM = 5.32 kg
+const float VEHICLE_MASS = 5.32f;// was 4.738f;      			// [kg] Sphere mass with about 1/2 fuel capacity
 const float VEHICLE_ROT_ACCEL = 0.48f;			// [rad/s/s] Vehicle Rotational acceleration
 const float VEHICLE_LIN_ACCEL = 0.026f;			// [m/s] Vehicle Linear acceleration  
 const float VEHICLE_THRUST_FORCE = 0.112f; 		// [N] = DEFAULT_THRUSTER_FORCE in ISS

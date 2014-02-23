@@ -49,12 +49,13 @@
 #include "smartphone_comm_utils.h"
 #include "math.h"
 
-#define THRUSTER_TEST_TIME 15000
+#define THRUSTER_TEST_TIME 45000
+#define GSP_SETS_WAYPOINTS 18
 
 // GLOBAL VARIABLES
 
 int g_maneuver_nums[MAX_MANEUVERS];
-int g_maneuver_num_index;
+int g_maneuver_num_index = 0;
 static int g_test_class;
 state_vector g_ctrl_state_target;  // Error vector is calculated against this.
 char g_stop_at_end;
@@ -67,6 +68,11 @@ static int g_state_packets_from_phone =0;
 static int g_cmd_packets_from_phone =0;
 float g_phone_pos_in_sphere_coords[3] = {0.15, 0.0, 0.0};
 float g_phone_rigid_rot[4] = {0.0, 0.0, 0.0, 1.0};
+int g_received_phone_command = FALSE;
+
+int g_micro_maneuver_nums[MAX_MANEUVERS];
+int g_micro_maneuver_index;
+
 
 // FORWARD DECLARATIONS
 void DifferentiatePhoneMessage(unsigned char channel,
@@ -152,7 +158,6 @@ void gspInitTest(unsigned int test_number)
   case 3: // custom mixer
     g_target_reached = FALSE;
     g_sphere_error = FALSE;
-    g_last_cmd = 0;
     g_maneuver_nums[ 0] =  CONVERGE_MODE;
     g_maneuver_nums[ 1] =  WAYPOINT_MODE;//DRIFT_MODE; XXX
     g_maneuver_nums[ 2] =  WAYPOINT_MODE;
@@ -166,7 +171,6 @@ void gspInitTest(unsigned int test_number)
   case 5: // custom mixer
     g_target_reached = FALSE;
     g_sphere_error = FALSE;
-    g_last_cmd = 0;
     g_maneuver_nums[ 0] =  CONVERGE_MODE;
     g_maneuver_nums[ 1] =  WAYPOINT_MODE;//DRIFT_MODE; XXX
     g_maneuver_nums[ 2] =  WAYPOINT_MODE;
@@ -179,11 +183,80 @@ void gspInitTest(unsigned int test_number)
 
     padsEstimatorDisable();
     break;
+  case 18: // i Trajectory 1
+
+    g_maneuver_nums[ 0] =  CONVERGE_MODE;
+    g_maneuver_nums[ 1] =  GSP_SETS_WAYPOINTS;
+    
+    g_micro_maneuver_nums[0] = 1; // 0 0 0
+    g_micro_maneuver_nums[1] = 2; // .4 .4 .4
+  break;
+  
+  case 19: // j Trajectory 2
+    g_maneuver_nums[ 0] =  CONVERGE_MODE;
+    g_maneuver_nums[ 1] =  GSP_SETS_WAYPOINTS;
+    
+
+    g_micro_maneuver_nums[0] = 1; // 0 0 0
+    g_micro_maneuver_nums[1] = 3; // Pitch 90
+    g_micro_maneuver_nums[2] = 4; // pitch 180
+    g_micro_maneuver_nums[3] = 5; // pitch 270
+    g_micro_maneuver_nums[4] = 6; // pitch 0
+	break;
+	
+  case 20: // k Trajectory 3
+    g_maneuver_nums[ 0] =  CONVERGE_MODE;
+    g_maneuver_nums[ 1] =  GSP_SETS_WAYPOINTS;
+    
+    g_micro_maneuver_nums[0] = 1; // 0 0 0
+    g_micro_maneuver_nums[1] = 7; // pitch -45
+    g_micro_maneuver_nums[2] = 8; // .2 0 .2
+  break;
+  
+  case 21: // l Trajectory 4
+    g_maneuver_nums[ 0] =  CONVERGE_MODE;
+    g_maneuver_nums[ 1] =  GSP_SETS_WAYPOINTS;
+    
+    g_micro_maneuver_nums[0] = 1; // 0 0 0
+    g_micro_maneuver_nums[1] = 9; // 0, .3, -.3
+    g_micro_maneuver_nums[2] = 10;// roll 45
+  break;
+  
+  case 22: // m Trajectory 5
+    g_maneuver_nums[ 0] =  CONVERGE_MODE;
+    g_maneuver_nums[ 1] =  GSP_SETS_WAYPOINTS;
+    
+    g_micro_maneuver_nums[0] = 1;  // 0 0 0
+    g_micro_maneuver_nums[1] = 11; // 0 0 .3
+    g_micro_maneuver_nums[2] = 12; // 0 -.3 .3
+  break;
+  
+  case 23: // n Trajectory 6
+    g_maneuver_nums[ 0] =  CONVERGE_MODE;
+    g_maneuver_nums[ 1] =  GSP_SETS_WAYPOINTS;
+    
+    g_micro_maneuver_nums[0] = 1;  // 0 0 0
+    g_micro_maneuver_nums[1] = 13; // -.3 0 0 
+    g_micro_maneuver_nums[2] = 14; // -.3 0 .3
+  break;
+  
+  // fall through intended for 6-17:
+  case 6: // +X
+  case 7: // -X
+  case 8: // +Y
+  case 9: // -Y
+  case 10: // a +Z
+  case 11: // b -Z
+  case 12: // c +Roll
+  case 13: // d -Roll
+  case 14: // e +Pitch
+  case 15: // f -Pitch
+  case 16: // g +Yaw
+  case 17: // h -Yaw
   default:
     g_last_cmd = 0;
     g_maneuver_nums[ 0] =  CONVERGE_MODE;
     g_maneuver_nums[ 1] =  test_number;
-    // 6=X, 7=-X, 8=Y, 9=-Y
 
     // turn on the estimator
     padsEstimatorInitWaitAndSet(initState, 50, 200, 205,
@@ -191,6 +264,8 @@ void gspInitTest(unsigned int test_number)
     break;
     
   }
+  g_last_cmd = 0;
+  g_micro_maneuver_index = 0;
 }
 
 // Specify task trigger mask
@@ -287,7 +362,11 @@ void gspControl(unsigned int test_number,
       // position.
       g_maneuver_num_index++;
       ctrlManeuverNumSet(g_maneuver_nums[g_maneuver_num_index]);
-      memcpy(g_ctrl_state_target, curr_state, sizeof(state_vector));
+      
+      if(g_received_phone_command == FALSE) {
+        memcpy(g_ctrl_state_target, curr_state, sizeof(state_vector));
+      }
+      // we're never going to command a non-zero velocity, or rate
       g_ctrl_state_target[VEL_X] = 0.0f;
       g_ctrl_state_target[VEL_Y] = 0.0f;
       g_ctrl_state_target[VEL_Z] = 0.0f;
@@ -422,9 +501,9 @@ void gspControl(unsigned int test_number,
     // Tell the Phone about our firing solutions
     SendThrusterTimingsToPhone(&firing_times);
 
+    	SendSOHPacketToPhone();
     // termination conditions
     if (maneuver_time > THRUSTER_TEST_TIME) {
-    	SendSOHPacketToPhone();
         ctrlTestTerminate(TEST_RESULT_NORMAL);
     }
   } else if (maneuver_number == 9) { 
@@ -513,7 +592,7 @@ void gspControl(unsigned int test_number,
     padsGlobalPeriodSet(SYS_FOREVER);
 
     firing_times.off_time[5] = 200;
-    firing_times.off_time[10] = 200;
+    firing_times.off_time[10]= 200;
    
     // Set firing times
     propSetThrusterTimes(&firing_times);
@@ -607,7 +686,127 @@ void gspControl(unsigned int test_number,
     	SendSOHPacketToPhone();
         ctrlTestTerminate(TEST_RESULT_NORMAL);
     }
-  }
+  } else if(maneuver_number == GSP_SETS_WAYPOINTS) {
+    // set target based on micro_maneuver_index
+    switch(g_micro_maneuver_nums[g_micro_maneuver_index]) {
+      case 1: // center
+	      g_ctrl_state_target[POS_X] = 0.0f;
+	      g_ctrl_state_target[POS_Y] = 0.0f;
+	      g_ctrl_state_target[POS_Z] = 0.0f;
+	      break;
+      case 2: // 0.4, 0.4, 0.4
+	      g_ctrl_state_target[POS_X] = 0.4f;
+	      g_ctrl_state_target[POS_Y] = 0.4f;
+	      g_ctrl_state_target[POS_Z] = 0.4f;
+	      break;
+      case 3: // pitch 90
+	      g_ctrl_state_target[QUAT_1] = 0.0f;
+	      g_ctrl_state_target[QUAT_2] = 0.71f;
+	      g_ctrl_state_target[QUAT_3] = 0.0f;
+	      g_ctrl_state_target[QUAT_4] = 0.71f;
+	      break;
+      case 4: // pitch 180
+          g_ctrl_state_target[QUAT_1] = 0.0f;
+	      g_ctrl_state_target[QUAT_2] = 1.0f;
+	      g_ctrl_state_target[QUAT_3] = 0.0f;
+	      g_ctrl_state_target[QUAT_4] = 0.0f;
+	      break;
+      case 5: // pitch 270
+       	  g_ctrl_state_target[QUAT_1] = 0.0f;
+	      g_ctrl_state_target[QUAT_2] = 0.71f;
+	      g_ctrl_state_target[QUAT_3] = 0.0f;
+	      g_ctrl_state_target[QUAT_4] = -0.71f;
+	      break;
+      case 6: // pitch 0
+      	  g_ctrl_state_target[QUAT_1] = 0.0f;
+	      g_ctrl_state_target[QUAT_2] = 0.0f;
+	      g_ctrl_state_target[QUAT_3] = 0.0f;
+	      g_ctrl_state_target[QUAT_4] = 1.0f;
+	      break;
+	  case 7: // pitch -45
+      	  g_ctrl_state_target[QUAT_1] = 0.0f;
+	      g_ctrl_state_target[QUAT_2] =-0.38f;
+	      g_ctrl_state_target[QUAT_3] = 0.0f;
+	      g_ctrl_state_target[QUAT_4] = 0.92f;
+	      break;
+	  case 8: // translate to 0.2, 0.0, 0.2
+	      g_ctrl_state_target[POS_X] = 0.2f;
+	      g_ctrl_state_target[POS_X] = 0.0f;
+		  g_ctrl_state_target[POS_X] = 0.2f;
+		  break;
+      case 9: // translate to 0.0, 0.3, -0.3
+	      g_ctrl_state_target[POS_X] = 0.0f;
+	      g_ctrl_state_target[POS_X] = 0.3f;
+		  g_ctrl_state_target[POS_X] =-0.3f;
+		  break;
+	  case 10: // roll 45
+	  	  g_ctrl_state_target[QUAT_1] = 0.38f;
+	      g_ctrl_state_target[QUAT_2] = 0.0f;
+	      g_ctrl_state_target[QUAT_3] = 0.0f;
+	      g_ctrl_state_target[QUAT_4] = 0.92f;
+		  break;
+      case 11: //0, 0, 0.3
+          g_ctrl_state_target[POS_X] = 0.0f;
+	      g_ctrl_state_target[POS_X] = 0.0f;
+		  g_ctrl_state_target[POS_X] = 0.3f;
+		  break;
+      case 12: //0, -0.3, 0.3
+          g_ctrl_state_target[POS_X] = 0.0f;
+	      g_ctrl_state_target[POS_X] =-0.3f;
+		  g_ctrl_state_target[POS_X] = 0.3f;
+		  break;
+	  case 13: //-0.3, 0, 0
+          g_ctrl_state_target[POS_X] =-0.3f;
+	      g_ctrl_state_target[POS_X] = 0.0f;
+		  g_ctrl_state_target[POS_X] = 0.0f;
+		  break;
+      case 14: //-0.3, 0, -0.3
+          g_ctrl_state_target[POS_X] =-0.3f;
+	      g_ctrl_state_target[POS_X] = 0.0f;
+		  g_ctrl_state_target[POS_X] =-0.3f;
+		  break;
+    }
+
+    //Disable estimator during closed loop firing
+    padsGlobalPeriodSet(SYS_FOREVER);
+
+    findStateError(ctrl_state_error,curr_state,g_ctrl_state_target);
+
+    //call controllers
+    ctrlPositionPDgains(KPpositionPD, KDpositionPD, KPpositionPD,
+                        KDpositionPD, KPpositionPD, KDpositionPD,
+                        ctrl_state_error, ctrl_control);
+    ctrlAttitudeNLPDwie(KPattitudePD, KDattitudePD, KPattitudePD,
+                        KDattitudePD, KPattitudePD, KDattitudePD,
+                        ctrl_state_error, ctrl_control);
+
+    //mix forces/torques into thruster commands
+    ctrlMixWLoc(&firing_times, ctrl_control, curr_state,
+                min_pulse, 20.0f, FORCE_FRAME_INERTIAL);
+                  
+    // Set firing times
+    propSetThrusterTimes(&firing_times);
+    padsGlobalPeriodSetAndWait(200,205);
+
+    // Tell the Phone about our firing solutions
+    SendThrusterTimingsToPhone(&firing_times);
+
+    // termination conditions
+    if (maneuver_time > MIN_MANEUVER_TIME) {
+      if ((smtAtPositionRotation(ctrl_state_error))) {
+        // if rotation test, just need x correct
+        // if maneuver 20 or not rotation test, need x and x_dot correct
+        if ((!g_stop_at_end) || (smtAtZeroVelocity(ctrl_state_error))) {
+
+          //  we got there
+          g_micro_maneuver_index++;
+        }
+      }
+    }
+    if (maneuver_time > MANEUVER_TIME_OUT) {
+      g_target_reached = TIMED_OUT;
+    }
+  } // closes GSP_SETS_WAYPOINTS
   
   // Display:
   //  - current position [X, Y, Z]
@@ -786,7 +985,8 @@ void ProcessPhoneCommandFloat(unsigned char channel,
 
     g_target_reached = FALSE;
     g_stop_at_end = cmd->stop_at_end;
-    ctrlManeuverNumSet(WAYPOINT_MODE);
+    g_received_phone_command = TRUE;
+//      ctrlManeuverNumSet(WAYPOINT_MODE);
     break;
 
   case GO_TO_QUAT:
@@ -801,7 +1001,8 @@ void ProcessPhoneCommandFloat(unsigned char channel,
 
     g_target_reached = FALSE;
     g_stop_at_end = cmd->stop_at_end;
-    ctrlManeuverNumSet(WAYPOINT_MODE);
+    g_received_phone_command = TRUE;
+    //  ctrlManeuverNumSet(WAYPOINT_MODE);
     break;
 
   case JUST_DRIFT:
