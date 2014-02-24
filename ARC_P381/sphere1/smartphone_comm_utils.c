@@ -31,11 +31,8 @@ float smtGetQuaternionMagnitude(state_vector error) {
 
 int smtAtPositionRotation(state_vector error) {
   float position_error, angle_error;
-#ifdef ISS_VERSION
-  // Use an actual angle difference
-  angle_error = fabs(smtGetQuaternionMagnitude(error));
-#else
-  // In the lab, all we care about is the error about Z
+#ifdef LAB_VERSION
+ // In the lab, all we care about is the error about Z
   float m00, m10;
   float qx, qy, qz, qw;
   qx = error[QUAT_1];
@@ -47,17 +44,20 @@ int smtAtPositionRotation(state_vector error) {
   m10 = 2*qx*qy + 2*qz*qw;
   angle_error =
     fabs(atan2( m10, m00 ));
+#else
+  // Use an actual angle difference
+  angle_error = fabs(smtGetQuaternionMagnitude(error));
 #endif
 
-#ifdef ISS_VERSION
-  position_error =
+#ifdef LAB_VERSION
+    position_error =
+    sqrt(error[POS_X]*error[POS_X] +
+	 error[POS_Y]*error[POS_Y]);
+#else 
+	position_error =
     sqrt(error[POS_X]*error[POS_X] +
 	 error[POS_Y]*error[POS_Y] +
 	 error[POS_Z]*error[POS_Z]);
-#else
-  position_error =
-    sqrt(error[POS_X]*error[POS_X] +
-	 error[POS_Y]*error[POS_Y]);
 #endif
 
   if ( position_error < TRANSLATION_MARGIN &&
@@ -70,7 +70,13 @@ int smtAtPositionRotation(state_vector error) {
 
 int smtAtZeroVelocity(state_vector error) {
   float velocity_error, angvelocity_error;
-#ifdef ISS_VERSION
+#ifdef LAB_VERSION
+  velocity_error =
+    sqrt(error[VEL_X]*error[VEL_X] +
+	 error[VEL_Y]*error[VEL_Y]);
+  angvelocity_error =
+    fabs(error[RATE_Z]);
+#else
   velocity_error =
     sqrt(error[VEL_X]*error[VEL_X] +
 	 error[VEL_Y]*error[VEL_Y] +
@@ -79,12 +85,6 @@ int smtAtZeroVelocity(state_vector error) {
     sqrt(error[RATE_X]*error[RATE_X] +
 	 error[RATE_Y]*error[RATE_Y] +
 	 error[RATE_Z]*error[RATE_Z]);
-#else
-  velocity_error =
-    sqrt(error[VEL_X]*error[VEL_X] +
-	 error[VEL_Y]*error[VEL_Y]);
-  angvelocity_error =
-    fabs(error[RATE_Z]);
 #endif
 
   if ( velocity_error < VELOCITY_MARGIN &&
