@@ -38,9 +38,8 @@
 
 #ifdef VOMIT_VERSION
 #define DEFAULT_Z 0.0
-#define THE_PROGRAM_NUMBER 227
+#define THE_PROGRAM_NUMBER 229
 #endif /* VOMIT_VERSION */
-
 
 #define QX 0
 #define QY 1

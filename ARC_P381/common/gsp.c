@@ -49,7 +49,7 @@
 #include "smartphone_comm_utils.h"
 #include "math.h"
 
-#define THRUSTER_TEST_TIME 45000
+#define THRUSTER_TEST_TIME 120000
 #define GSP_SETS_WAYPOINTS 18
 
 // GLOBAL VARIABLES
@@ -344,7 +344,14 @@ void gspControl(unsigned int test_number,
       ctrlManeuverNumSet(g_maneuver_nums[g_maneuver_num_index]);
       
       if(g_received_phone_command == FALSE) {
-        memcpy(g_ctrl_state_target, curr_state, sizeof(state_vector));
+        //memcpy(g_ctrl_state_target, curr_state, sizeof(state_vector));
+        g_ctrl_state_target[POS_X] = 0.0f;
+    	g_ctrl_state_target[POS_Y] = 0.0f;
+      	g_ctrl_state_target[POS_Z] = 0.0f;
+      	g_ctrl_state_target[QUAT_1] = 0.0f;
+      	g_ctrl_state_target[QUAT_2] = 0.0f;
+      	g_ctrl_state_target[QUAT_3] = 0.0f;
+        g_ctrl_state_target[QUAT_4] = 1.0f;
       }
       
       // we're never going to command a non-zero velocity, or rate
