@@ -14,15 +14,16 @@
  */
  
 #include "spheres_types.h"
+#include "smartphone_comm_utils.h"
 // positive 90 about +Y
 
-// Recommended EKF initialization vector
-state_vector initState = {0.0f,0.0f,0.0f,  0.0f,0.0f,0.0f,  0.0f,0.71f,0.0f,0.71f,  0.0f,0.0f,0.0f};
 
-// changed quaterion 9/6/11 DW
+#ifdef LAB_VERSION
+state_vector initState = {0.0f,0.0f,-0.79f,  0.0f,0.0f,0.0f,  0.0f,0.0f,0.0f,1.0f,  0.0f,0.0f,0.0f};
 // 106 - normal -z face - 96 same but "ISS" (to use w/ flight gui)
-// 150 - location Vomet (ignore -X face)
-const unsigned char PHYS_PROP = 150; 
+const unsigned char PHYS_PROP = 106;  
+#endif
+
 
 const unsigned int DOCK_MECHANISM_PRESENT	= 0;
 

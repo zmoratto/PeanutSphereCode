@@ -12,11 +12,20 @@
 
 
 // Recommended EKF initialization vector
+#ifdef VOMIT_VERSION
 state_vector initState = {0.0f,0.0f,1.0f,  0.0f,0.0f,0.0f,  0.0f,0.71f,0.0f,0.71f,  0.0f,0.0f,0.0f};
 
 //const unsigned char PHYS_PROP = 2;
 // for vomit comet
 const unsigned char PHYS_PROP = 150;
+#endif
+
+#ifdef ISS_VERSION
+state_vector initState = {0.0f,0.0f,1.0f,  0.0f,0.0f,0.0f,  0.0f,0.71f,0.0f,0.71f,  0.0f,0.0f,0.0f};
+const unsigned char PHYS_PROP = 96;
+#endif
+
+
 
 const unsigned int DOCK_MECHANISM_PRESENT	= 0;
 
