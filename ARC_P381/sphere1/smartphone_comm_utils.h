@@ -10,6 +10,8 @@
 #ifndef SMARTPHONE_COMM_UTILS
 #define SMARTPHONE_COMM_UTILS
 
+#include <commands.h>
+
 // Should the commands below be an enum?
 #define GO_TO_XYZ       1
 #define GO_TO_QUAT      2
