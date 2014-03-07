@@ -114,7 +114,8 @@ typedef struct{
   unsigned char cmd; // identifies which command
 } phone_cmd_float;
 
-/// Packet payload overlay for COMM_CMD_BACKGROUND and COMM_CMD_SOH_STATE
+/// Packet payload overlay for COMM_CMD_BACKGROUND and
+/// COMM_CMD_SOH_STATE
 typedef struct _comm_payload_state_estimate {
   het_header     hdr;
   unsigned int   timestamp;
@@ -124,7 +125,37 @@ typedef struct _comm_payload_state_estimate {
   float          rate[3];
 } comm_payload_state_estimate;
 
+// Used in SendSOHPacketToPhone
+typedef struct _comm_payload_het_soh {
+  het_header hdr;
+  comm_payload_soh soh;
+} comm_payload_het_soh;
 
+// Used in SendTelemetryPacketToPhone
+typedef struct _comm_payload_het_telemetry {
+  het_header hdr;
+  comm_payload_telemetry telemetry;
+} comm_payload_het_telemetry;
+
+// Used in SendInertialPacketToPhone
+typedef struct _comm_payload_het_inertial {
+  het_header hdr;
+  unsigned int time;
+  unsigned short accel[3];
+  unsigned short gyro[3];
+} comm_payload_het_inertial;
+
+// Used in SendThrusterTimingsToPhone
+typedef struct _comm_payload_het_thruster {
+  het_header hdr;
+  unsigned int time;
+  unsigned char on_time[12];
+  unsigned char off_time[12];
+} comm_payload_het_thruster;
+
+// WARNING: The data pointer is expected to have space for an
+// het_header and then the raw data. Ideally you would be using the
+// comm_payload_het structs above.
 void smtExpV2UARTSendWHETHeader(unsigned char channel, unsigned char len,
                                 unsigned char *data, unsigned char cmd);
 

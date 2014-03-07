@@ -865,35 +865,35 @@ void SendEstimatePacketToPhone(unsigned int test_number) {
   memcpy( &my_state.quat[0], &curr_state[QUAT_1], 4*sizeof(float) );
   memcpy( &my_state.rate[0], &curr_state[RATE_X], 3*sizeof(float) );
 
-  // Send it out. There is some weirdness happening here since
-  // comm_payload_state_estimate includes space for SPHERE/HET header
-  // when the next function call is going to generate that for me.
+  // Send it out.
   smtExpV2UARTSendWHETHeader
     (EXPv2_CH1_HWID,
-     sizeof(comm_payload_state_estimate) - sizeof(het_header),
-     (unsigned char*)&my_state + sizeof(het_header),
-     0x42);
+     sizeof(comm_payload_state_estimate),
+     (unsigned char*)&my_state, 0x42);
 }
 
 void SendThrusterTimingsToPhone( prop_time *firing_times) {
-  static unsigned char packet[28];
+  comm_payload_het_thruster packet;
   int i = 0;
 
   // Fill the packet
-  *(unsigned int *)(packet) = sysSphereTimeGet();
+  packet.time = sysSphereTimeGet();
   for ( i = 0; i < 12; i++ ) {
-    packet[i+4] = (unsigned char)firing_times->on_time[i];
+    packet.on_time[i] = (unsigned char)firing_times->on_time[i];
   }
   for ( i = 0; i < 12; i++ ) {
-    packet[i+4+12] = (unsigned char)firing_times->off_time[i];
+    packet.off_time[i] = (unsigned char)firing_times->off_time[i];
   }
 
   // Send it out. The call will prepend a header and checksum
-  smtExpV2UARTSendWHETHeader(EXPv2_CH1_HWID, 28, packet, 0x43 );
+  smtExpV2UARTSendWHETHeader
+    (EXPv2_CH1_HWID,
+     sizeof(comm_payload_het_thruster),
+     (unsigned char*)&packet, 0x43);
 }
 
 void SendInertialPacketToPhone(){
-  static unsigned char packet[16];
+  comm_payload_het_inertial packet;
   static unsigned int accel_lp[3], gyro_lp[3];
 
   // The incoming accel and gyro are from a circlar buffer. There is
@@ -913,45 +913,48 @@ void SendInertialPacketToPhone(){
 
   // Here we only send a short when we have an uint32 because the fill
   // the packet
-  *(unsigned int *)(packet) = sysSphereTimeGet();
-  *(unsigned short *)(packet+4) = (unsigned short)accel_lp[0];
-  *(unsigned short *)(packet+6) = (unsigned short)accel_lp[1];
-  *(unsigned short *)(packet+8) = (unsigned short)accel_lp[2];
-  *(unsigned short *)(packet+10) = (unsigned short)gyro_lp[0];
-  *(unsigned short *)(packet+12) = (unsigned short)gyro_lp[1];
-  *(unsigned short *)(packet+14) = (unsigned short)gyro_lp[2];
+  packet.time = sysSphereTimeGet();
+  packet.accel[0] = (unsigned short)accel_lp[0];
+  packet.accel[1] = (unsigned short)accel_lp[1];
+  packet.accel[2] = (unsigned short)accel_lp[2];
+  packet.gyro[0] = (unsigned short)gyro_lp[0];
+  packet.gyro[1] = (unsigned short)gyro_lp[1];
+  packet.gyro[2] = (unsigned short)gyro_lp[2];
 
   // Send it out. The call will prepend a header and checksum
-  smtExpV2UARTSendWHETHeader(EXPv2_CH1_HWID, 16, packet, 0x44 );
+  smtExpV2UARTSendWHETHeader
+    (EXPv2_CH1_HWID, sizeof(comm_payload_het_inertial),
+     (unsigned char*)&packet, 0x44 );
 }
 
 void SendSOHPacketToPhone() {
-  comm_payload_soh my_soh;
+  comm_payload_het_soh packet;
 
   // get my SOH information
-  commBackgroundSOHGet(SPHERE_ID, &my_soh);
+  commBackgroundSOHGet(SPHERE_ID, &packet.soh);
 
   // set the fields I need
-  my_soh.unused[0] = g_target_reached;
-  my_soh.unused[1] = g_sphere_error;
-  my_soh.unused[3] = (g_last_cmd>>8) & 0xFF;
-  my_soh.unused[2] = g_last_cmd & 0xFF;
+  packet.soh.unused[0] = g_target_reached;
+  packet.soh.unused[1] = g_sphere_error;
+  packet.soh.unused[3] = (g_last_cmd>>8) & 0xFF;
+  packet.soh.unused[2] = g_last_cmd & 0xFF;
 
   // send it
-  smtExpV2UARTSendWHETHeader(EXPv2_CH1_HWID, sizeof(comm_payload_soh),
-                             (unsigned char *)&my_soh, COMM_CMD_SOH);
+  smtExpV2UARTSendWHETHeader
+    (EXPv2_CH1_HWID, sizeof(comm_payload_het_soh),
+     (unsigned char *)&packet, COMM_CMD_SOH);
 }
 
 void SendTelemetryPacketToPhone() {
-  comm_payload_telemetry my_telemetry;
+  comm_payload_het_telemetry packet;
 
   // Get Telemetry Information
-  commBackgroundPayloadPack(&my_telemetry);
+  commBackgroundPayloadPack(&packet.telemetry);
 
   // send it out
-  smtExpV2UARTSendWHETHeader(EXPv2_CH1_HWID, sizeof(comm_payload_telemetry),
-                             (unsigned char *)&my_telemetry,
-                             COMM_CMD_BACKGROUND);
+  smtExpV2UARTSendWHETHeader
+    (EXPv2_CH1_HWID, sizeof(comm_payload_het_telemetry),
+     (unsigned char *)&packet, COMM_CMD_BACKGROUND);
 }
 
 void ProcessPhoneCommandFloat(unsigned char channel,

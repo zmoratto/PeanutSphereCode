@@ -5,23 +5,23 @@
 #include "spheres_constants.h"
 
 void smtExpV2UARTSendWHETHeader(unsigned char channel, unsigned char len, unsigned char *data, unsigned char cmd) {
-  het_header het_hdr;
-  unsigned short big_chk = 0;
+  het_header* het_hdr = (het_header*)data;
   unsigned char i;
 
-  for (i=0; i < len; i++)
-    big_chk += data[i];
+  // Calculate the check sum
+  het_hdr->chk = 0;
+  for (i=8; i < len; i++)
+    het_hdr->chk += data[i];
 
-  // make our HET header
-  het_hdr.preamble[0] = 0xAA;
-  het_hdr.preamble[1] = 0x55;
-  het_hdr.preamble[2] = 0xAA;
-  het_hdr.preamble[3] = 0x55;
-  het_hdr.chk = big_chk;
-  het_hdr.cmd = cmd;
-  het_hdr.len = len;
+  // Make our HET header
+  het_hdr->preamble[0] = 0xAA;
+  het_hdr->preamble[1] = 0x55;
+  het_hdr->preamble[2] = 0xAA;
+  het_hdr->preamble[3] = 0x55;
+  het_hdr->cmd = cmd;
+  het_hdr->len = len - 8;
 
-  expv2_uart_send(channel, 8, (unsigned char *)&het_hdr);
+  // send it out
   expv2_uart_send(channel, len, data);
 }
 
