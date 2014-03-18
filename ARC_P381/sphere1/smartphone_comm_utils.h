@@ -13,9 +13,10 @@
 #include <commands.h>
 
 // Should the commands below be an enum?
-#define GO_TO_XYZ       1
-#define GO_TO_QUAT      2
-#define JUST_DRIFT      6
+#define GO_TO_XYZ       	1
+#define GO_TO_QUAT      	2
+#define GO_TO_STATE_VECTOR 11
+#define JUST_DRIFT      	6
 #define COMM_COMMAND_FLOAT (0x40)
 #define PHONE_ESTIMATE_PKT (0x41)
 #define COMM_PAYLOAD_STATE_EST (0x42)
@@ -30,7 +31,7 @@
 
 #ifdef LAB_VERSION
 #define DEFAULT_Z -0.79
-#define THE_PROGRAM_NUMBER 224
+#define THE_PROGRAM_NUMBER 222
 #endif /* LAB_VERSION */
 
 #ifdef ISS_VERSION

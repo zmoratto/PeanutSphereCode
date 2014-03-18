@@ -961,10 +961,31 @@ void ProcessPhoneCommandFloat(unsigned char channel,
                               unsigned char* buffer, unsigned int len) {
   phone_cmd_float* cmd = (phone_cmd_float*)buffer;
 
+  dbg_short_packet dbg_error;
+  memset(dbg_error,0,sizeof(dbg_short_packet));
+
+  dbg_error[0] = 123;
+  dbg_error[1] = 123;
+  dbg_error[2] = 123;
+  dbg_error[3] = cmd->x;
+  dbg_error[4] = cmd->y;
+  dbg_error[5] = cmd->z;
+  dbg_error[6] = cmd->qx;
+  dbg_error[7] = cmd->qy;
+  dbg_error[8] = cmd->qz;
+  dbg_error[9] = cmd->qw;
+  dbg_error[10] = 0;
+  dbg_error[11] = 0;
+
+  commSendRFMPacket(COMM_CHANNEL_STL, GROUND,
+                    COMM_CMD_DBG_SHORT, (unsigned char *) dbg_error, 0);
+
   g_cmd_packets_from_phone++;
 
   // TODO: This looks dangerous. What happens when this wraps due to a
   // lot of commands?
+  // if we see 32,787 commands in one spheres run, something else is 
+  // seriously wrong
   if(cmd->seq_num <= g_last_cmd)
     return; // I've seen this command before
 
@@ -981,7 +1002,7 @@ void ProcessPhoneCommandFloat(unsigned char channel,
     g_target_reached = FALSE;
     g_stop_at_end = cmd->stop_at_end;
     g_received_phone_command = TRUE;
-//      ctrlManeuverNumSet(WAYPOINT_MODE);
+    ctrlManeuverNumSet(WAYPOINT_MODE);
     break;
 
   case GO_TO_QUAT:
@@ -997,7 +1018,23 @@ void ProcessPhoneCommandFloat(unsigned char channel,
     g_target_reached = FALSE;
     g_stop_at_end = cmd->stop_at_end;
     g_received_phone_command = TRUE;
-    //  ctrlManeuverNumSet(WAYPOINT_MODE);
+    ctrlManeuverNumSet(WAYPOINT_MODE);
+    break;
+
+  case GO_TO_STATE_VECTOR:
+    g_ctrl_state_target[POS_X] = cmd->x;
+    g_ctrl_state_target[POS_Y] = cmd->y;
+    g_ctrl_state_target[POS_Z] = cmd->z;
+    
+    g_ctrl_state_target[QUAT_1] = cmd->qx;
+    g_ctrl_state_target[QUAT_2] = cmd->qy;
+    g_ctrl_state_target[QUAT_3] = cmd->qz;
+    g_ctrl_state_target[QUAT_4] = cmd->qw;
+
+    g_target_reached = FALSE;
+    g_stop_at_end = cmd->stop_at_end;
+    g_received_phone_command = TRUE;
+    ctrlManeuverNumSet(WAYPOINT_MODE);
     break;
 
   case JUST_DRIFT:
@@ -1032,12 +1069,54 @@ void DifferentiatePhoneMessage(unsigned char channel,
                                unsigned char* buffer, unsigned int len) {
   het_header* header = (het_header*)buffer;
 
+  dbg_short_packet dbg_error;
+  memset(dbg_error,0,sizeof(dbg_short_packet));
+
+
+
+
+
+
   g_packets_from_phone++;
 
   // check the checksum
   if(!smtChecksumVerify(buffer, len)) {
+  
+    dbg_error[0] = 111;
+  dbg_error[1] = 111;
+  dbg_error[2] = 111;
+  dbg_error[3] = header->cmd;
+  dbg_error[4] = header->cmd;
+  dbg_error[5] = header->cmd;
+  dbg_error[6] = header->cmd;
+  dbg_error[7] = header->cmd;
+  dbg_error[8] = header->cmd;
+  dbg_error[9] = header->cmd;
+  dbg_error[10] = header->cmd;
+  dbg_error[11] = 0;
+  
+    commSendRFMPacket(COMM_CHANNEL_STL, GROUND,
+                    COMM_CMD_DBG_SHORT, (unsigned char *) dbg_error, 0);
     return;
   }
+  
+   
+  dbg_error[0] = 222;
+  dbg_error[1] = 222;
+  dbg_error[2] = 222;
+  dbg_error[3] = 222;
+  dbg_error[4] = 222;
+  dbg_error[5] = 222;
+  dbg_error[6] = 222;
+  dbg_error[7] = 222;
+  dbg_error[8] = 222;
+  dbg_error[9] = 222;
+  dbg_error[10] = 222;
+  dbg_error[11] = 222;
+  
+    commSendRFMPacket(COMM_CHANNEL_STL, GROUND,
+                    COMM_CMD_DBG_SHORT, (unsigned char *) dbg_error, 0);
+  
 
   switch(header->cmd) {
   case PHONE_ESTIMATE_PKT:
